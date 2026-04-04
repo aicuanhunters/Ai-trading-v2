@@ -6,10 +6,273 @@
     <title>AI CuanHunters Pro • Professional Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: #0a0e17; min-height: 100vh; overflow-x: hidden; color: #e2e8f0; }
+        
+        /* ========== PROFESSIONAL LOADING OVERLAY ========== */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #060b14;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .loading-overlay.fade-out {
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        #matrixCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.15;
+            pointer-events: none;
+        }
+        
+        .loading-container {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            padding: 2rem;
+            max-width: 800px;
+            width: 90%;
+            background: rgba(6, 11, 20, 0.7);
+            backdrop-filter: blur(20px);
+            border-radius: 2rem;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* Logo from URL */
+        .loading-logo-img {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 1rem;
+            border-radius: 50%;
+            border: 2px solid rgba(16,185,129,0.4);
+            box-shadow: 0 0 20px rgba(16,185,129,0.3);
+            animation: logoGlow 2s ease-in-out infinite;
+        }
+        
+        @keyframes logoGlow {
+            0%, 100% { box-shadow: 0 0 5px rgba(16,185,129,0.3); transform: scale(1); }
+            50% { box-shadow: 0 0 25px rgba(16,185,129,0.8); transform: scale(1.02); }
+        }
+        
+        .institutional-text h1 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #10B981, #3B82F6, #8B5CF6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        /* Candlestick Chart Container */
+        .candlestick-container {
+            margin: 1.5rem 0;
+            background: rgba(0,0,0,0.3);
+            border-radius: 1rem;
+            padding: 0.5rem;
+            border: 1px solid rgba(16,185,129,0.2);
+        }
+        
+        .candlestick-canvas {
+            width: 100%;
+            height: 150px;
+            display: block;
+            border-radius: 8px;
+        }
+        
+        /* Sentiment Gauge */
+        .sentiment-gauge {
+            margin: 1rem 0;
+            padding: 0.8rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .gauge-label {
+            font-size: 0.6rem;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 0.5rem;
+        }
+        
+        .gauge-bar-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            height: 8px;
+            overflow: hidden;
+        }
+        
+        .gauge-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #F87171, #FBBF24, #10B981);
+            border-radius: 20px;
+            transition: width 0.1s linear;
+        }
+        
+        .gauge-markers {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.5rem;
+            font-size: 0.5rem;
+            color: #64748b;
+        }
+        
+        /* VWAP Progress */
+        .vwap-progress {
+            margin: 1rem 0;
+        }
+        
+        .vwap-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.65rem;
+            font-family: 'Fira Code', monospace;
+            margin-bottom: 0.5rem;
+        }
+        
+        .vwap-label { color: #94a3b8; }
+        .vwap-value { color: #10B981; font-weight: 600; }
+        
+        .vwap-bar {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+            height: 4px;
+            position: relative;
+        }
+        
+        .vwap-fill {
+            background: linear-gradient(90deg, #10B981, #00D4FF);
+            border-radius: 4px;
+            height: 100%;
+            width: 0%;
+            transition: width 0.1s linear;
+            position: relative;
+        }
+        
+        .vwap-fill::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: -4px;
+            width: 10px;
+            height: 12px;
+            background: #10B981;
+            border-radius: 2px;
+            animation: blinker 1s infinite;
+        }
+        
+        @keyframes blinker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        
+        /* Status Cards */
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.75rem;
+            margin: 1rem 0;
+        }
+        
+        .status-card {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 0.75rem;
+            padding: 0.75rem 0.5rem;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .status-card.active {
+            border-color: rgba(16, 185, 129, 0.3);
+            background: rgba(16, 185, 129, 0.05);
+        }
+        
+        .status-card.completed {
+            border-color: #10B981;
+            background: rgba(16, 185, 129, 0.1);
+        }
+        
+        .status-icon { font-size: 1.2rem; margin-bottom: 0.3rem; }
+        .status-card.active .status-icon { animation: iconPulse 1s infinite; }
+        @keyframes iconPulse { 0%,100%{transform:scale(1);}50%{transform:scale(1.1);} }
+        .status-title { font-size: 0.55rem; font-weight: 600; text-transform: uppercase; }
+        .status-desc { font-size: 0.45rem; color: #64748b; margin-top: 0.2rem; }
+        .status-card.active .status-title { color: #10B981; }
+        .status-card.completed .status-title { color: #10B981; }
+        
+        .loading-percentage-big {
+            font-size: 2.5rem;
+            font-weight: 800;
+            font-family: 'Fira Code', monospace;
+            background: linear-gradient(135deg, #10B981, #00D4FF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0.5rem 0;
+        }
+        
+        .live-badge-pro {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 40px;
+            padding: 0.2rem 0.6rem;
+            font-size: 0.55rem;
+        }
+        
+        .live-dot {
+            width: 6px;
+            height: 6px;
+            background: #10B981;
+            border-radius: 50%;
+            animation: livePulse 1s infinite;
+        }
+        @keyframes livePulse { 0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.3;transform:scale(1.2);} }
+        
+        .pro-ticker {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(16, 185, 129, 0.2);
+            padding: 0.5rem 0;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        .ticker-scroll { display: inline-block; animation: tickerScroll 25s linear infinite; }
+        @keyframes tickerScroll { 0%{transform:translateX(0%);}100%{transform:translateX(-50%);} }
+        .ticker-item { display: inline-flex; align-items: center; gap: 0.5rem; margin: 0 1rem; font-family: 'Fira Code', monospace; font-size: 0.7rem; }
+        .ticker-symbol { font-weight: 700; color: #cbd5e1; }
+        .ticker-price { font-weight: 600; }
+        .ticker-change { font-size: 0.6rem; padding: 0.1rem 0.3rem; border-radius: 4px; }
+        .ticker-change.up { color: #10B981; background: rgba(16,185,129,0.1); }
+        .ticker-change.down { color: #F87171; background: rgba(248,113,113,0.1); }
+        
+        /* Main content styles (same as original, kept) */
         .premium-card { background: rgba(8, 14, 24, 0.85); backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.05); border-radius: 1.5rem; box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5); transition: all 0.3s ease; padding: 1rem; }
         .premium-card:hover { border-color: rgba(16,185,129,0.2); transform: translateY(-1px); }
         .header-card { background: linear-gradient(145deg, #0e1625, #080e18); border: 1px solid rgba(255,255,255,0.05); border-radius: 1.5rem; padding: 0.8rem 1rem; margin-bottom: 1rem; position: relative; overflow: hidden; }
@@ -155,7 +418,6 @@
         .promo-card-modern::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #10B981, #3B82F6, #8B5CF6); transform: scaleX(0); transition: transform 0.3s ease; }
         .promo-card-modern:hover { transform: translateY(-4px); border-color: rgba(16,185,129,0.3); box-shadow: 0 15px 30px -12px rgba(0,0,0,0.5); }
         .promo-card-modern:hover::before { transform: scaleX(1); }
-        .promo-card-modern.disabled-upgrade-card { opacity: 0.6; cursor: not-allowed; pointer-events: none; filter: grayscale(0.3); }
         .promo-icon-modern { width: 40px; height: 40px; margin: 0 auto 0.5rem; background: rgba(16,185,129,0.12); border-radius: 20px; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; }
         .promo-card-modern:hover .promo-icon-modern { background: rgba(16,185,129,0.25); transform: scale(1.05); }
         .promo-icon-modern i { font-size: 1.2rem; }
@@ -172,231 +434,188 @@
         .bonus-countdown { background: linear-gradient(135deg, rgba(16,185,129,0.2), rgba(16,185,129,0.05)); border-radius: 12px; padding: 0.4rem; text-align: center; margin-top: 0.5rem; border: 1px solid rgba(16,185,129,0.2); }
         .bonus-countdown .label { font-size: 0.55rem; color: #94a3b8; }
         .bonus-countdown .time { font-size: 0.9rem; font-weight: 700; color: #10B981; font-family: monospace; }
+        
+        .main-content {
+            opacity: 0;
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .main-content.visible {
+            opacity: 1;
+        }
+        
+        .instruction-image {
+            margin-top: 0.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        .instruction-image img {
+            max-width: 180px;
+            width: 100%;
+            border-radius: 12px;
+            border: 1px solid rgba(16,185,129,0.3);
+            background: #fff;
+            padding: 4px;
+        }
+        .instruction-image img:hover { transform: scale(1.02); border-color: #10B981; }
+        .instruction-caption { font-size: 0.5rem; color: #64748b; margin-top: 0.25rem; }
+        .lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 20000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        .lightbox.active { opacity: 1; visibility: visible; }
+        .lightbox img { max-width: 90%; max-height: 90%; border-radius: 16px; border: 2px solid #10B981; }
     </style>
 </head>
 <body>
-    <div class="ai-container">
-        <!-- HEADER -->
-        <div class="header-card">
-            <div class="flex items-center justify-between flex-wrap gap-2">
-                <div class="flex items-center gap-2">
-                    <div class="logo-3d"><div class="logo-inner"><div class="logo-face"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh9YQmaIHSrk0AT8IpfU-nDQ2NmGo700YpMQSj3Lvo-_7kX4G6xyX_pd5KyxCznX6r0Tl2vYvZkZf797uCgHXQflFsDW5-HThG2rIg3PCR1LXrhuU3GDndJkLyyfdhC5LfsQuw2TFnwTAePABrvRF-PVrOF3ZTqBqMNYZ-ErDcXvCW5sCzLGcIkWzO_6YwN/s1024/1000832791.png" style="width:100%; height:100%; object-fit:cover; border-radius:50%;"></div></div></div>
-                    <div><h1 class="text-sm font-bold text-white">AI CUANHUNTERS PRO</h1><p class="text-[0.55rem] text-slate-400">Smart Money Concepts • Bias • PSAR</p></div>
-                </div>
-                <div class="flex items-center gap-2">
-                    <div class="globe-wrapper"><div class="globe"><div class="globe-inner"></div><div class="continent continent-1"></div><div class="continent continent-2"></div></div><span class="globe-text">Global Market</span></div>
-                    <div class="flex items-center gap-1"><div class="pulse-dot"></div><span class="text-[0.6rem] text-emerald-400">LIVE</span></div>
-                </div>
+    <!-- PROFESSIONAL LOADING OVERLAY with Candlestick Chart -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <canvas id="matrixCanvas"></canvas>
+        <div class="loading-container">
+            <!-- Logo from URL -->
+            <img class="loading-logo-img" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh9YQmaIHSrk0AT8IpfU-nDQ2NmGo700YpMQSj3Lvo-_7kX4G6xyX_pd5KyxCznX6r0Tl2vYvZkZf797uCgHXQflFsDW5-HThG2rIg3PCR1LXrhuU3GDndJkLyyfdhC5LfsQuw2TFnwTAePABrvRF-PVrOF3ZTqBqMNYZ-ErDcXvCW5sCzLGcIkWzO_6YwN/s1024/1000832791.png" alt="Logo">
+            <div class="institutional-text">
+                <h1>AI CUANHUNTERS PRO</h1>
+                <p>INSTITUTIONAL GRADE TRADING TERMINAL</p>
             </div>
+            
+            <!-- Candlestick Chart Canvas -->
+            <div class="candlestick-container">
+                <canvas id="candlestickCanvas" class="candlestick-canvas" width="700" height="150" style="width:100%; height:150px;"></canvas>
+            </div>
+            
+            <!-- Sentiment Gauge -->
+            <div class="sentiment-gauge">
+                <div class="gauge-label">MARKET SENTIMENT INDEX</div>
+                <div class="gauge-bar-container"><div id="sentimentBar" class="gauge-bar"></div></div>
+                <div class="gauge-markers"><span>BEARISH</span><span>NEUTRAL</span><span>BULLISH</span></div>
+            </div>
+            
+            <!-- VWAP Progress -->
+            <div class="vwap-progress">
+                <div class="vwap-header"><span class="vwap-label">SYSTEM INITIALIZATION</span><span id="loadingPercentage" class="vwap-value">0%</span></div>
+                <div class="vwap-bar"><div id="vwapFill" class="vwap-fill"></div></div>
+            </div>
+            
+            <!-- Status Cards -->
+            <div class="status-grid">
+                <div id="status1" class="status-card"><div class="status-icon"><i class="fas fa-microchip"></i></div><div class="status-title">CORE ENGINE</div><div class="status-desc">Initializing AI</div></div>
+                <div id="status2" class="status-card"><div class="status-icon"><i class="fas fa-database"></i></div><div class="status-title">DATA FEEDS</div><div class="status-desc">Loading markets</div></div>
+                <div id="status3" class="status-card"><div class="status-icon"><i class="fas fa-shield-alt"></i></div><div class="status-title">SECURITY</div><div class="status-desc">Encrypting channel</div></div>
+                <div id="status4" class="status-card"><div class="status-icon"><i class="fas fa-chart-line"></i></div><div class="status-title">STRATEGY</div><div class="status-desc">Loading models</div></div>
+            </div>
+            
+            <div id="bigPercentage" class="loading-percentage-big">0%</div>
+            <div class="live-badge-pro"><span class="live-dot"></span><span>LIVE MARKET DATA</span><span class="live-dot"></span></div>
         </div>
+        <div class="pro-ticker"><div id="proTicker" class="ticker-scroll"></div></div>
+    </div>
 
-        <!-- USAGE CARD -->
-        <div class="usage-card">
-            <div class="flex justify-between items-center mb-3 flex-wrap gap-2">
-                <div class="flex items-center gap-2"><i class="fas fa-chart-line text-emerald-400 text-sm"></i><div><h3 class="text-sm font-semibold text-white" id="planTitle">LAYANAN PAKET</h3><p class="text-[0.55rem] text-slate-400" id="planDesc">Rp 125.000/minggu • 15 analisa</p></div></div>
-            </div>
-
-            <div class="info-banner-free">
-                <i class="fas fa-info-circle"></i>
-                <span><strong class="text-blue-400">📋 KEBIJAKAN TERBARU</strong> 
-                <strong class="text-emerald-400">Pengguna baru mendapatkan 15 analisa gratis<br/> pembatasan analisa dilakukan supaya tidak terjadi overload pada sistem yang dapat menganggu jalannya operasional</strong>
-            </div>
-
-            <div class="premium-offer-section">
-                <div class="offer-header">
-                    <div class="offer-badge"><i class="fas fa-bolt"></i><span>PILIH SALAH SATU PAKET</span></div>
-                    <div class="text-[0.5rem] text-slate-500"><i class="fas fa-clock"></i> Aktif 7 hari</div>
-                </div>
-                <div class="promo-cards-modern">
-                    <div class="promo-card-modern" id="newUserBonusCard">
-                        <div class="promo-icon-modern"><i class="fas fa-gem"></i></div>
-                        <div class="promo-title-modern">NEW USER</div>
-                        <div class="promo-price-modern">GRATIS</div>
-                        <div class="promo-desc-modern">15 analisa • 7 hari aktif</div>
-                        <div class="promo-feature"><i class="fas fa-check-circle"></i> <span>SEKALI SEUMUR HIDUP</span></div>
+    <!-- MAIN CONTENT (SAME AS ORIGINAL, FULL) -->
+    <div id="mainContent" class="main-content" style="opacity: 0;">
+        <div class="ai-container">
+            <!-- HEADER -->
+            <div class="header-card">
+                <div class="flex items-center justify-between flex-wrap gap-2">
+                    <div class="flex items-center gap-2">
+                        <div class="logo-3d"><div class="logo-inner"><div class="logo-face"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh9YQmaIHSrk0AT8IpfU-nDQ2NmGo700YpMQSj3Lvo-_7kX4G6xyX_pd5KyxCznX6r0Tl2vYvZkZf797uCgHXQflFsDW5-HThG2rIg3PCR1LXrhuU3GDndJkLyyfdhC5LfsQuw2TFnwTAePABrvRF-PVrOF3ZTqBqMNYZ-ErDcXvCW5sCzLGcIkWzO_6YwN/s1024/1000832791.png" style="width:100%; height:100%; object-fit:cover; border-radius:50%;"></div></div></div>
+                        <div><h1 class="text-sm font-bold text-white">AI CUANHUNTERS PRO</h1><p class="text-[0.55rem] text-slate-400">Smart Money Concepts • Bias • PSAR</p></div>
                     </div>
-                    <div class="promo-card-modern" id="proCard">
-                        <div class="promo-icon-modern"><i class="fas fa-crown"></i></div>
-                        <div class="promo-title-modern">PRO</div>
-                        <div class="promo-price-modern">Rp 125.000</div>
-                        <div class="promo-desc-modern">15 analisa / minggu</div>
-                        <div class="promo-feature"><i class="fas fa-chart-line"></i> <span>Akun pro</span></div>
-                    </div>
-                    <div class="promo-card-modern" id="freeDailyCard">
-                        <div class="promo-icon-modern"><i class="fas fa-chart-simple"></i></div>
-                        <div class="promo-title-modern">FREE DAILY</div>
-                        <div class="promo-price-modern">GRATIS</div>
-                        <div class="promo-desc-modern">2 analisa / hari</div>
-                        <div class="promo-feature"><i class="fas fa-infinity"></i> <span>Non pro</span></div>
+                    <div class="flex items-center gap-2">
+                        <div class="globe-wrapper"><div class="globe"><div class="globe-inner"></div><div class="continent continent-1"></div><div class="continent continent-2"></div></div><span class="globe-text">Global Market</span></div>
+                        <div class="flex items-center gap-1"><div class="pulse-dot"></div><span class="text-[0.6rem] text-emerald-400">LIVE</span></div>
                     </div>
                 </div>
-                <div class="info-panel">
-                    <div class="info-panel-item"><i class="fas fa-gem text-emerald-400"></i><span>New User: 15 analisa (7 hari) - SEKALI SEUMUR HIDUP</span></div>
-                    <div class="info-panel-item"><i class="fas fa-crown text-purple-400"></i><span>PRO: 15 analisa/minggu - Bisa diperpanjang</span></div>
-                    <div class="info-panel-item"><i class="fas fa-sun text-yellow-400"></i><span>Free Daily: 2 analisa/hari - Selamanya gratis</span></div>
+            </div>
+
+            <!-- USAGE CARD -->
+            <div class="usage-card">
+                <div class="flex justify-between items-center mb-3 flex-wrap gap-2">
+                    <div class="flex items-center gap-2"><i class="fas fa-chart-line text-emerald-400 text-sm"></i><div><h3 class="text-sm font-semibold text-white" id="planTitle">LAYANAN PAKET</h3><p class="text-[0.55rem] text-slate-400" id="planDesc">Rp 125.000/minggu • 15 analisa</p></div></div>
                 </div>
-            </div>
-
-            <div class="price-info">
-                <i class="fas fa-tag text-emerald-400 text-[0.6rem]"></i>
-                <span class="font-bold text-emerald-400 text-xs" id="priceAmount">Rp 125.000</span>
-                <span class="text-slate-400 text-[0.6rem]" id="pricePeriod"> / minggu</span>
-                <p class="text-[0.55rem] text-slate-500 mt-1" id="priceNote">SETIAP ANALISA AKAN MENGURANGI KUOTA<br/> ANDA TETAP MENDAPATKAN 2 ANALISA/HARI TANPA BERLANGGANAN PRO
-                </p>
-            </div>
-
-            <div class="flex items-center justify-between gap-3 flex-wrap">
-                <div class="circular-progress"><svg viewBox="0 0 120 120"><defs><linearGradient id="gradientProgress" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#10B981"/><stop offset="100%" stop-color="#00D4FF"/></linearGradient></defs><circle cx="60" cy="60" r="52" class="bg-circle"/><circle cx="60" cy="60" r="52" class="progress-circle" id="progressCircleMain" stroke-dasharray="326.9" stroke-dashoffset="326.9"/></svg><div class="progress-percentage" id="mainPercentage">0%</div></div>
-                <div class="flex gap-2 flex-1">
-                    <div class="stat-chip flex-1"><div class="label"><i class="fas fa-chart-simple"></i> TERPAKAI</div><div class="value" id="usedCount">0</div><div class="text-[0.5rem] text-slate-500" id="totalQuotaLabel">dari quota</div></div>
-                    <div class="stat-chip flex-1"><div class="label"><i class="fas fa-hourglass-half"></i> SISA</div><div class="value" id="remainingCount">0</div><div class="text-[0.5rem] text-slate-500" id="remainingLabel">analisa</div></div>
+                <div class="info-banner-free">
+                    <i class="fas fa-info-circle"></i>
+                    <span><strong class="text-blue-400">📋 KEBIJAKAN TERBARU</strong> 
+                    <strong class="text-emerald-400">Pengguna baru mendapatkan 15 analisa gratis<br/> pembatasan analisa dilakukan supaya tidak terjadi overload pada sistem yang dapat menganggu jalannya operasional</strong>
                 </div>
-            </div>
-
-            <div class="mt-2">
-                <div class="flex justify-between text-[0.55rem] text-slate-400 mb-1"><span>Progress Kuota</span><span id="progressPercent" class="text-emerald-400">0%</span></div>
-                <div class="bg-white/5 rounded-full h-1.5 overflow-hidden"><div id="usageBar" class="h-full bg-gradient-to-r from-emerald-500 to-cyan-400 rounded-full transition-all" style="width:0%"></div></div>
-            </div>
-
-            <div id="bonusCountdown" class="bonus-countdown hidden">
-                <div class="label"><i class="fas fa-hourglass-half"></i> Sisa Waktu Bonus New User</div>
-                <div class="time" id="bonusTimer">7 hari 0 jam 0 menit</div>
-                <div class="text-[0.5rem] text-slate-500 mt-1">Setelah masa bonus berakhir, Anda akan beralih ke FREE DAILY (2 analisa/hari)</div>
-            </div>
-
-            <div id="proCountdown" class="bonus-countdown hidden" style="background: linear-gradient(135deg, rgba(139,92,246,0.2), rgba(139,92,246,0.05)); border-color: rgba(139,92,246,0.3);">
-                <div class="label"><i class="fas fa-crown text-purple-400"></i> Sisa Waktu PRO Mingguan</div>
-                <div class="time" id="proTimer" style="color: #A78BFA;">7 hari 0 jam 0 menit</div>
-                <div class="text-[0.5rem] text-slate-500 mt-1">Setelah masa PRO berakhir, Anda akan beralih ke FREE DAILY (2 analisa/hari)</div>
-            </div>
-
-            <div class="flex justify-center mt-2">
-                <div id="activeQuotaType" class="quota-type-badge"><i class="fas fa-info-circle"></i> Menentukan kuota aktif...</div>
-            </div>
-
-            <div id="cooldownCard" class="cooldown-timer-card hidden">
-                <div><i class="fas fa-hourglass-half"></i> <span class="cooldown-text">⏱️ Jeda Analisa</span></div>
-                <div><span class="cooldown-time" id="cooldownTimerDisplay">10:00</span></div>
-                <div><span class="cooldown-text">Silakan tunggu sebelum analisa berikutnya</span></div>
-            </div>
-
-            <div class="countdown-timer mt-2">
-                <div class="flex items-center justify-center gap-1"><i class="fas fa-clock text-amber-400 text-[0.6rem]"></i><span class="text-[0.6rem] text-slate-400">Reset Harian Free Daily dalam</span></div>
-                <div class="countdown-numbers">
-                    <div class="countdown-block"><div class="countdown-number" id="countdownDays">0</div><div class="countdown-label">Hari</div></div>
-                    <div class="countdown-block"><div class="countdown-number" id="countdownHours">0</div><div class="countdown-label">Jam</div></div>
-                    <div class="countdown-block"><div class="countdown-number" id="countdownMinutes">0</div><div class="countdown-label">Menit</div></div>
-                    <div class="countdown-block"><div class="countdown-number" id="countdownSeconds">00</div><div class="countdown-label">Detik</div></div>
-                </div>
-            </div>
-
-            <div id="billReminder" class="bill-reminder hidden">
-                <div class="reminder-title"><i class="fas fa-bell fa-beat-fade"></i><span>⚠️ PERIODE PRO AKAN BERAKHIR ⚠️</span></div>
-                <div class="reminder-content"><p><strong>Paket PRO Mingguan Anda akan segera berakhir!</strong></p><p>Sisa waktu: <span id="remainingDays" style="color:#F59E0B; font-weight:700;">0</span> hari.</p></div>
-                <div class="reminder-highlight"><p><i class="fas fa-info-circle"></i> <strong>Informasi Penting:</strong></p><p>• Setelah periode berakhir, Anda akan beralih ke <strong class="text-yellow-400">FREE DAILY (2 analisa/hari)</strong></p><p>• Upgrade kembali ke PRO: Rp 125.000/minggu untuk 15 analisa</p></div>
-                <div style="margin-top: 0.5rem;"><button id="extendProBtn" class="subscription-btn" style="padding: 0.4rem 0.8rem; font-size: 0.6rem; width: 100%; justify-content: center;"><i class="fas fa-crown"></i> PERPANJANG PRO MINGGUAN</button></div>
-            </div>
-            
-            <div id="freeDailyStatus" class="free-tier-card">
-                <div class="flex items-center gap-2">
-                    <i class="fas fa-sun text-yellow-400"></i>
-                    <div>
-                        <div class="font-bold text-yellow-400 text-[0.6rem]">📊 FREE DAILY ACTIVE</div>
-                        <div class="text-[0.55rem] text-slate-400">Anda mendapatkan <strong class="text-yellow-400">2 analisa GRATIS per HARI</strong>. Reset setiap pukul 00:00.</div>
+                <div class="premium-offer-section">
+                    <div class="offer-header">
+                        <div class="offer-badge"><i class="fas fa-bolt"></i><span>PILIH SALAH SATU PAKET</span></div>
+                        <div class="text-[0.5rem] text-slate-500"><i class="fas fa-clock"></i> Aktif 7 hari</div>
+                    </div>
+                    <div class="promo-cards-modern">
+                        <div class="promo-card-modern" id="newUserBonusCard"><div class="promo-icon-modern"><i class="fas fa-gem"></i></div><div class="promo-title-modern">NEW USER</div><div class="promo-price-modern">GRATIS</div><div class="promo-desc-modern">15 analisa • 7 hari aktif</div><div class="promo-feature"><i class="fas fa-check-circle"></i> <span>SEKALI SEUMUR HIDUP</span></div></div>
+                        <div class="promo-card-modern" id="proCard"><div class="promo-icon-modern"><i class="fas fa-crown"></i></div><div class="promo-title-modern">PRO</div><div class="promo-price-modern">Rp 125.000</div><div class="promo-desc-modern">15 analisa / minggu</div><div class="promo-feature"><i class="fas fa-chart-line"></i> <span>Akun pro</span></div></div>
+                        <div class="promo-card-modern" id="freeDailyCard"><div class="promo-icon-modern"><i class="fas fa-chart-simple"></i></div><div class="promo-title-modern">FREE DAILY</div><div class="promo-price-modern">GRATIS</div><div class="promo-desc-modern">2 analisa / hari</div><div class="promo-feature"><i class="fas fa-infinity"></i> <span>Non pro</span></div></div>
+                    </div>
+                    <div class="info-panel">
+                        <div class="info-panel-item"><i class="fas fa-gem text-emerald-400"></i><span>New User: 15 analisa (7 hari) - SEKALI SEUMUR HIDUP</span></div>
+                        <div class="info-panel-item"><i class="fas fa-crown text-purple-400"></i><span>PRO: 15 analisa/minggu - Bisa diperpanjang</span></div>
+                        <div class="info-panel-item"><i class="fas fa-sun text-yellow-400"></i><span>Free Daily: 2 analisa/hari - Selamanya gratis</span></div>
                     </div>
                 </div>
-                <div class="flex items-center justify-between mt-2">
-                    <span class="text-[0.5rem] text-slate-500"><i class="fas fa-redo-alt"></i> Reset setiap pukul 00:00</span>
-                    <span class="daily-quota-badge"><i class="fas fa-chart-line"></i> <span id="dailyUsedToday">0</span>/2 hari ini</span>
+                <div class="price-info">
+                    <i class="fas fa-tag text-emerald-400 text-[0.6rem]"></i>
+                    <span class="font-bold text-emerald-400 text-xs" id="priceAmount">Rp 125.000</span>
+                    <span class="text-slate-400 text-[0.6rem]" id="pricePeriod"> / minggu</span>
+                    <p class="text-[0.55rem] text-slate-500 mt-1" id="priceNote">SETIAP ANALISA AKAN MENGURANGI KUOTA<br/> ANDA TETAP MENDAPATKAN 2 ANALISA/HARI TANPA BERLANGGANAN PRO</p>
                 </div>
+                <div class="flex items-center justify-between gap-3 flex-wrap">
+                    <div class="circular-progress"><svg viewBox="0 0 120 120"><defs><linearGradient id="gradientProgress" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#10B981"/><stop offset="100%" stop-color="#00D4FF"/></linearGradient></defs><circle cx="60" cy="60" r="52" class="bg-circle"/><circle cx="60" cy="60" r="52" class="progress-circle" id="progressCircleMain" stroke-dasharray="326.9" stroke-dashoffset="326.9"/></svg><div class="progress-percentage" id="mainPercentage">0%</div></div>
+                    <div class="flex gap-2 flex-1">
+                        <div class="stat-chip flex-1"><div class="label"><i class="fas fa-chart-simple"></i> TERPAKAI</div><div class="value" id="usedCount">0</div><div class="text-[0.5rem] text-slate-500" id="totalQuotaLabel">dari quota</div></div>
+                        <div class="stat-chip flex-1"><div class="label"><i class="fas fa-hourglass-half"></i> SISA</div><div class="value" id="remainingCount">0</div><div class="text-[0.5rem] text-slate-500" id="remainingLabel">analisa</div></div>
+                    </div>
+                </div>
+                <div class="mt-2">
+                    <div class="flex justify-between text-[0.55rem] text-slate-400 mb-1"><span>Progress Kuota</span><span id="progressPercent" class="text-emerald-400">0%</span></div>
+                    <div class="bg-white/5 rounded-full h-1.5 overflow-hidden"><div id="usageBar" class="h-full bg-gradient-to-r from-emerald-500 to-cyan-400 rounded-full transition-all" style="width:0%"></div></div>
+                </div>
+                <div id="bonusCountdown" class="bonus-countdown hidden"><div class="label"><i class="fas fa-hourglass-half"></i> Sisa Waktu Bonus New User</div><div class="time" id="bonusTimer">7 hari 0 jam 0 menit</div><div class="text-[0.5rem] text-slate-500 mt-1">Setelah masa bonus berakhir, Anda akan beralih ke FREE DAILY (2 analisa/hari)</div></div>
+                <div id="proCountdown" class="bonus-countdown hidden" style="background: linear-gradient(135deg, rgba(139,92,246,0.2), rgba(139,92,246,0.05)); border-color: rgba(139,92,246,0.3);"><div class="label"><i class="fas fa-crown text-purple-400"></i> Sisa Waktu PRO Mingguan</div><div class="time" id="proTimer" style="color: #A78BFA;">7 hari 0 jam 0 menit</div><div class="text-[0.5rem] text-slate-500 mt-1">Setelah masa PRO berakhir, Anda akan beralih ke FREE DAILY (2 analisa/hari)</div></div>
+                <div class="flex justify-center mt-2"><div id="activeQuotaType" class="quota-type-badge"><i class="fas fa-info-circle"></i> Menentukan kuota aktif...</div></div>
+                <div id="cooldownCard" class="cooldown-timer-card hidden"><div><i class="fas fa-hourglass-half"></i> <span class="cooldown-text">⏱️ Jeda Analisa</span></div><div><span class="cooldown-time" id="cooldownTimerDisplay">10:00</span></div><div><span class="cooldown-text">Silakan tunggu sebelum analisa berikutnya</span></div></div>
+                <div class="countdown-timer mt-2"><div class="flex items-center justify-center gap-1"><i class="fas fa-clock text-amber-400 text-[0.6rem]"></i><span class="text-[0.6rem] text-slate-400">Reset Harian Free Daily dalam</span></div><div class="countdown-numbers"><div class="countdown-block"><div class="countdown-number" id="countdownDays">0</div><div class="countdown-label">Hari</div></div><div class="countdown-block"><div class="countdown-number" id="countdownHours">0</div><div class="countdown-label">Jam</div></div><div class="countdown-block"><div class="countdown-number" id="countdownMinutes">0</div><div class="countdown-label">Menit</div></div><div class="countdown-block"><div class="countdown-number" id="countdownSeconds">00</div><div class="countdown-label">Detik</div></div></div></div>
+                <div id="billReminder" class="bill-reminder hidden"><div class="reminder-title"><i class="fas fa-bell fa-beat-fade"></i><span>⚠️ PERIODE PRO AKAN BERAKHIR ⚠️</span></div><div class="reminder-content"><p><strong>Paket PRO Mingguan Anda akan segera berakhir!</strong></p><p>Sisa waktu: <span id="remainingDays" style="color:#F59E0B; font-weight:700;">0</span> hari.</p></div><div class="reminder-highlight"><p><i class="fas fa-info-circle"></i> <strong>Informasi Penting:</strong></p><p>• Setelah periode berakhir, Anda akan beralih ke <strong class="text-yellow-400">FREE DAILY (2 analisa/hari)</strong></p><p>• Upgrade kembali ke PRO: Rp 125.000/minggu untuk 15 analisa</p></div><div style="margin-top: 0.5rem;"><button id="extendProBtn" class="subscription-btn" style="padding: 0.4rem 0.8rem; font-size: 0.6rem; width: 100%; justify-content: center;"><i class="fas fa-crown"></i> PERPANJANG PRO MINGGUAN</button></div></div>
+                <div id="freeDailyStatus" class="free-tier-card"><div class="flex items-center gap-2"><i class="fas fa-sun text-yellow-400"></i><div><div class="font-bold text-yellow-400 text-[0.6rem]">📊 FREE DAILY ACTIVE</div><div class="text-[0.55rem] text-slate-400">Anda mendapatkan <strong class="text-yellow-400">2 analisa GRATIS per HARI</strong>. Reset setiap pukul 00:00.</div></div></div><div class="flex items-center justify-between mt-2"><span class="text-[0.5rem] text-slate-500"><i class="fas fa-redo-alt"></i> Reset setiap pukul 00:00</span><span class="daily-quota-badge"><i class="fas fa-chart-line"></i> <span id="dailyUsedToday">0</span>/2 hari ini</span></div></div>
+                <div id="newUserBonusAlert" class="hidden bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-2 mt-2"><div class="flex items-center gap-2"><i class="fas fa-gift text-emerald-400"></i><div><div class="font-bold text-emerald-400 text-[0.6rem]">🎉 NEW USER BONUS ACTIVE!</div><div class="text-[0.55rem] text-slate-400">Anda memiliki <strong class="text-emerald-400" id="bonusRemaining">15</strong> analisa gratis. Masa aktif <strong class="text-emerald-400" id="bonusTimeLeft">7 hari</strong>. <strong class="text-yellow-400">FREE DAILY (2/hari) TIDAK AKTIF</strong> selama bonus berlangsung.</div></div></div></div>
+                <div id="subscriptionActive" class="hidden bg-purple-500/10 border border-purple-500/30 rounded-xl p-2 mt-2"><div class="flex items-center gap-2"><i class="fas fa-crown text-purple-400"></i><div><div class="font-bold text-purple-400 text-[0.6rem]" id="activePlanLabel">PRO MINGGUAN AKTIF</div><div class="text-[0.55rem] text-slate-400" id="activePlanDesc">15 analisa per minggu • <strong class="text-yellow-400">FREE DAILY (2/hari) TIDAK AKTIF</strong></div></div></div><div class="text-[0.5rem] text-slate-500 mt-1"><i class="fas fa-clock"></i> Masa aktif tersisa: <span id="proRemainingDays">7</span> hari</div></div>
+                <div id="quotaExhaustedWarning" class="subscription-warning hidden"><div class="flex items-center gap-2"><i class="fas fa-exclamation-triangle text-red-400"></i><div><div class="font-bold text-red-400 text-[0.6rem]">⚠️ KUOTA ANALISA HABIS! ⚠️</div><div class="text-[0.55rem] text-red-300">Anda telah menghabiskan semua analisa. Silakan <strong>berlangganan PRO Mingguan (Rp 125.000)</strong> untuk melanjutkan analisa.</div></div></div><button id="buyProBtn" class="subscription-btn text-[0.55rem] mt-2 w-full"><i class="fas fa-crown"></i> BELI PAKET PRO MINGGUAN</button></div>
             </div>
-            
-            <div id="newUserBonusAlert" class="hidden bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-2 mt-2">
-                <div class="flex items-center gap-2"><i class="fas fa-gift text-emerald-400"></i><div><div class="font-bold text-emerald-400 text-[0.6rem]">🎉 NEW USER BONUS ACTIVE!</div><div class="text-[0.55rem] text-slate-400">Anda memiliki <strong class="text-emerald-400" id="bonusRemaining">15</strong> analisa gratis. Masa aktif <strong class="text-emerald-400" id="bonusTimeLeft">7 hari</strong>. <strong class="text-yellow-400">FREE DAILY (2/hari) TIDAK AKTIF</strong> selama bonus berlangsung.</div></div></div>
-            </div>
-            
-            <div id="subscriptionActive" class="hidden bg-purple-500/10 border border-purple-500/30 rounded-xl p-2 mt-2">
-                <div class="flex items-center gap-2"><i class="fas fa-crown text-purple-400"></i><div><div class="font-bold text-purple-400 text-[0.6rem]" id="activePlanLabel">PRO MINGGUAN AKTIF</div><div class="text-[0.55rem] text-slate-400" id="activePlanDesc">15 analisa per minggu • <strong class="text-yellow-400">FREE DAILY (2/hari) TIDAK AKTIF</strong></div></div></div>
-                <div class="text-[0.5rem] text-slate-500 mt-1"><i class="fas fa-clock"></i> Masa aktif tersisa: <span id="proRemainingDays">7</span> hari</div>
-            </div>
-            
-            <div id="quotaExhaustedWarning" class="subscription-warning hidden">
-                <div class="flex items-center gap-2"><i class="fas fa-exclamation-triangle text-red-400"></i><div><div class="font-bold text-red-400 text-[0.6rem]">⚠️ KUOTA ANALISA HABIS! ⚠️</div><div class="text-[0.55rem] text-red-300">Anda telah menghabiskan semua analisa. Silakan <strong>berlangganan PRO Mingguan (Rp 125.000)</strong> untuk melanjutkan analisa.</div></div></div>
-                <button id="buyProBtn" class="subscription-btn text-[0.55rem] mt-2 w-full"><i class="fas fa-crown"></i> BELI PAKET PRO MINGGUAN</button>
-            </div>
-        </div>
 
-        <!-- DASHBOARD GRID -->
-        <div class="dashboard-grid">
-            <div class="left-column">
-                <div class="premium-card">
-                    <div class="flex items-center gap-2 mb-2"><i class="fas fa-sliders-h text-emerald-400 text-sm"></i><div><div class="font-semibold text-white text-xs">Strategy Configuration</div><div class="text-[0.55rem] text-slate-400">Customize your trading parameters</div></div></div>
+            <!-- DASHBOARD GRID -->
+            <div class="dashboard-grid">
+                <div class="left-column">
+                    <div class="premium-card"><div class="flex items-center gap-2 mb-2"><i class="fas fa-sliders-h text-emerald-400 text-sm"></i><div><div class="font-semibold text-white text-xs">Strategy Configuration</div><div class="text-[0.55rem] text-slate-400">Customize your trading parameters</div></div></div>
                     <div class="quick-grid"><div class="quick-item" data-strategy="scalp"><i class="fas fa-bolt"></i><span>SCALP</span></div><div class="quick-item active" data-strategy="intraday"><i class="fas fa-clock"></i><span>INTRADAY</span></div><div class="quick-item" data-strategy="swing"><i class="fas fa-calendar-alt"></i><span>SWING</span></div></div>
-                    
-                    <div class="mb-2"><div class="input-label"><i class="fas fa-coins"></i><span>TRADING PAIR (40+ Pasangan)</span></div><div class="cyber-select"><select id="pairSelect">
-                        <optgroup label="🇺🇸 MAJOR PAIRS"><option value="EUR/USD" selected>🇪🇺 EUR/USD - Euro / US Dollar</option><option value="GBP/USD">🇬🇧 GBP/USD - Pound Sterling / US Dollar</option><option value="USD/JPY">🇯🇵 USD/JPY - US Dollar / Japanese Yen</option><option value="USD/CHF">🇨🇭 USD/CHF - US Dollar / Swiss Franc</option><option value="AUD/USD">🇦🇺 AUD/USD - Australian Dollar / US Dollar</option><option value="USD/CAD">🇨🇦 USD/CAD - US Dollar / Canadian Dollar</option><option value="NZD/USD">🇳🇿 NZD/USD - New Zealand Dollar / US Dollar</option></optgroup>
-                        <optgroup label="🇪🇺 MINOR / CROSS PAIRS"><option value="EUR/GBP">🇪🇺🇬🇧 EUR/GBP - Euro / Pound Sterling</option><option value="EUR/AUD">🇪🇺🇦🇺 EUR/AUD - Euro / Australian Dollar</option><option value="EUR/CAD">🇪🇺🇨🇦 EUR/CAD - Euro / Canadian Dollar</option><option value="EUR/CHF">🇪🇺🇨🇭 EUR/CHF - Euro / Swiss Franc</option><option value="EUR/JPY">🇪🇺🇯🇵 EUR/JPY - Euro / Japanese Yen</option><option value="EUR/NZD">🇪🇺🇳🇿 EUR/NZD - Euro / New Zealand Dollar</option><option value="GBP/JPY">🇬🇧🇯🇵 GBP/JPY - Pound Sterling / Japanese Yen</option><option value="GBP/AUD">🇬🇧🇦🇺 GBP/AUD - Pound Sterling / Australian Dollar</option><option value="GBP/CAD">🇬🇧🇨🇦 GBP/CAD - Pound Sterling / Canadian Dollar</option><option value="GBP/CHF">🇬🇧🇨🇭 GBP/CHF - Pound Sterling / Swiss Franc</option><option value="GBP/NZD">🇬🇧🇳🇿 GBP/NZD - Pound Sterling / New Zealand Dollar</option><option value="AUD/JPY">🇦🇺🇯🇵 AUD/JPY - Australian Dollar / Japanese Yen</option><option value="AUD/CAD">🇦🇺🇨🇦 AUD/CAD - Australian Dollar / Canadian Dollar</option><option value="AUD/CHF">🇦🇺🇨🇭 AUD/CHF - Australian Dollar / Swiss Franc</option><option value="AUD/NZD">🇦🇺🇳🇿 AUD/NZD - Australian Dollar / New Zealand Dollar</option><option value="CAD/JPY">🇨🇦🇯🇵 CAD/JPY - Canadian Dollar / Japanese Yen</option><option value="CHF/JPY">🇨🇭🇯🇵 CHF/JPY - Swiss Franc / Japanese Yen</option><option value="NZD/JPY">🇳🇿🇯🇵 NZD/JPY - New Zealand Dollar / Japanese Yen</option></optgroup>
-                        <optgroup label="🌍 EXOTIC PAIRS"><option value="USD/TRY">🇹🇷 USD/TRY - US Dollar / Turkish Lira</option><option value="USD/ZAR">🇿🇦 USD/ZAR - US Dollar / South African Rand</option><option value="USD/MXN">🇲🇽 USD/MXN - US Dollar / Mexican Peso</option><option value="USD/SEK">🇸🇪 USD/SEK - US Dollar / Swedish Krona</option><option value="USD/NOK">🇳🇴 USD/NOK - US Dollar / Norwegian Krone</option><option value="USD/DKK">🇩🇰 USD/DKK - US Dollar / Danish Krone</option><option value="USD/HKD">🇭🇰 USD/HKD - US Dollar / Hong Kong Dollar</option><option value="USD/SGD">🇸🇬 USD/SGD - US Dollar / Singapore Dollar</option><option value="USD/THB">🇹🇭 USD/THB - US Dollar / Thai Baht</option><option value="USD/CNH">🇨🇳 USD/CNH - US Dollar / Chinese Yuan Offshore</option><option value="EUR/TRY">🇪🇺🇹🇷 EUR/TRY - Euro / Turkish Lira</option><option value="EUR/ZAR">🇪🇺🇿🇦 EUR/ZAR - Euro / South African Rand</option></optgroup>
-                        <optgroup label="🏆 COMMODITIES & CRYPTO"><option value="XAU/USD">🥇 XAU/USD - Gold / US Dollar</option><option value="BTC/USD">₿ BTC/USD - Bitcoin / US Dollar</option><option value="ETH/USD">⟠ ETH/USD - Ethereum / US Dollar</option></optgroup>
-                    </select><i class="fas fa-chevron-down"></i></div></div>
-                    
-                    <div class="mb-2"><div class="input-label"><i class="far fa-clock"></i><span>TIMEFRAME</span></div><div class="cyber-select"><select id="timeframeSelect">
-                        <option value="1min">⚡ M1 - 1 Menit</option><option value="5min">⚡ M5 - 5 Menit</option><option value="15min" selected>📊 M15 - 15 Menit</option><option value="30min">📊 M30 - 30 Menit</option><option value="1h">⏰ H1 - 1 Jam</option><option value="2h">⏰ H2 - 2 Jam</option><option value="4h">📈 H4 - 4 Jam</option><option value="1d">📅 D1 - Harian</option><option value="1w">📆 W1 - Mingguan</option><option value="1M">📆 MN - Bulanan</option>
-                    </select><i class="fas fa-chevron-down"></i></div></div>
-                    
-                    <div class="mb-2"><div class="input-label"><i class="fas fa-bullseye"></i><span>RISK : REWARD</span></div><div class="cyber-select"><select id="riskRewardSelect">
-                        <option value="0.5">1:0.5 - Ultra Konservatif</option>
-                        <option value="1">1:1 - Konservatif</option>
-                        <option value="2" selected>1:2 - Standar</option>
-                        <option value="3">1:3 - Agresif</option>
-                        <option value="4">1:4 - Sangat Agresif</option>
-                        <option value="5">1:5 - High Risk</option>
-                        <option value="6">2:2 - Standar Pro</option>
-                        <option value="7">2:3 - Agresif Pro</option>
-                        <option value="8">2:4 - Sangat Agresif Pro</option>
-                        <option value="9">2:5 - High Risk Pro</option>
-                    </select><i class="fas fa-chevron-down"></i></div></div>
-                    
+                    <div class="mb-2"><div class="input-label"><i class="fas fa-coins"></i><span>TRADING PAIR (40+ Pasangan)</span></div><div class="cyber-select"><select id="pairSelect"><optgroup label="🇺🇸 MAJOR PAIRS"><option value="EUR/USD" selected>🇪🇺 EUR/USD - Euro / US Dollar</option><option value="GBP/USD">🇬🇧 GBP/USD - Pound Sterling / US Dollar</option><option value="USD/JPY">🇯🇵 USD/JPY - US Dollar / Japanese Yen</option><option value="USD/CHF">🇨🇭 USD/CHF - US Dollar / Swiss Franc</option><option value="AUD/USD">🇦🇺 AUD/USD - Australian Dollar / US Dollar</option><option value="USD/CAD">🇨🇦 USD/CAD - US Dollar / Canadian Dollar</option><option value="NZD/USD">🇳🇿 NZD/USD - New Zealand Dollar / US Dollar</option></optgroup><optgroup label="🇪🇺 MINOR / CROSS PAIRS"><option value="EUR/GBP">🇪🇺🇬🇧 EUR/GBP - Euro / Pound Sterling</option><option value="EUR/AUD">🇪🇺🇦🇺 EUR/AUD - Euro / Australian Dollar</option><option value="EUR/CAD">🇪🇺🇨🇦 EUR/CAD - Euro / Canadian Dollar</option><option value="EUR/CHF">🇪🇺🇨🇭 EUR/CHF - Euro / Swiss Franc</option><option value="EUR/JPY">🇪🇺🇯🇵 EUR/JPY - Euro / Japanese Yen</option><option value="EUR/NZD">🇪🇺🇳🇿 EUR/NZD - Euro / New Zealand Dollar</option><option value="GBP/JPY">🇬🇧🇯🇵 GBP/JPY - Pound Sterling / Japanese Yen</option><option value="GBP/AUD">🇬🇧🇦🇺 GBP/AUD - Pound Sterling / Australian Dollar</option><option value="GBP/CAD">🇬🇧🇨🇦 GBP/CAD - Pound Sterling / Canadian Dollar</option><option value="GBP/CHF">🇬🇧🇨🇭 GBP/CHF - Pound Sterling / Swiss Franc</option><option value="GBP/NZD">🇬🇧🇳🇿 GBP/NZD - Pound Sterling / New Zealand Dollar</option><option value="AUD/JPY">🇦🇺🇯🇵 AUD/JPY - Australian Dollar / Japanese Yen</option><option value="AUD/CAD">🇦🇺🇨🇦 AUD/CAD - Australian Dollar / Canadian Dollar</option><option value="AUD/CHF">🇦🇺🇨🇭 AUD/CHF - Australian Dollar / Swiss Franc</option><option value="AUD/NZD">🇦🇺🇳🇿 AUD/NZD - Australian Dollar / New Zealand Dollar</option><option value="CAD/JPY">🇨🇦🇯🇵 CAD/JPY - Canadian Dollar / Japanese Yen</option><option value="CHF/JPY">🇨🇭🇯🇵 CHF/JPY - Swiss Franc / Japanese Yen</option><option value="NZD/JPY">🇳🇿🇯🇵 NZD/JPY - New Zealand Dollar / Japanese Yen</option></optgroup><optgroup label="🌍 EXOTIC PAIRS"><option value="USD/TRY">🇹🇷 USD/TRY - US Dollar / Turkish Lira</option><option value="USD/ZAR">🇿🇦 USD/ZAR - US Dollar / South African Rand</option><option value="USD/MXN">🇲🇽 USD/MXN - US Dollar / Mexican Peso</option><option value="USD/SEK">🇸🇪 USD/SEK - US Dollar / Swedish Krona</option><option value="USD/NOK">🇳🇴 USD/NOK - US Dollar / Norwegian Krone</option><option value="USD/DKK">🇩🇰 USD/DKK - US Dollar / Danish Krone</option><option value="USD/HKD">🇭🇰 USD/HKD - US Dollar / Hong Kong Dollar</option><option value="USD/SGD">🇸🇬 USD/SGD - US Dollar / Singapore Dollar</option><option value="USD/THB">🇹🇭 USD/THB - US Dollar / Thai Baht</option><option value="USD/CNH">🇨🇳 USD/CNH - US Dollar / Chinese Yuan Offshore</option><option value="EUR/TRY">🇪🇺🇹🇷 EUR/TRY - Euro / Turkish Lira</option><option value="EUR/ZAR">🇪🇺🇿🇦 EUR/ZAR - Euro / South African Rand</option></optgroup><optgroup label="🏆 COMMODITIES & CRYPTO"><option value="XAU/USD">🥇 XAU/USD - Gold / US Dollar</option><option value="BTC/USD">₿ BTC/USD - Bitcoin / US Dollar</option><option value="ETH/USD">⟠ ETH/USD - Ethereum / US Dollar</option></optgroup></select><i class="fas fa-chevron-down"></i></div></div>
+                    <div class="mb-2"><div class="input-label"><i class="far fa-clock"></i><span>TIMEFRAME</span></div><div class="cyber-select"><select id="timeframeSelect"><option value="1min">⚡ M1 - 1 Menit</option><option value="5min">⚡ M5 - 5 Menit</option><option value="15min" selected>📊 M15 - 15 Menit</option><option value="30min">📊 M30 - 30 Menit</option><option value="1h">⏰ H1 - 1 Jam</option><option value="2h">⏰ H2 - 2 Jam</option><option value="4h">📈 H4 - 4 Jam</option><option value="1d">📅 D1 - Harian</option><option value="1w">📆 W1 - Mingguan</option><option value="1M">📆 MN - Bulanan</option></select><i class="fas fa-chevron-down"></i></div></div>
+                    <div class="mb-2"><div class="input-label"><i class="fas fa-bullseye"></i><span>RISK : REWARD</span></div><div class="cyber-select"><select id="riskRewardSelect"><option value="0.5">1:0.5 - Ultra Konservatif</option><option value="1">1:1 - Konservatif</option><option value="2" selected>1:2 - Standar</option><option value="3">1:3 - Agresif</option><option value="4">1:4 - Sangat Agresif</option><option value="5">1:5 - High Risk</option><option value="6">2:2 - Standar Pro</option><option value="7">2:3 - Agresif Pro</option><option value="8">2:4 - Sangat Agresif Pro</option><option value="9">2:5 - High Risk Pro</option></select><i class="fas fa-chevron-down"></i></div></div>
                     <button id="analyzeBtn" class="premium-btn"><i class="fas fa-microchip"></i><span id="btnText">MULAI ANALISA</span><span id="loadingSpinner" class="loading-spinner hidden"></span></button>
                     <button id="resetAnalysisBtn" class="w-full mt-2 bg-red-500/10 border border-red-500/20 rounded-xl py-1.5 text-red-400 text-[0.6rem] font-semibold"><i class="fas fa-undo-alt"></i> RESET ANALISA</button>
+                    </div>
+                    <div class="premium-card"><div class="flex items-center justify-between mb-1"><div class="flex items-center gap-1"><i class="fas fa-chart-line text-emerald-400 text-sm"></i><span class="text-white text-xs font-semibold">Signal Movement</span></div><div class="live-badge" id="chartSignalText">WAIT</div></div><div class="chart-container"><canvas id="chartCanvas" width="300" height="100"></canvas></div><div class="flex justify-between items-center"><div class="flex items-center gap-1"><span class="signal-dot" id="signalDot"></span><span id="signalDirection" class="text-[0.65rem] text-slate-400">Menunggu Signal</span></div><i class="fas fa-arrows-left-right text-amber-400 text-sm" id="trendIcon"></i></div></div>
                 </div>
-                <div class="premium-card">
-                    <div class="flex items-center justify-between mb-1"><div class="flex items-center gap-1"><i class="fas fa-chart-line text-emerald-400 text-sm"></i><span class="text-white text-xs font-semibold">Signal Movement</span></div><div class="live-badge" id="chartSignalText">WAIT</div></div>
-                    <div class="chart-container"><canvas id="chartCanvas" width="300" height="100"></canvas></div>
-                    <div class="flex justify-between items-center"><div class="flex items-center gap-1"><span class="signal-dot" id="signalDot"></span><span id="signalDirection" class="text-[0.65rem] text-slate-400">Menunggu Signal</span></div><i class="fas fa-arrows-left-right text-amber-400 text-sm" id="trendIcon"></i></div>
+                <div class="right-column">
+                    <div class="orderbook-card"><div class="flex items-center justify-between mb-2"><div class="flex items-center gap-1"><i class="fas fa-book-open text-emerald-400 text-sm"></i><span class="text-white text-xs font-semibold">ORDER BOOK</span></div><div id="orderbookImbalance" class="text-[0.55rem] text-slate-400">NEUTRAL</div></div><div class="flex gap-2"><div class="flex-1"><div class="flex justify-between text-[0.5rem] text-slate-400 mb-1"><span><i class="fas fa-arrow-up"></i> BID</span><span>LOT</span></div><div id="bidRows"></div></div><div class="flex-1"><div class="flex justify-between text-[0.5rem] text-slate-400 mb-1"><span>LOT</span><span><i class="fas fa-arrow-down"></i> ASK</span></div><div id="askRows"></div></div></div><div id="depthChart" class="flex gap-1 h-6 mt-1 items-end"></div><div class="flex justify-between mt-1 pt-1 border-t border-emerald-500/20"><div><div class="text-[0.5rem] text-slate-400">TOTAL BID</div><div class="font-bold text-emerald-400 text-[0.7rem]" id="totalBid">0</div></div><div><div class="text-[0.5rem] text-slate-400">IMBALANCE</div><div class="font-bold text-[0.7rem] text-white" id="imbalancePct">50/50</div></div><div><div class="text-[0.5rem] text-slate-400">TOTAL ASK</div><div class="font-bold text-red-400 text-[0.7rem]" id="totalAsk">0</div></div></div></div>
+                    <div id="resultPanel" class="premium-card hidden"><div class="bg-emerald-500/5 rounded-xl p-2 mb-2"><div class="flex justify-between text-[0.55rem] text-slate-400"><span><i class="fas fa-circle text-emerald-400"></i> LIVE PRICE</span><span id="pairDisplay" class="text-slate-400">EUR/USD</span></div><div class="flex justify-between items-center"><span class="price-amount" id="currentPrice">-</span><span id="biasDisplay" class="text-[0.7rem] font-bold px-2 py-0.5 rounded-full bg-black/30 text-white">-</span></div></div><div class="strategy-grid"><div class="strategy-item"><div>BIAS</div><div id="biasValue">-</div></div><div class="strategy-item"><div>PSAR</div><div id="psarValue">-</div></div><div class="strategy-item"><div>SMC</div><div id="smcValue">-</div></div></div><div id="orderBlockContainer" class="bg-[#0f1728] rounded-xl p-2 mb-2 border-l-4 border-emerald-400"><div class="text-[0.6rem] text-slate-400">ORDER BLOCK</div><div class="text-sm font-bold text-white" id="orderBlockValue">-</div></div><div id="entryContainer" class="entry-card wait"><div class="entry-title" id="entrySignal">-</div><div class="text-[0.6rem] text-slate-400" id="entryDesc">-</div></div><div class="sltp-grid"><div class="sltp-item"><div><i class="fas fa-shield-alt"></i> STOP LOSS</div><div id="slValue" class="text-red-400">-</div><div class="text-[0.5rem] text-slate-500" id="slDistance">- pips</div></div><div class="sltp-item"><div><i class="fas fa-flag"></i> TAKE PROFIT</div><div id="tpValue" class="text-emerald-400">-</div><div class="text-[0.5rem] text-slate-500" id="tpDistance">- pips</div></div></div><button id="refreshAnalysisBtn" class="w-full bg-emerald-500/10 border border-emerald-500/20 rounded-xl py-1.5 text-emerald-400 text-[0.6rem] font-semibold"><i class="fas fa-rotate-right"></i> REFRESH ANALYSIS</button></div>
+                    <div id="emptyState" class="premium-card text-center py-4"><i class="fas fa-robot text-3xl text-emerald-500/20 mb-1"></i><p class="text-slate-400 text-[0.7rem]">No Analysis Yet</p><p class="text-[0.6rem] text-slate-500">Configure parameters and click "MULAI ANALISA"</p></div>
+                    <div id="errorMessage" class="hidden bg-red-500/10 border border-red-500/20 rounded-xl p-2 text-red-400 text-[0.7rem]"><i class="fas fa-circle-exclamation"></i> <span id="errorText"></span></div>
                 </div>
             </div>
-
-            <div class="right-column">
-                <div class="orderbook-card">
-                    <div class="flex items-center justify-between mb-2"><div class="flex items-center gap-1"><i class="fas fa-book-open text-emerald-400 text-sm"></i><span class="text-white text-xs font-semibold">ORDER BOOK</span></div><div id="orderbookImbalance" class="text-[0.55rem] text-slate-400">NEUTRAL</div></div>
-                    <div class="flex gap-2"><div class="flex-1"><div class="flex justify-between text-[0.5rem] text-slate-400 mb-1"><span><i class="fas fa-arrow-up"></i> BID</span><span>LOT</span></div><div id="bidRows"></div></div><div class="flex-1"><div class="flex justify-between text-[0.5rem] text-slate-400 mb-1"><span>LOT</span><span><i class="fas fa-arrow-down"></i> ASK</span></div><div id="askRows"></div></div></div>
-                    <div id="depthChart" class="flex gap-1 h-6 mt-1 items-end"></div>
-                    <div class="flex justify-between mt-1 pt-1 border-t border-emerald-500/20"><div><div class="text-[0.5rem] text-slate-400">TOTAL BID</div><div class="font-bold text-emerald-400 text-[0.7rem]" id="totalBid">0</div></div><div><div class="text-[0.5rem] text-slate-400">IMBALANCE</div><div class="font-bold text-[0.7rem] text-white" id="imbalancePct">50/50</div></div><div><div class="text-[0.5rem] text-slate-400">TOTAL ASK</div><div class="font-bold text-red-400 text-[0.7rem]" id="totalAsk">0</div></div></div>
-                </div>
-
-                <div id="resultPanel" class="premium-card hidden">
-                    <div class="bg-emerald-500/5 rounded-xl p-2 mb-2"><div class="flex justify-between text-[0.55rem] text-slate-400"><span><i class="fas fa-circle text-emerald-400"></i> LIVE PRICE</span><span id="pairDisplay" class="text-slate-400">EUR/USD</span></div><div class="flex justify-between items-center"><span class="price-amount" id="currentPrice">-</span><span id="biasDisplay" class="text-[0.7rem] font-bold px-2 py-0.5 rounded-full bg-black/30 text-white">-</span></div></div>
-                    <div class="strategy-grid"><div class="strategy-item"><div>BIAS</div><div id="biasValue">-</div></div><div class="strategy-item"><div>PSAR</div><div id="psarValue">-</div></div><div class="strategy-item"><div>SMC</div><div id="smcValue">-</div></div></div>
-                    <div id="orderBlockContainer" class="bg-[#0f1728] rounded-xl p-2 mb-2 border-l-4 border-emerald-400"><div class="text-[0.6rem] text-slate-400">ORDER BLOCK</div><div class="text-sm font-bold text-white" id="orderBlockValue">-</div></div>
-                    <div id="entryContainer" class="entry-card wait"><div class="entry-title" id="entrySignal">-</div><div class="text-[0.6rem] text-slate-400" id="entryDesc">-</div></div>
-                    <div class="sltp-grid"><div class="sltp-item"><div><i class="fas fa-shield-alt"></i> STOP LOSS</div><div id="slValue" class="text-red-400">-</div><div class="text-[0.5rem] text-slate-500" id="slDistance">- pips</div></div><div class="sltp-item"><div><i class="fas fa-flag"></i> TAKE PROFIT</div><div id="tpValue" class="text-emerald-400">-</div><div class="text-[0.5rem] text-slate-500" id="tpDistance">- pips</div></div></div>
-                    <button id="refreshAnalysisBtn" class="w-full bg-emerald-500/10 border border-emerald-500/20 rounded-xl py-1.5 text-emerald-400 text-[0.6rem] font-semibold"><i class="fas fa-rotate-right"></i> REFRESH ANALYSIS</button>
-                </div>
-
-                <div id="emptyState" class="premium-card text-center py-4"><i class="fas fa-robot text-3xl text-emerald-500/20 mb-1"></i><p class="text-slate-400 text-[0.7rem]">No Analysis Yet</p><p class="text-[0.6rem] text-slate-500">Configure parameters and click "MULAI ANALISA"</p></div>
-                <div id="errorMessage" class="hidden bg-red-500/10 border border-red-500/20 rounded-xl p-2 text-red-400 text-[0.7rem]"><i class="fas fa-circle-exclamation"></i> <span id="errorText"></span></div>
-            </div>
-        </div>
-
-        <!-- STATISTICS SECTION -->
-        <div class="stats-container">
-            <div class="stats-grid">
-                <div class="stat-card"><div class="stat-icon"><i class="fas fa-users text-slate-300 text-sm"></i></div><div class="stat-number" id="totalUsersCount">535</div><div class="stat-label">Total Pengguna Terdaftar</div><div class="stat-trend"><i class="fas fa-chart-line trend-up"></i> <span class="trend-up">+2 setiap 2 hari</span></div></div>
-                <div class="stat-card"><div class="stat-icon"><i class="fas fa-circle text-emerald-400 text-sm"></i></div><div class="stat-number" id="activeUsersCount">0</div><div class="stat-label"><span class="online-indicator"></span> Aktif / Online</div><div class="stat-trend"><i class="fas fa-exchange-alt trend-neutral"></i> <span class="trend-neutral">Fluktuasi real-time</span></div></div>
-                <div class="stat-card"><div class="stat-icon"><i class="fas fa-crown text-amber-400 text-sm"></i></div><div class="stat-number" id="proUsersCount">0</div><div class="stat-label">Langganan PRO</div><div class="stat-trend"><i class="fas fa-chart-line trend-up"></i> <span class="trend-up">Dinamis naik/turun</span></div></div>
-                <div class="stat-card"><div class="stat-icon"><i class="fas fa-sun text-yellow-400 text-sm"></i></div><div class="stat-number" id="freeUsersCount">0</div><div class="stat-label">Free Daily Users</div><div class="stat-trend"><i class="fas fa-gift"></i> <span>2 analisa/hari</span></div></div>
-            </div>
+            <div class="stats-container"><div class="stats-grid"><div class="stat-card"><div class="stat-icon"><i class="fas fa-users text-slate-300 text-sm"></i></div><div class="stat-number" id="totalUsersCount">535</div><div class="stat-label">Total Pengguna Terdaftar</div><div class="stat-trend"><i class="fas fa-chart-line trend-up"></i> <span class="trend-up">+2 setiap 2 hari</span></div></div><div class="stat-card"><div class="stat-icon"><i class="fas fa-circle text-emerald-400 text-sm"></i></div><div class="stat-number" id="activeUsersCount">0</div><div class="stat-label"><span class="online-indicator"></span> Aktif / Online</div><div class="stat-trend"><i class="fas fa-exchange-alt trend-neutral"></i> <span class="trend-neutral">Fluktuasi real-time</span></div></div><div class="stat-card"><div class="stat-icon"><i class="fas fa-crown text-amber-400 text-sm"></i></div><div class="stat-number" id="proUsersCount">0</div><div class="stat-label">Langganan PRO</div><div class="stat-trend"><i class="fas fa-chart-line trend-up"></i> <span class="trend-up">Dinamis naik/turun</span></div></div><div class="stat-card"><div class="stat-icon"><i class="fas fa-sun text-yellow-400 text-sm"></i></div><div class="stat-number" id="freeUsersCount">0</div><div class="stat-label">Free Daily Users</div><div class="stat-trend"><i class="fas fa-gift"></i> <span>2 analisa/hari</span></div></div></div></div>
         </div>
     </div>
 
@@ -420,7 +639,12 @@
             </div>
             <div class="mt-2">
                 <div class="flex items-center gap-2 mb-3"><div class="step-number">1</div><span class="text-[0.7rem] font-semibold text-white">Data Pembayaran QRIS</span></div>
-                <div class="form-group"><label class="form-label"><i class="fas fa-qrcode"></i> Nomor ID Transaksi / No Referensi QR / RRN</label><input type="text" id="transactionId" placeholder="Contoh: QR123456789 / RRN20241201001" class="confirmation-input"></div>
+                <div class="form-group">
+                    <label class="form-label"><i class="fas fa-qrcode"></i> Nomor ID Transaksi / No Referensi QR / RRN</label>
+                    <input type="text" id="transactionId" placeholder="Contoh: QR123456789 / RRN20241201001" class="confirmation-input">
+                    <div class="instruction-image" onclick="openLightbox(this)"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiCKtWd3W2whyxbomxiajeZpHzatXj-gWdTclEhmTJvKXTlrmdXlwFsIrncxfP6miDfZaGbqmjvETaw9JOQyUXjFazkNaggnaWbz_9uu9hOAgGGvOvw02QE34i1fPiMXuztCe6pU2mB6oEh6QtIFscRji68s93WJJAfhKpQUZ2MOD68yRYUmrDrSSQlGoqx/s1280/IMG-20260404-WA0007.jpg" alt="Petunjuk 1"><div class="instruction-caption">Klik gambar untuk memperbesar (Contoh 1)</div></div>
+                    <div class="instruction-image" onclick="openLightbox(this)"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgxk9soM4YJW0TqcDDhhSftpNPOfhRw4-csdOPvHQWlMKrF5P2Mx6Qbimx1CFR_O5AVZJEoYAGgT-1tB_LVl5JYPB95Ha3MlFPqQd9C8wVziuHcpf8met34IG4FshjHJ_o_kdGyZOU-lhsT2BhlsCnI1fMbZnlQJsp8qQ2t0-B_PRHYxxJ69Zi4EaSUOoMO/s934/IMG-20260404-WA0008.jpg" alt="Petunjuk 2"><div class="instruction-caption">Klik gambar untuk memperbesar (Contoh 2)</div></div>
+                </div>
                 <div class="form-group"><label class="form-label"><i class="fas fa-wallet"></i> Sumber Dana Pengirim</label><select id="paymentSource" class="confirmation-input"><option value="">Pilih Sumber Dana</option><option value="BCA">BCA</option><option value="MANDIRI">Mandiri</option><option value="BRI">BRI</option><option value="BNI">BNI</option><option value="QRIS">QRIS</option><option value="OVO">OVO</option><option value="DANA">DANA</option><option value="GOPAY">GoPay</option></select></div>
                 <div class="form-group"><label class="form-label"><i class="fas fa-user-circle"></i> Atas Nama (Pemilik Rekening/E-Wallet)</label><input type="text" id="accountHolder" placeholder="Nama lengkap pemilik rekening/ewallet" class="confirmation-input"></div>
                 <div class="form-group"><label class="form-label"><i class="fas fa-calendar-alt"></i> Tanggal Transaksi</label><input type="date" id="transactionDate" class="confirmation-input"></div>
@@ -437,1184 +661,304 @@
                 <p class="text-[0.5rem] text-slate-400 mb-2">Follow & Hubungi Kami di Media Sosial</p>
                 <div class="social-links"><a href="https://www.tiktok.com/@cuannhunters?_r=1&_t=ZS-95B3xj9eVyW" target="_blank" class="social-icon tiktok"><i class="fab fa-tiktok"></i></a><a href="https://www.instagram.com/cuaanhunters?igsh=bWtoN3kzeHBzYnIw" target="_blank" class="social-icon instagram"><i class="fab fa-instagram"></i></a></div>
                 <p class="text-[0.45rem] text-slate-500 mt-2">@cuanhunters • Update signal & info terbaru</p>
-
             </div>
         </div>
     </div>
 
+    <div id="lightbox" class="lightbox" onclick="closeLightbox()"><img id="lightboxImg" src=""></div>
+
     <script>
         (function(){
-            // ==================== LOCALSTORAGE (PENGGANTI INDEXEDDB) ====================
-            const STORAGE_KEY = 'CuanHuntersData';
+            // ========== CANDLESTICK CHART ANIMATION ==========
+            const candleCanvas = document.getElementById('candlestickCanvas');
+            if (candleCanvas) {
+                const ctx = candleCanvas.getContext('2d');
+                let candleData = [];
+                const numCandles = 40;
+                let candleInterval;
+                
+                // Generate initial random candles
+                function generateCandle(basePrice) {
+                    const open = basePrice;
+                    const close = basePrice + (Math.random() - 0.5) * (basePrice * 0.01);
+                    const high = Math.max(open, close) + Math.random() * (basePrice * 0.005);
+                    const low = Math.min(open, close) - Math.random() * (basePrice * 0.005);
+                    return { open, high, low, close };
+                }
+                
+                function initCandles() {
+                    let price = 100;
+                    for (let i = 0; i < numCandles; i++) {
+                        const candle = generateCandle(price);
+                        candleData.push(candle);
+                        price = candle.close;
+                    }
+                }
+                
+                function updateCandles() {
+                    // Remove first, add new
+                    candleData.shift();
+                    const lastPrice = candleData[candleData.length-1].close;
+                    const newCandle = generateCandle(lastPrice);
+                    candleData.push(newCandle);
+                    drawCandles();
+                }
+                
+                function drawCandles() {
+                    if (!ctx || !candleCanvas) return;
+                    const w = candleCanvas.width = candleCanvas.clientWidth;
+                    const h = candleCanvas.height = 150;
+                    ctx.clearRect(0, 0, w, h);
+                    const candleWidth = w / numCandles;
+                    const padding = 2;
+                    const barWidth = candleWidth - padding;
+                    
+                    // Find min/max for scaling
+                    let minPrice = Infinity, maxPrice = -Infinity;
+                    candleData.forEach(c => {
+                        minPrice = Math.min(minPrice, c.low);
+                        maxPrice = Math.max(maxPrice, c.high);
+                    });
+                    const range = maxPrice - minPrice;
+                    const yScale = (price) => h - 10 - ((price - minPrice) / range) * (h - 20);
+                    
+                    for (let i = 0; i < candleData.length; i++) {
+                        const c = candleData[i];
+                        const x = i * candleWidth;
+                        const openY = yScale(c.open);
+                        const closeY = yScale(c.close);
+                        const highY = yScale(c.high);
+                        const lowY = yScale(c.low);
+                        const isBullish = c.close > c.open;
+                        ctx.fillStyle = isBullish ? '#10B981' : '#F87171';
+                        ctx.fillRect(x + padding/2, Math.min(openY, closeY), barWidth, Math.abs(closeY - openY));
+                        ctx.fillStyle = isBullish ? '#10B981' : '#F87171';
+                        ctx.fillRect(x + barWidth/2 + padding/2, highY, 1, lowY - highY);
+                    }
+                }
+                
+                initCandles();
+                drawCandles();
+                candleInterval = setInterval(updateCandles, 800);
+                // Cleanup later
+                window.cleanupCandles = function() { if(candleInterval) clearInterval(candleInterval); };
+            }
             
-            // Data default (akan digunakan pertama kali)
-            const defaultData = {
-                newUserBonusClaimed: false,
-                newUserBonusData: null,
-                proSubscription: null,
-                proUsage: { count: 0, periodStart: new Date().toISOString() },
-                freeDailyUsage: { date: new Date().toDateString(), used: 0 },
-                cooldown: null,
-                lastTotalUpdate: null,
-                savedTotalUsers: 535
+            // ========== LIGHTBOX FUNCTIONS ==========
+            window.openLightbox = function(element) {
+                const img = element.querySelector('img');
+                if (img) {
+                    document.getElementById('lightboxImg').src = img.src;
+                    document.getElementById('lightbox').classList.add('active');
+                }
+            };
+            window.closeLightbox = function() {
+                document.getElementById('lightbox').classList.remove('active');
             };
             
-            // Memory cache (data sementara)
-            var memoryData = { ...defaultData };
+            // ========== PROFESSIONAL LOADING ANIMATION (SAME AS BEFORE) ==========
+            let loadingStartTime = Date.now();
+            let currentPercentage = 0;
+            let sentimentValue = 0;
+            let matrixCanvas, matrixCtx;
             
-            // Fungsi menyimpan data ke localStorage
-            function persistData() {
-                try {
-                    var dataToSave = {
-                        newUserBonusClaimed: memoryData.newUserBonusClaimed,
-                        newUserBonusData: memoryData.newUserBonusData,
-                        proSubscription: memoryData.proSubscription,
-                        proUsage: memoryData.proUsage,
-                        freeDailyUsage: memoryData.freeDailyUsage,
-                        cooldown: memoryData.cooldown,
-                        lastTotalUpdate: memoryData.lastTotalUpdate,
-                        savedTotalUsers: memoryData.savedTotalUsers
-                    };
-                    localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave));
-                    console.log('Data saved to localStorage');
-                } catch(e) {
-                    console.error('Failed to save to localStorage:', e);
-                }
-            }
-            
-            // Fungsi memuat data dari localStorage
-            function loadFromLocalStorage() {
-                try {
-                    var savedData = localStorage.getItem(STORAGE_KEY);
-                    if (savedData) {
-                        var parsedData = JSON.parse(savedData);
-                        memoryData = { ...defaultData, ...parsedData };
-                        console.log('Data loaded from localStorage:', memoryData);
-                    } else {
-                        memoryData = { ...defaultData };
-                        console.log('No data in localStorage, using default');
+            function initMatrix() {
+                matrixCanvas = document.getElementById('matrixCanvas');
+                if (!matrixCanvas) return;
+                matrixCanvas.width = window.innerWidth;
+                matrixCanvas.height = window.innerHeight;
+                matrixCtx = matrixCanvas.getContext('2d');
+                const columns = Math.floor(matrixCanvas.width / 20);
+                const drops = Array(columns).fill(1);
+                function drawMatrix() {
+                    if (!matrixCanvas || !matrixCtx) return;
+                    matrixCtx.fillStyle = 'rgba(6, 11, 20, 0.05)';
+                    matrixCtx.fillRect(0, 0, matrixCanvas.width, matrixCanvas.height);
+                    matrixCtx.fillStyle = '#10B981';
+                    matrixCtx.font = '12px monospace';
+                    for (let i = 0; i < drops.length; i++) {
+                        const text = String.fromCharCode(0x30A0 + Math.random() * 96);
+                        matrixCtx.fillText(text, i * 20, drops[i] * 20);
+                        if (drops[i] * 20 > matrixCanvas.height && Math.random() > 0.975) drops[i] = 0;
+                        drops[i]++;
                     }
-                } catch(e) {
-                    console.error('Failed to load from localStorage:', e);
-                    memoryData = { ...defaultData };
+                    requestAnimationFrame(drawMatrix);
                 }
-                
-                // Validasi dan perbaikan data jika diperlukan
-                if (!memoryData.freeDailyUsage || typeof memoryData.freeDailyUsage !== 'object') {
-                    memoryData.freeDailyUsage = { date: new Date().toDateString(), used: 0 };
-                }
-                if (!memoryData.proUsage || typeof memoryData.proUsage !== 'object') {
-                    memoryData.proUsage = { count: 0, periodStart: new Date().toISOString() };
-                }
-                if (typeof memoryData.savedTotalUsers !== 'number') {
-                    memoryData.savedTotalUsers = 535;
-                }
-                
-                persistData(); // Simpan kembali untuk memastikan format benar
-            }
-            
-            // Inisialisasi localStorage
-            function initStorage() {
-                loadFromLocalStorage();
-                updateUsageDisplay();
-                updateCooldownDisplay();
-            }
-            
-            // ==================== KONSTANTA ====================
-            const PRO_WEEKLY_QUOTA = 15;
-            const DAILY_FREE_QUOTA = 2;
-            const NEW_USER_BONUS_QUOTA = 15;
-            const NEW_USER_BONUS_DAYS = 7;
-            const PRO_PRICE = 125000;
-            const COOLDOWN_MINUTES = 10;
-            const COOLDOWN_SECONDS = COOLDOWN_MINUTES * 60;
-            const API_KEY = '2bedbb1110384c058a570b0d7d1c4e40';
-            const BASE_URL = 'https://api.twelvedata.com';
-            const timeframeMap = { '1min':'1min', '5min':'5min', '15min':'15min', '30min':'30min', '1h':'1h', '2h':'2h', '4h':'4h', '1d':'1day', '1w':'1week', '1M':'1month' };
-            
-            const BASE_RISK_PERCENT = 0.005;
-            
-            let currentUniqueCode = 0;
-            let cooldownInterval = null;
-            let chartCtx, chartPointsArray = [], currentSignalState = 'wait';
-            let chartAnimationId = null;
-            let curTotal=535, actUsers=187, proUs=124, freeUs=curTotal-proUs;
-            
-            // ==================== FUNGSI UTILITY ====================
-            function showToast(m) { 
-                var t = document.createElement('div'); 
-                t.className = 'toast-notification'; 
-                t.innerHTML = '<i class="fas fa-check-circle"></i><span>' + m + '</span>'; 
-                document.body.appendChild(t); 
-                setTimeout(function(){ t.remove(); }, 3000); 
-            }
-            
-            function formatDate(d) { 
-                return d.toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit'}); 
-            }
-            
-            function generateUniqueCode() { 
-                return Math.floor(Math.random() * 999) + 1; 
-            }
-            
-            function updatePaymentAmount() { 
-                currentUniqueCode = generateUniqueCode(); 
-                var total = PRO_PRICE + currentUniqueCode; 
-                document.getElementById('dynamicAmount').innerHTML = 'Rp ' + total.toLocaleString('id-ID'); 
-                document.getElementById('uniqueCodeDisplay').innerHTML = currentUniqueCode.toString().padStart(3, '0'); 
-                document.getElementById('nominalDisplay').innerHTML = 'Rp ' + total.toLocaleString('id-ID'); 
-                document.getElementById('paymentNominal').value = total; 
-                document.getElementById('uniqueCodeValue').value = currentUniqueCode; 
-            }
-            
-            // ==================== RR UTILITY ====================
-            function getRiskAndRewardParts(value) {
-                if (value >= 6 && value <= 9) {
-                    const rewardPartsMap = {6:2, 7:3, 8:4, 9:5};
-                    return { riskPart: 2, rewardPart: rewardPartsMap[value] };
-                } else {
-                    const rewardPartsMap = {0.5:0.5, 1:1, 2:2, 3:3, 4:4, 5:5};
-                    return { riskPart: 1, rewardPart: rewardPartsMap[value] };
-                }
-            }
-            
-            function getRRDisplayText(value) {
-                const displayMap = {
-                    0.5: "1:0.5", 1: "1:1", 2: "1:2", 3: "1:3", 4: "1:4", 5: "1:5",
-                    6: "2:2", 7: "2:3", 8: "2:4", 9: "2:5"
-                };
-                return displayMap[value] || "1:2";
-            }
-            
-            // ==================== COOLDOWN ====================
-            function getCooldownRemaining() {
-                if (!memoryData.cooldown) return 0;
-                var elapsed = Date.now() - memoryData.cooldown;
-                var remaining = Math.max(0, COOLDOWN_SECONDS * 1000 - elapsed);
-                return Math.floor(remaining / 1000);
-            }
-            
-            function setCooldown() {
-                memoryData.cooldown = Date.now();
-                persistData();
-                updateCooldownDisplay();
-            }
-            
-            function isOnCooldown() {
-                return getCooldownRemaining() > 0;
-            }
-            
-            function updateCooldownDisplay() {
-                var remainingSec = getCooldownRemaining();
-                var cooldownCard = document.getElementById('cooldownCard');
-                var analyzeBtn = document.getElementById('analyzeBtn');
-                
-                if(remainingSec > 0) {
-                    cooldownCard.classList.remove('hidden');
-                    var minutes = Math.floor(remainingSec / 60);
-                    var seconds = remainingSec % 60;
-                    document.getElementById('cooldownTimerDisplay').textContent = minutes.toString().padStart(2,'0') + ':' + seconds.toString().padStart(2,'0');
-                    analyzeBtn.classList.add('disabled');
-                    if(cooldownInterval === null) {
-                        cooldownInterval = setInterval(function(){
-                            var newRemaining = getCooldownRemaining();
-                            if(newRemaining <= 0) {
-                                clearInterval(cooldownInterval);
-                                cooldownInterval = null;
-                                cooldownCard.classList.add('hidden');
-                                if(canPerformAnalysis()) {
-                                    analyzeBtn.classList.remove('disabled');
-                                }
-                                showToast('✅ Jeda 10 menit selesai! Anda dapat melakukan analisa kembali.');
-                            } else {
-                                var mins = Math.floor(newRemaining / 60);
-                                var secs = newRemaining % 60;
-                                document.getElementById('cooldownTimerDisplay').textContent = mins.toString().padStart(2,'0') + ':' + secs.toString().padStart(2,'0');
-                            }
-                        }, 1000);
-                    }
-                } else {
-                    cooldownCard.classList.add('hidden');
-                    if(cooldownInterval) {
-                        clearInterval(cooldownInterval);
-                        cooldownInterval = null;
-                    }
-                    if(canPerformAnalysis()) {
-                        analyzeBtn.classList.remove('disabled');
-                    }
-                }
-            }
-            
-            // ==================== NEW USER BONUS (SEKALI SEUMUR HIDUP) ====================
-            function isNewUserBonusClaimed() {
-                return memoryData.newUserBonusClaimed;
-            }
-            
-            function setNewUserBonusClaimed() {
-                memoryData.newUserBonusClaimed = true;
-                persistData();
-            }
-            
-            function getNewUserBonusData() {
-                return memoryData.newUserBonusData;
-            }
-            
-            function saveNewUserBonusData(data) {
-                memoryData.newUserBonusData = data;
-                persistData();
-            }
-            
-            function isNewUserBonusActive() {
-                if (!isNewUserBonusClaimed()) return false;
-                var data = getNewUserBonusData();
-                if (!data) return false;
-                if (data.used >= data.total) return false;
-                var expiryDate = new Date(data.expiryDate);
-                var now = new Date();
-                if (now > expiryDate) return false;
-                return true;
-            }
-            
-            function getNewUserBonusRemaining() {
-                if (!isNewUserBonusClaimed()) return 0;
-                var data = getNewUserBonusData();
-                if (!data) return 0;
-                var expiryDate = new Date(data.expiryDate);
-                var now = new Date();
-                if (now > expiryDate) return 0;
-                return Math.max(0, data.total - data.used);
-            }
-            
-            function getNewUserBonusUsed() {
-                if (!isNewUserBonusClaimed()) return 0;
-                var data = getNewUserBonusData();
-                if (!data) return 0;
-                return data.used;
-            }
-            
-            function getNewUserBonusTimeLeft() {
-                if (!isNewUserBonusClaimed()) return { days: 0, hours: 0, minutes: 0, seconds: 0, isActive: false };
-                var data = getNewUserBonusData();
-                if (!data) return { days: 0, hours: 0, minutes: 0, seconds: 0, isActive: false };
-                var expiryDate = new Date(data.expiryDate);
-                var now = new Date();
-                if (now > expiryDate) return { days: 0, hours: 0, minutes: 0, seconds: 0, isActive: false };
-                var diff = expiryDate - now;
-                return {
-                    days: Math.floor(diff / 86400000),
-                    hours: Math.floor((diff % 86400000) / 3600000),
-                    minutes: Math.floor((diff % 3600000) / 60000),
-                    seconds: Math.floor((diff % 60000) / 1000),
-                    isActive: true
-                };
-            }
-            
-            function claimNewUserBonus() {
-                if (isNewUserBonusClaimed()) {
-                    showToast('⚠️ Bonus New User sudah pernah diklaim sebelumnya! Hanya bisa diklaim SEKALI seumur hidup.');
-                    return false;
-                }
-                
-                var expiryDate = new Date();
-                expiryDate.setDate(expiryDate.getDate() + NEW_USER_BONUS_DAYS);
-                var bonusData = {
-                    claimed: true,
-                    used: 0,
-                    total: NEW_USER_BONUS_QUOTA,
-                    expiryDate: expiryDate.toISOString(),
-                    startDate: new Date().toISOString()
-                };
-                saveNewUserBonusData(bonusData);
-                setNewUserBonusClaimed();
-                showToast('🎉 Selamat! Anda mendapatkan 15 analisa GRATIS dengan masa aktif 7 hari! Hanya bisa diklaim SEKALI seumur hidup.');
-                updateUsageDisplay();
-                return true;
-            }
-            
-            function useNewUserBonus() {
-                if (!isNewUserBonusActive()) return false;
-                var data = getNewUserBonusData();
-                if (data.used < data.total) {
-                    data.used++;
-                    saveNewUserBonusData(data);
-                    return true;
-                }
-                return false;
-            }
-            
-            // ==================== PRO WEEKLY ====================
-            function getProSubscription() {
-                return memoryData.proSubscription;
-            }
-            
-            function saveProSubscription(data) {
-                memoryData.proSubscription = data;
-                persistData();
-            }
-            
-            function getProUsage() {
-                return memoryData.proUsage;
-            }
-            
-            function saveProUsage(data) {
-                memoryData.proUsage = data;
-                persistData();
-            }
-            
-            function isProActive() {
-                var sub = getProSubscription();
-                if (!sub) return false;
-                var now = new Date();
-                var endDate = new Date(sub.endDate);
-                if (now > endDate) return false;
-                var usage = getProUsage();
-                return usage.count < PRO_WEEKLY_QUOTA;
-            }
-            
-            function getProRemainingQuota() {
-                if (!isProActive()) return 0;
-                var usage = getProUsage();
-                return Math.max(0, PRO_WEEKLY_QUOTA - usage.count);
-            }
-            
-            function getProUsedQuota() {
-                var usage = getProUsage();
-                return usage.count;
-            }
-            
-            function getProTimeLeft() {
-                var sub = getProSubscription();
-                if (!sub) return { days: 0, hours: 0, minutes: 0, seconds: 0, isActive: false };
-                var endDate = new Date(sub.endDate);
-                var now = new Date();
-                if (now > endDate) return { days: 0, hours: 0, minutes: 0, seconds: 0, isActive: false };
-                var diff = endDate - now;
-                return {
-                    days: Math.floor(diff / 86400000),
-                    hours: Math.floor((diff % 86400000) / 3600000),
-                    minutes: Math.floor((diff % 3600000) / 60000),
-                    seconds: Math.floor((diff % 60000) / 1000),
-                    isActive: true
-                };
-            }
-            
-            function useProQuota() {
-                if (!isProActive()) return false;
-                var usage = getProUsage();
-                if (usage.count < PRO_WEEKLY_QUOTA) {
-                    usage.count++;
-                    saveProUsage(usage);
-                    return true;
-                }
-                return false;
-            }
-            
-            function activateProWeekly() {
-                if (isNewUserBonusActive()) {
-                    showToast('⚠️ Anda masih dalam masa NEW USER BONUS. Upgrade ke PRO hanya bisa dilakukan setelah masa bonus berakhir!');
-                    return false;
-                }
-                
-                var now = new Date();
-                var endDate = new Date(now);
-                endDate.setDate(now.getDate() + 7);
-                endDate.setHours(23, 59, 59, 999);
-                
-                saveProSubscription({
-                    type: 'pro',
-                    startDate: now.toISOString(),
-                    endDate: endDate.toISOString()
-                });
-                saveProUsage({ count: 0, periodStart: now.toISOString() });
-                
-                showToast('✅ Upgrade PRO Mingguan berhasil! Anda mendapatkan 15 analisa untuk 7 hari ke depan.');
-                updateUsageDisplay();
-                resetAnalysis();
-                return true;
-            }
-            
-            // ==================== FREE DAILY ====================
-            function getFreeDailyUsage() {
-                var today = new Date().toDateString();
-                if (!memoryData.freeDailyUsage || memoryData.freeDailyUsage.date !== today) {
-                    memoryData.freeDailyUsage = { date: today, used: 0 };
-                    persistData();
-                }
-                return memoryData.freeDailyUsage;
-            }
-            
-            function saveFreeDailyUsage(data) {
-                memoryData.freeDailyUsage = data;
-                persistData();
-            }
-            
-            function getFreeDailyRemaining() {
-                var usage = getFreeDailyUsage();
-                return Math.max(0, DAILY_FREE_QUOTA - usage.used);
-            }
-            
-            function getFreeDailyUsed() {
-                var usage = getFreeDailyUsage();
-                return usage.used;
-            }
-            
-            function useFreeDailyQuota() {
-                var usage = getFreeDailyUsage();
-                if (usage.used < DAILY_FREE_QUOTA) {
-                    usage.used++;
-                    saveFreeDailyUsage(usage);
-                    return true;
-                }
-                return false;
-            }
-            
-            function resetFreeDailyIfNeeded() {
-                var usage = getFreeDailyUsage();
-                var today = new Date().toDateString();
-                if (usage.date !== today) {
-                    usage.date = today;
-                    usage.used = 0;
-                    saveFreeDailyUsage(usage);
-                    updateUsageDisplay();
-                    return true;
-                }
-                return false;
-            }
-            
-            // ==================== MAIN QUOTA ====================
-            function getActiveQuotaType() {
-                if (isNewUserBonusActive()) return 'NEW_USER_BONUS';
-                if (isProActive()) return 'PRO_WEEKLY';
-                return 'FREE_DAILY';
-            }
-            
-            function getCurrentQuotaRemaining() {
-                if (isNewUserBonusActive()) return getNewUserBonusRemaining();
-                if (isProActive()) return getProRemainingQuota();
-                return getFreeDailyRemaining();
-            }
-            
-            function getCurrentQuotaTotal() {
-                if (isNewUserBonusActive()) return NEW_USER_BONUS_QUOTA;
-                if (isProActive()) return PRO_WEEKLY_QUOTA;
-                return DAILY_FREE_QUOTA;
-            }
-            
-            function getCurrentQuotaUsed() {
-                if (isNewUserBonusActive()) return getNewUserBonusUsed();
-                if (isProActive()) return getProUsedQuota();
-                return getFreeDailyUsed();
-            }
-            
-            function canPerformAnalysis() {
-                if (isOnCooldown()) return false;
-                return getCurrentQuotaRemaining() > 0;
-            }
-            
-            function incrementUsage() {
-                var success = false;
-                if (isNewUserBonusActive()) {
-                    success = useNewUserBonus();
-                } else if (isProActive()) {
-                    success = useProQuota();
-                } else {
-                    success = useFreeDailyQuota();
-                }
-                persistData();
-                return success;
-            }
-            
-            // ==================== UI UPDATE ====================
-            function updateCountdownDisplay() {
-                var now = new Date();
-                var tomorrow = new Date(now);
-                tomorrow.setDate(now.getDate() + 1);
-                tomorrow.setHours(0, 0, 0, 0);
-                var diff = tomorrow - now;
-                var hours = Math.floor(diff / 3600000);
-                var minutes = Math.floor((diff % 3600000) / 60000);
-                var seconds = Math.floor((diff % 60000) / 1000);
-                
-                document.getElementById('countdownDays').textContent = '0';
-                document.getElementById('countdownHours').textContent = hours;
-                document.getElementById('countdownMinutes').textContent = minutes;
-                document.getElementById('countdownSeconds').textContent = seconds.toString().padStart(2, '0');
-                
-                var bonusTime = getNewUserBonusTimeLeft();
-                var bonusCountdown = document.getElementById('bonusCountdown');
-                if (bonusTime.isActive) {
-                    bonusCountdown.classList.remove('hidden');
-                    var timeString = '';
-                    if (bonusTime.days > 0) timeString += bonusTime.days + ' hari ';
-                    if (bonusTime.hours > 0 || bonusTime.days > 0) timeString += bonusTime.hours + ' jam ';
-                    timeString += bonusTime.minutes + ' menit ' + bonusTime.seconds + ' detik';
-                    document.getElementById('bonusTimer').textContent = timeString;
-                } else {
-                    bonusCountdown.classList.add('hidden');
-                }
-                
-                var proTime = getProTimeLeft();
-                var proCountdown = document.getElementById('proCountdown');
-                var billReminder = document.getElementById('billReminder');
-                if (proTime.isActive) {
-                    proCountdown.classList.remove('hidden');
-                    var proTimeString = '';
-                    if (proTime.days > 0) proTimeString += proTime.days + ' hari ';
-                    if (proTime.hours > 0 || proTime.days > 0) proTimeString += proTime.hours + ' jam ';
-                    proTimeString += proTime.minutes + ' menit ' + proTime.seconds + ' detik';
-                    document.getElementById('proTimer').textContent = proTimeString;
-                    document.getElementById('proRemainingDays').textContent = proTime.days;
-                    
-                    if (proTime.days <= 2 && proTime.days > 0) {
-                        billReminder.classList.remove('hidden');
-                        document.getElementById('remainingDays').textContent = proTime.days;
-                    } else {
-                        billReminder.classList.add('hidden');
-                    }
-                } else {
-                    proCountdown.classList.add('hidden');
-                    billReminder.classList.add('hidden');
-                }
-            }
-            
-            function updateUsageDisplay() {
-                resetFreeDailyIfNeeded();
-                
-                var remaining = getCurrentQuotaRemaining();
-                var used = getCurrentQuotaUsed();
-                var total = getCurrentQuotaTotal();
-                var percent = total > 0 ? (used / total) * 100 : 0;
-                var activeType = getActiveQuotaType();
-                
-                document.getElementById('usedCount').textContent = used;
-                document.getElementById('remainingCount').textContent = remaining;
-                document.getElementById('totalQuotaLabel').innerHTML = 'dari ' + total;
-                document.getElementById('usageBar').style.width = percent + '%';
-                document.getElementById('progressPercent').textContent = Math.round(percent) + '%';
-                document.getElementById('mainPercentage').textContent = Math.round(percent) + '%';
-                
-                var quotaBadge = document.getElementById('activeQuotaType');
-                if(activeType === 'NEW_USER_BONUS') {
-                    quotaBadge.innerHTML = '<i class="fas fa-gem text-emerald-400"></i> AKTIF: NEW USER BONUS (15 analisa, 7 hari) • FREE DAILY TIDAK AKTIF';
-                    quotaBadge.style.background = 'rgba(16,185,129,0.2)';
-                    quotaBadge.style.color = '#10B981';
-                } else if(activeType === 'PRO_WEEKLY') {
-                    quotaBadge.innerHTML = '<i class="fas fa-crown text-purple-400"></i> AKTIF: PRO MINGGUAN (15 analisa/minggu) • FREE DAILY TIDAK AKTIF';
-                    quotaBadge.style.background = 'rgba(139,92,246,0.2)';
-                    quotaBadge.style.color = '#A78BFA';
-                } else {
-                    quotaBadge.innerHTML = '<i class="fas fa-sun text-yellow-400"></i> AKTIF: FREE DAILY (2 analisa/hari)';
-                    quotaBadge.style.background = 'rgba(245,158,11,0.2)';
-                    quotaBadge.style.color = '#FBBF24';
-                }
-                
-                var r = 52, c = 2 * Math.PI * r, o = c - (percent / 100) * c;
-                var pc = document.getElementById('progressCircleMain');
-                if(pc) { pc.style.strokeDasharray = c + ' ' + c; pc.style.strokeDashoffset = o; }
-                
-                document.getElementById('dailyUsedToday').textContent = getFreeDailyUsed();
-                
-                var analyzeBtn = document.getElementById('analyzeBtn');
-                var quotaExhaustedWarning = document.getElementById('quotaExhaustedWarning');
-                
-                if(!canPerformAnalysis() && !isOnCooldown()) {
-                    analyzeBtn.classList.add('disabled');
-                    quotaExhaustedWarning.classList.remove('hidden');
-                } else if(isOnCooldown()) {
-                    analyzeBtn.classList.add('disabled');
-                    quotaExhaustedWarning.classList.add('hidden');
-                } else {
-                    analyzeBtn.classList.remove('disabled');
-                    quotaExhaustedWarning.classList.add('hidden');
-                }
-                
-                var newUserAlert = document.getElementById('newUserBonusAlert');
-                var freeDailyStatus = document.getElementById('freeDailyStatus');
-                var subscriptionActive = document.getElementById('subscriptionActive');
-                
-                if(activeType === 'NEW_USER_BONUS') {
-                    newUserAlert.classList.remove('hidden');
-                    freeDailyStatus.classList.add('hidden');
-                    subscriptionActive.classList.add('hidden');
-                    document.getElementById('bonusRemaining').textContent = remaining;
-                    var timeLeft = getNewUserBonusTimeLeft();
-                    if(timeLeft.isActive) {
-                        document.getElementById('bonusTimeLeft').textContent = timeLeft.days + ' hari ' + timeLeft.hours + ' jam';
-                    }
-                } else if(activeType === 'PRO_WEEKLY') {
-                    newUserAlert.classList.add('hidden');
-                    freeDailyStatus.classList.add('hidden');
-                    subscriptionActive.classList.remove('hidden');
-                    var tl = getProTimeLeft();
-                    document.getElementById('proRemainingDays').textContent = tl.days;
-                } else {
-                    newUserAlert.classList.add('hidden');
-                    freeDailyStatus.classList.remove('hidden');
-                    subscriptionActive.classList.add('hidden');
-                }
-            }
-            
-            // ==================== ORDER BOOK ====================
-            function generateOrderBook(cp, d) {
-                d = d || 'neutral';
-                var b=[], a=[];
-                var bp=cp||1.09234;
-                for(var i=0;i<5;i++){
-                    var v = d==='bid' ? 2+Math.random()*3 : (d==='ask' ? 0.5+Math.random()*1 : 1+Math.random()*2);
-                    b.push({price:bp-(i*0.001), volume:v.toFixed(2)});
-                    v = d==='ask' ? 2+Math.random()*3 : (d==='bid' ? 0.5+Math.random()*1 : 1+Math.random()*2);
-                    a.push({price:bp+(i*0.001), volume:v.toFixed(2)});
-                }
-                b.sort(function(x,y){ return y.price - x.price; });
-                a.sort(function(x,y){ return x.price - y.price; });
-                return {bids:b, asks:a};
-            }
-            
-            function renderOrderBook(d, cp) {
-                d = d || 'neutral';
-                cp = cp || 1.09234;
-                var ob = generateOrderBook(cp, d);
-                var tb = 0, ta = 0;
-                for(var i=0; i<ob.bids.length; i++) tb += parseFloat(ob.bids[i].volume);
-                for(var i=0; i<ob.asks.length; i++) ta += parseFloat(ob.asks[i].volume);
-                var mv = Math.max(tb, ta);
-                var bp = ((tb/(tb+ta))*100).toFixed(1);
-                
-                document.getElementById('orderbookImbalance').innerHTML = d==='bid' ? '<span class="text-emerald-400">BID ' + bp + '%</span>' : (d==='ask' ? '<span class="text-red-400">ASK ' + (100-bp) + '%</span>' : 'NEUTRAL');
-                document.getElementById('imbalancePct').textContent = bp + '/' + (100-bp).toFixed(1);
-                document.getElementById('totalBid').textContent = tb.toFixed(1);
-                document.getElementById('totalAsk').textContent = ta.toFixed(1);
-                
-                var bc = document.getElementById('bidRows');
-                bc.innerHTML = '';
-                for(var i=0; i<ob.bids.length; i++) {
-                    var vp = (parseFloat(ob.bids[i].volume)/mv)*100;
-                    bc.innerHTML += '<div class="orderbook-row"><span class="orderbook-lot text-emerald-400">' + ob.bids[i].volume + '</span><div class="volume-bar-bid" style="width: ' + vp + '%;"></div></div>';
-                }
-                
-                var ac = document.getElementById('askRows');
-                ac.innerHTML = '';
-                var asksRev = ob.asks.slice().reverse();
-                for(var i=0; i<asksRev.length; i++) {
-                    var vp = (parseFloat(asksRev[i].volume)/mv)*100;
-                    ac.innerHTML += '<div class="orderbook-row"><div class="volume-bar-ask" style="width: ' + vp + '%;"></div><span class="orderbook-lot text-red-400">' + asksRev[i].volume + '</span></div>';
-                }
-                
-                var dc = document.getElementById('depthChart');
-                dc.innerHTML = '';
-                var bidsRev = ob.bids.slice().reverse();
-                for(var i=0; i<bidsRev.length; i++) {
-                    dc.innerHTML += '<div style="flex:1;background:linear-gradient(to top,#10B981,rgba(16,185,129,0.2));height:' + (parseFloat(bidsRev[i].volume)/mv)*24 + 'px;border-radius:2px;"></div>';
-                }
-                for(var i=0; i<ob.asks.length; i++) {
-                    dc.innerHTML += '<div style="flex:1;background:linear-gradient(to top,#F87171,rgba(248,113,113,0.2));height:' + (parseFloat(ob.asks[i].volume)/mv)*24 + 'px;border-radius:2px;"></div>';
-                }
-            }
-            
-            // ==================== CHART ====================
-            function initChart() {
-                var c = document.getElementById('chartCanvas');
-                if(!c) return;
-                chartCtx = c.getContext('2d');
-                var p = c.parentElement;
-                c.width = p.clientWidth;
-                c.height = p.clientHeight;
-                generateChartPoints();
-                animateChart();
-                window.addEventListener('resize', function(){
-                    c.width = p.clientWidth;
-                    c.height = p.clientHeight;
-                    generateChartPoints();
-                });
-            }
-            
-            function generateChartPoints() {
-                chartPointsArray = [];
-                var w = document.getElementById('chartCanvas').width;
-                var h = document.getElementById('chartCanvas').height;
-                var steps = 25;
-                var step = w/(steps-1);
-                for(var i=0;i<steps;i++){
-                    var y = currentSignalState==='buy' ? h-30-(i*(h-50)/steps) : (currentSignalState==='sell' ? 30+(i*(h-50)/steps) : h/2+Math.sin(i*0.6)*12);
-                    chartPointsArray.push({x:i*step, y:Math.max(15,Math.min(h-15,y))});
-                }
-            }
-            
-            function updateChartSignal(s) {
-                currentSignalState = s;
-                var d = document.getElementById('signalDot');
-                var dir = document.getElementById('signalDirection');
-                var ct = document.getElementById('chartSignalText');
-                var ti = document.getElementById('trendIcon');
-                if(s==='buy'){
-                    if(d) d.className = 'signal-dot buy';
-                    if(dir){ dir.textContent = 'Bullish ↑'; dir.style.color = '#34d399'; }
-                    if(ct){ ct.textContent = 'BUY'; ct.style.color = '#34d399'; }
-                    if(ti) ti.className = 'fas fa-arrow-trend-up text-emerald-400';
-                }else if(s==='sell'){
-                    if(d) d.className = 'signal-dot sell';
-                    if(dir){ dir.textContent = 'Bearish ↓'; dir.style.color = '#f87171'; }
-                    if(ct){ ct.textContent = 'SELL'; ct.style.color = '#f87171'; }
-                    if(ti) ti.className = 'fas fa-arrow-trend-down text-red-400';
-                }else{
-                    if(d) d.className = 'signal-dot wait';
-                    if(dir){ dir.textContent = 'Sideways'; dir.style.color = '#fbbf24'; }
-                    if(ct){ ct.textContent = 'WAIT'; ct.style.color = '#fbbf24'; }
-                    if(ti) ti.className = 'fas fa-arrows-left-right text-amber-400';
-                }
-                generateChartPoints();
-            }
-            
-            function animateChart() {
-                if(!chartCtx || !document.getElementById('chartCanvas')) return;
-                var c = document.getElementById('chartCanvas');
-                var h = c.height;
-                var w = c.width;
-                for(var i=0;i<chartPointsArray.length;i++){
-                    if(currentSignalState==='buy') chartPointsArray[i].y -= 0.3;
-                    else if(currentSignalState==='sell') chartPointsArray[i].y += 0.3;
-                    else chartPointsArray[i].y += (Math.random()-0.5)*0.5;
-                    chartPointsArray[i].y = Math.max(12, Math.min(h-12, chartPointsArray[i].y));
-                }
-                if(currentSignalState !== 'wait'){
-                    for(var i=0;i<chartPointsArray.length;i++) chartPointsArray[i].x -= 1;
-                    if(chartPointsArray[0].x < -15){
-                        chartPointsArray.shift();
-                        var lx = chartPointsArray[chartPointsArray.length-1].x;
-                        var st = w/24;
-                        var ny = currentSignalState==='buy' ? chartPointsArray[chartPointsArray.length-1].y - 0.6 : chartPointsArray[chartPointsArray.length-1].y + 0.6;
-                        chartPointsArray.push({x:lx+st, y:Math.max(12,Math.min(h-12,ny))});
-                    }
-                }
-                chartCtx.clearRect(0,0,w,h);
-                chartCtx.beginPath();
-                chartCtx.moveTo(chartPointsArray[0].x, h);
-                chartCtx.lineTo(chartPointsArray[0].x, chartPointsArray[0].y);
-                for(var i=1;i<chartPointsArray.length;i++) chartCtx.lineTo(chartPointsArray[i].x, chartPointsArray[i].y);
-                chartCtx.lineTo(chartPointsArray[chartPointsArray.length-1].x, h);
-                chartCtx.closePath();
-                var g = chartCtx.createLinearGradient(0,0,0,h);
-                if(currentSignalState==='buy') { g.addColorStop(0,'rgba(16,185,129,0.2)'); g.addColorStop(1,'rgba(16,185,129,0)'); }
-                else if(currentSignalState==='sell') { g.addColorStop(0,'rgba(248,113,113,0.2)'); g.addColorStop(1,'rgba(248,113,113,0)'); }
-                else { g.addColorStop(0,'rgba(251,191,36,0.2)'); g.addColorStop(1,'rgba(251,191,36,0)'); }
-                chartCtx.fillStyle = g;
-                chartCtx.fill();
-                chartCtx.beginPath();
-                for(var i=0;i<chartPointsArray.length;i++) chartCtx.lineTo(chartPointsArray[i].x, chartPointsArray[i].y);
-                chartCtx.strokeStyle = currentSignalState==='buy' ? '#10B981' : (currentSignalState==='sell' ? '#F87171' : '#FBBF24');
-                chartCtx.lineWidth = 1.5;
-                chartCtx.stroke();
-                chartAnimationId = requestAnimationFrame(animateChart);
-            }
-            
-            function resetChartToWait() { updateChartSignal('wait'); }
-            
-            // ==================== TRADING ANALYSIS ====================
-            function formatPrice(p, s) {
-                if(!p) return '-';
-                if(s.includes('BTC')||s.includes('ETH')) return p.toFixed(2);
-                if(s.includes('JPY')) return p.toFixed(3);
-                if(s.includes('XAU')) return p.toFixed(2);
-                return p.toFixed(5);
-            }
-            
-            function calculatePips(p1, p2, s) {
-                var d = Math.abs(p1-p2);
-                if(s.includes('BTC')||s.includes('ETH')) return (d*100).toFixed(0);
-                if(s.includes('JPY')) return (d*100).toFixed(1);
-                if(s.includes('XAU')) return (d*10).toFixed(1);
-                return (d*10000).toFixed(0);
-            }
-            
-            function setText(id, val) {
-                var e = document.getElementById(id);
-                if(e) e.textContent = val || '-';
-            }
-            
-            function quickSelectStrategy(strategy) {
-                var p = { scalp:{pair:'EUR/USD',tf:'1min',rr:'2'}, intraday:{pair:'EUR/USD',tf:'15min',rr:'2'}, swing:{pair:'EUR/USD',tf:'4h',rr:'3'} }[strategy];
-                if(p){
-                    document.getElementById('pairSelect').value = p.pair;
-                    document.getElementById('timeframeSelect').value = p.tf;
-                    document.getElementById('riskRewardSelect').value = p.rr;
-                }
-            }
-            
-            function resetAnalysis() {
-                document.getElementById('resultPanel').classList.add('hidden');
-                document.getElementById('emptyState').classList.remove('hidden');
-                resetChartToWait();
-                renderOrderBook('neutral',1.09234);
-                setText('currentPrice','-');
-                setText('pairDisplay','EUR/USD');
-                setText('biasDisplay','-');
-                setText('biasValue','-');
-                setText('psarValue','-');
-                setText('smcValue','-');
-                setText('orderBlockValue','-');
-                setText('entrySignal','-');
-                setText('entryDesc','-');
-                setText('slValue','-');
-                setText('tpValue','-');
-                setText('slDistance','- pips');
-                setText('tpDistance','- pips');
-                document.getElementById('entryContainer').className = 'entry-card wait';
-            }
-            
-            function calculateATR(highs, lows, closes) {
-                var sum = 0;
-                var period = Math.min(20, highs.length - 1);
-                for (var i = 1; i <= period; i++) {
-                    var tr = Math.max(highs[i] - lows[i], Math.abs(highs[i] - closes[i-1]), Math.abs(lows[i] - closes[i-1]));
-                    sum += tr;
-                }
-                return sum / period;
-            }
-            
-            async function analyze() {
-                if(isOnCooldown()) {
-                    var remaining = getCooldownRemaining();
-                    var minutes = Math.floor(remaining / 60);
-                    var seconds = remaining % 60;
-                    showToast('⏱️ Mohon tunggu ' + minutes + ' menit ' + seconds + ' detik sebelum analisa berikutnya.');
-                    return;
-                }
-                
-                if(!canPerformAnalysis()){
-                    var activeType = getActiveQuotaType();
-                    var errorMsg = '';
-                    if(activeType === 'NEW_USER_BONUS') errorMsg = '⚠️ NEW USER BONUS (15 analisa) Anda telah habis atau masa aktif 7 hari telah berakhir! Silakan upgrade ke PRO Mingguan.';
-                    else if(activeType === 'PRO_WEEKLY') errorMsg = '⚠️ KUOTA PRO MINGGUAN Anda telah habis! Silakan perpanjang langganan.';
-                    else errorMsg = '⚠️ FREE DAILY (2 analisa/hari) Anda telah habis! Silakan tunggu reset besok pukul 00:00.';
-                    document.getElementById('errorText').innerHTML = errorMsg;
-                    document.getElementById('errorMessage').classList.remove('hidden');
-                    setTimeout(function(){ document.getElementById('errorMessage').classList.add('hidden'); }, 5000);
-                    return;
-                }
-                
-                var sym = document.getElementById('pairSelect').value;
-                var iv = document.getElementById('timeframeSelect').value;
-                var rrValue = parseFloat(document.getElementById('riskRewardSelect').value);
-                var rrParts = getRiskAndRewardParts(rrValue);
-                var riskPart = rrParts.riskPart;
-                var rewardPart = rrParts.rewardPart;
-                var rrDisplay = getRRDisplayText(rrValue);
-                
-                var riskPercent = BASE_RISK_PERCENT * riskPart;
-                var rewardPercent = riskPercent * (rewardPart / riskPart);
-                
-                document.getElementById('loadingSpinner').classList.remove('hidden');
-                document.getElementById('btnText').classList.add('hidden');
-                
-                try{
-                    var quoteRes = await fetch(BASE_URL + '/quote?symbol=' + sym + '&apikey=' + API_KEY);
-                    var quote = await quoteRes.json();
-                    if(!quote.close) throw new Error('Gagal mendapatkan harga');
-                    var currentPrice = parseFloat(quote.close);
-                    
-                    var tsRes = await fetch(BASE_URL + '/time_series?symbol=' + sym + '&interval=' + (timeframeMap[iv]||iv) + '&outputsize=100&apikey=' + API_KEY);
-                    var ts = await tsRes.json();
-                    if(!ts.values || ts.values.length < 30) throw new Error('Data historis tidak mencukupi');
-                    
-                    var values = ts.values;
-                    var closes = values.map(function(v) { return parseFloat(v.close); });
-                    var highs = values.map(function(v) { return parseFloat(v.high); });
-                    var lows = values.map(function(v) { return parseFloat(v.low); });
-                    var opens = values.map(function(v) { return parseFloat(v.open); });
-                    
-                    var atr = calculateATR(highs, lows, closes);
-                    
-                    var riskDistance = currentPrice * riskPercent;
-                    var rewardDistance = currentPrice * rewardPercent;
-                    
-                    var ema20 = 0, ema50 = 0, ema100 = 0;
-                    for(var i=0;i<20;i++) ema20 += closes[i];
-                    ema20 = ema20 / 20;
-                    for(var i=0;i<50;i++) ema50 += closes[i];
-                    ema50 = ema50 / 50;
-                    for(var i=0;i<100;i++) ema100 += closes[i];
-                    ema100 = ema100 / 100;
-                    
-                    var biasText, biasClass;
-                    if (currentPrice > ema20 && currentPrice > ema50 && currentPrice > ema100) {
-                        biasText = 'BULLISH';
-                        biasClass = 'text-cyber-green';
-                    } else if (currentPrice < ema20 && currentPrice < ema50 && currentPrice < ema100) {
-                        biasText = 'BEARISH';
-                        biasClass = 'text-cyber-red';
-                    } else if (ema20 > ema50 && ema50 > ema100 && currentPrice > ema20) {
-                        biasText = 'BULLISH';
-                        biasClass = 'text-cyber-green';
-                    } else if (ema20 < ema50 && ema50 < ema100 && currentPrice < ema20) {
-                        biasText = 'BEARISH';
-                        biasClass = 'text-cyber-red';
-                    } else {
-                        biasText = 'NEUTRAL';
-                        biasClass = 'text-gray-400';
-                    }
-                    
-                    var upCount = 0, downCount = 0;
-                    for (var i = 1; i < Math.min(14, highs.length); i++) {
-                        if (highs[i] > highs[i-1] && lows[i] > lows[i-1]) upCount++;
-                        else if (highs[i] < highs[i-1] && lows[i] < lows[i-1]) downCount++;
-                    }
-                    var psarLong = upCount >= 7;
-                    var psarShort = downCount >= 7;
-                    var psar = psarLong ? 'BULLISH' : (psarShort ? 'BEARISH' : 'NEUTRAL');
-                    
-                    var hh = 0, hl = 0, lh = 0, ll = 0;
-                    for (var i = 0; i < Math.min(15, highs.length - 2); i++) {
-                        if (highs[i] > highs[i+1] && highs[i] > highs[i+2]) hh++;
-                        if (lows[i] > lows[i+1] && lows[i] > lows[i+2]) hl++;
-                        if (highs[i] < highs[i+1] && highs[i] < highs[i+2]) lh++;
-                        if (lows[i] < lows[i+1] && lows[i] < lows[i+2]) ll++;
-                    }
-                    var structure = { type: 'Ranging', strength: 'Neutral', bias: 'neutral' };
-                    if (hh >= 3 && hl >= 2) structure = { type: 'Strong Uptrend', strength: 'Strong', bias: 'bullish' };
-                    else if (ll >= 3 && lh >= 2) structure = { type: 'Strong Downtrend', strength: 'Strong', bias: 'bearish' };
-                    else if (hh >= 2) structure = { type: 'Uptrend', strength: 'Moderate', bias: 'bullish' };
-                    else if (ll >= 2) structure = { type: 'Downtrend', strength: 'Moderate', bias: 'bearish' };
-                    
-                    var bullishScore = 0, bearishScore = 0;
-                    if (biasText === 'BULLISH') bullishScore += 2;
-                    else if (biasText === 'BEARISH') bearishScore += 2;
-                    if (psarLong) bullishScore += 2;
-                    else if (psarShort) bearishScore += 2;
-                    if (structure.bias === 'bullish') bullishScore += 3;
-                    else if (structure.bias === 'bearish') bearishScore += 3;
-                    
-                    var signal, sl, tp, dom = 'neutral';
-                    
-                    if (bullishScore >= 5 && bullishScore > bearishScore + 2) {
-                        signal = '🟢 BUY';
-                        sl = currentPrice - riskDistance;
-                        tp = currentPrice + rewardDistance;
-                        updateChartSignal('buy');
-                        dom = 'bid';
-                    } else if (bearishScore >= 5 && bearishScore > bullishScore + 2) {
-                        signal = '🔴 SELL';
-                        sl = currentPrice + riskDistance;
-                        tp = currentPrice - rewardDistance;
-                        updateChartSignal('sell');
-                        dom = 'ask';
-                    } else {
-                        signal = '⏳ WAIT';
-                        sl = currentPrice - riskDistance;
-                        tp = currentPrice + rewardDistance;
-                        updateChartSignal('wait');
-                    }
-                    
-                    setText('currentPrice', formatPrice(currentPrice, sym));
-                    setText('pairDisplay', sym);
-                    setText('biasDisplay', biasText);
-                    setText('biasValue', biasText);
-                    setText('psarValue', psar);
-                    setText('smcValue', structure.bias.toUpperCase());
-                    setText('orderBlockValue', formatPrice(currentPrice - (currentPrice * 0.01), sym));
-                    setText('entrySignal', signal);
-                    setText('entryDesc', 'Skor B:' + bullishScore + ' S:' + bearishScore + ' | R:R ' + rrDisplay);
-                    setText('slValue', formatPrice(sl, sym));
-                    setText('tpValue', formatPrice(tp, sym));
-                    setText('slDistance', calculatePips(currentPrice, sl, sym) + ' pips');
-                    setText('tpDistance', calculatePips(currentPrice, tp, sym) + ' pips');
-                    
-                    var ec = document.getElementById('entryContainer');
-                    if(ec) ec.className = 'entry-card ' + (signal.includes('BUY') ? 'buy' : (signal.includes('SELL') ? 'sell' : 'wait'));
-                    
-                    renderOrderBook(dom, currentPrice);
-                    document.getElementById('resultPanel').classList.remove('hidden');
-                    document.getElementById('emptyState').classList.add('hidden');
-                    
-                    incrementUsage();
-                    setCooldown();
-                    updateCooldownDisplay();
-                    
-                    var quotaMsg = ' (Sisa: ' + getCurrentQuotaRemaining() + ' dari ' + getCurrentQuotaTotal() + ')';
-                    showToast('✅ Analisa berhasil! Jeda 10 menit dimulai.' + quotaMsg);
-                } catch(e) {
-                    console.error(e);
-                    document.getElementById('errorText').innerHTML = 'Gagal mendapatkan harga. Silakan cek koneksi internet atau API Key.';
-                    document.getElementById('errorMessage').classList.remove('hidden');
-                    setTimeout(function(){ document.getElementById('errorMessage').classList.add('hidden'); }, 5000);
-                } finally {
-                    document.getElementById('loadingSpinner').classList.add('hidden');
-                    document.getElementById('btnText').classList.remove('hidden');
-                }
-            }
-            
-            // ==================== PAYMENT ====================
-            function openPaymentGuide() {
-                if(isNewUserBonusActive()) {
-                    showToast('⚠️ Anda masih dalam masa NEW USER BONUS (7 hari). Upgrade ke PRO hanya bisa dilakukan setelah masa bonus berakhir!');
-                    return;
-                }
-                updatePaymentAmount();
-                document.getElementById('paymentModal').classList.remove('hidden');
-                document.getElementById('transactionId').value = '';
-                document.getElementById('paymentSource').value = '';
-                document.getElementById('accountHolder').value = '';
-                document.getElementById('transactionDate').value = '';
-                document.getElementById('userEmail').value = '';
-                document.getElementById('userFullName').value = '';
-            }
-            
-            function closePaymentModal() {
-                document.getElementById('paymentModal').classList.add('hidden');
-            }
-            
-            function confirmPayment() {
-                var tid = document.getElementById('transactionId').value;
-                var ps = document.getElementById('paymentSource').value;
-                var ah = document.getElementById('accountHolder').value;
-                var td = document.getElementById('transactionDate').value;
-                var em = document.getElementById('userEmail').value;
-                var fn = document.getElementById('userFullName').value;
-                var amt = parseInt(document.getElementById('paymentNominal').value);
-                var uc = document.getElementById('uniqueCodeValue').value;
-                
-                if(!tid){ showToast('Harap isi nomor transaksi!'); return; }
-                if(!ps){ showToast('Harap pilih sumber dana!'); return; }
-                if(!ah){ showToast('Harap isi nama pemilik!'); return; }
-                if(!td){ showToast('Harap pilih tanggal transaksi!'); return; }
-                if(!em){ showToast('Harap isi email!'); return; }
-                if(!fn){ showToast('Harap isi nama lengkap!'); return; }
-                if(!em.includes('@')){ showToast('Email tidak valid!'); return; }
-                
-                showToast('✅ Data pembayaran telah disimpan. Silakan konfirmasi via DM Instagram/TikTok @cuanhunters dengan kode unik: ' + uc);
-                
-                setTimeout(function(){
-                    if(confirm('KONFIRMASI PEMBAYARAN\n\nApakah Anda sudah melakukan pembayaran dan ingin mengaktifkan PRO MINGGUAN?\n\nKlik OK untuk LANJUTKAN')){
-                        activateProWeekly();
-                        closePaymentModal();
-                        showToast('✅ Upgrade PRO Mingguan berhasil! Anda mendapatkan 15 analisa untuk 7 hari ke depan.');
-                        updateUsageDisplay();
-                        resetAnalysis();
-                    } else {
-                        showToast('⏳ Menunggu konfirmasi pembayaran. Silakan konfirmasi via DM @cuanhunters.');
-                        closePaymentModal();
-                    }
-                }, 2000);
-            }
-            
-            // ==================== STATISTICS ====================
-            function updateTotalUsers(){
-                var n = new Date();
-                var lu = memoryData.lastTotalUpdate;
-                var st = memoryData.savedTotalUsers;
-                if(lu && st){
-                    var ld = new Date(parseInt(lu));
-                    var dd = Math.floor((n - ld) / 86400000);
-                    var inc = Math.floor(dd/2)*2;
-                    if(inc>0){
-                        curTotal = parseInt(st) + inc;
-                        memoryData.savedTotalUsers = curTotal;
-                        memoryData.lastTotalUpdate = n.getTime();
-                        persistData();
-                    } else curTotal = parseInt(st);
-                }
-                return curTotal;
-            }
-            
-            function updateStatistics(){
-                curTotal = updateTotalUsers();
-                var proPerc = 0.23 + (Math.sin(Date.now()/3600000)*0.03);
-                var np = Math.floor(curTotal * proPerc);
-                np = Math.max(Math.floor(curTotal*0.18), Math.min(Math.floor(curTotal*0.32), np));
-                var hod = new Date().getHours();
-                var actBase = 0.35 + Math.sin(hod * Math.PI/12) * 0.1;
-                var na = Math.floor(curTotal * actBase);
-                na = Math.max(Math.floor(curTotal*0.28), Math.min(Math.floor(curTotal*0.48), na));
-                na += Math.floor(Math.random()*11)-5;
-                na = Math.max(Math.floor(curTotal*0.25), Math.min(Math.floor(curTotal*0.5), na));
-                var pdiff = np - proUs;
-                var adiff = na - actUsers;
-                proUs += Math.sign(pdiff) * Math.min(Math.abs(pdiff), 3);
-                actUsers += Math.sign(adiff) * Math.min(Math.abs(adiff), 4);
-                proUs = Math.max(Math.floor(curTotal*0.18), Math.min(Math.floor(curTotal*0.32), proUs));
-                actUsers = Math.max(Math.floor(curTotal*0.28), Math.min(Math.floor(curTotal*0.48), actUsers));
-                freeUs = curTotal - proUs;
-                
-                var animateCount = function(id, target, duration){
-                    var el = document.getElementById(id);
-                    if(!el) return;
-                    var start = parseInt(el.textContent.replace(/,/g,'')) || 0;
-                    if(start === target) return;
-                    var inc = (target - start) / (duration/16);
-                    var current = start;
-                    var timer = setInterval(function(){
-                        current += inc;
-                        if(Math.abs(current - target) < 1){
-                            el.textContent = target.toLocaleString();
-                            clearInterval(timer);
-                        } else {
-                            el.textContent = Math.floor(current).toLocaleString();
-                        }
-                    }, 16);
-                };
-                animateCount('totalUsersCount', curTotal, 800);
-                animateCount('activeUsersCount', actUsers, 600);
-                animateCount('proUsersCount', proUs, 700);
-                animateCount('freeUsersCount', freeUs, 750);
-            }
-            
-            // ==================== EVENT LISTENERS & INIT ====================
-            document.addEventListener('DOMContentLoaded', async function(){
-                initStorage();
-                initChart();
-                renderOrderBook('neutral', 1.09234);
-                updateUsageDisplay();
-                updateCooldownDisplay();
-                curTotal = updateTotalUsers();
-                proUs = Math.floor(curTotal * 0.23);
-                freeUs = curTotal - proUs;
-                actUsers = Math.floor(curTotal * 0.35);
-                document.getElementById('totalUsersCount').textContent = curTotal.toLocaleString();
-                document.getElementById('activeUsersCount').textContent = actUsers.toLocaleString();
-                document.getElementById('proUsersCount').textContent = proUs.toLocaleString();
-                document.getElementById('freeUsersCount').textContent = freeUs.toLocaleString();
-                setInterval(updateStatistics, 15000);
-                setInterval(function(){
-                    updateCountdownDisplay();
-                    resetFreeDailyIfNeeded();
-                    updateUsageDisplay();
-                    updateCooldownDisplay();
-                }, 1000);
-                
-                document.getElementById('analyzeBtn').addEventListener('click', analyze);
-                document.getElementById('refreshAnalysisBtn').addEventListener('click', analyze);
-                document.getElementById('resetAnalysisBtn').addEventListener('click', resetAnalysis);
-                document.getElementById('confirmPaymentBtn').addEventListener('click', confirmPayment);
-                document.getElementById('closePaymentModalBtn').addEventListener('click', closePaymentModal);
-                document.getElementById('buyProBtn').addEventListener('click', openPaymentGuide);
-                document.getElementById('extendProBtn').addEventListener('click', openPaymentGuide);
-                document.getElementById('proCard').addEventListener('click', openPaymentGuide);
-                document.getElementById('newUserBonusCard').addEventListener('click', function(){
-                    if(isProActive()) {
-                        showToast('⚠️ Anda sedang dalam masa PRO aktif. New User Bonus tidak dapat diaktifkan.');
-                        return;
-                    }
-                    if(claimNewUserBonus()) {
-                        updateUsageDisplay();
-                    } else {
-                        showToast('Bonus pengguna baru sudah pernah diklaim sebelumnya.');
-                    }
-                });
-                document.getElementById('freeDailyCard').addEventListener('click', function(){
-                    document.getElementById('freeDailyStatus').scrollIntoView({behavior: 'smooth'});
-                    showToast('📊 Free Daily: 2 analisa gratis per hari! Reset setiap pukul 00:00');
-                });
-                
-                var quickItems = document.querySelectorAll('.quick-item');
-                for(var i=0; i<quickItems.length; i++){
-                    quickItems[i].addEventListener('click', function(e){
-                        var strategy = this.getAttribute('data-strategy');
-                        quickSelectStrategy(strategy);
-                        document.querySelectorAll('.quick-item').forEach(function(el){ el.classList.remove('active'); });
-                        this.classList.add('active');
+                drawMatrix();
+            }
+            
+            const proTickerData = [
+                { symbol: "EUR/USD", price: 1.09234, change: 0.23 }, { symbol: "GBP/USD", price: 1.28567, change: -0.12 },
+                { symbol: "USD/JPY", price: 147.82, change: 0.45 }, { symbol: "XAU/USD", price: 2350.75, change: 0.67 },
+                { symbol: "BTC/USD", price: 68750, change: 2.34 }, { symbol: "S&P 500", price: 5180.25, change: 0.32 },
+                { symbol: "NASDAQ", price: 16350.80, change: 0.56 }, { symbol: "USD/IDR", price: 15850, change: -0.08 }
+            ];
+            function populateProTicker() {
+                const tickerContainer = document.getElementById('proTicker');
+                if (!tickerContainer) return;
+                let html = '';
+                for (let i = 0; i < 4; i++) {
+                    proTickerData.forEach(item => {
+                        const changeClass = item.change >= 0 ? 'up' : 'down';
+                        const changeSign = item.change >= 0 ? '+' : '';
+                        html += `<div class="ticker-item"><span class="ticker-symbol">${item.symbol}</span><span class="ticker-price">${item.price.toFixed(4)}</span><span class="ticker-change ${changeClass}">${changeSign}${item.change}%</span></div>`;
                     });
                 }
-            });
+                tickerContainer.innerHTML = html + html;
+            }
+            
+            function updateSentimentGauge() {
+                const sentimentBar = document.getElementById('sentimentBar');
+                if (sentimentBar) {
+                    sentimentValue = Math.min(100, sentimentValue + (Math.random() * 5 - 2.5));
+                    sentimentValue = Math.max(20, Math.min(80, sentimentValue));
+                    sentimentBar.style.width = sentimentValue + '%';
+                }
+            }
+            
+            function updateLoadingProgress() {
+                const elapsed = (Date.now() - loadingStartTime) / 1000;
+                const targetPercentage = Math.min(100, (elapsed / 5) * 100);
+                currentPercentage = Math.min(100, currentPercentage + Math.random() * 3);
+                if (currentPercentage > targetPercentage) currentPercentage = targetPercentage;
+                const vwapFill = document.getElementById('vwapFill');
+                const percentageSpan = document.getElementById('loadingPercentage');
+                const bigPercentage = document.getElementById('bigPercentage');
+                if (vwapFill) vwapFill.style.width = currentPercentage + '%';
+                if (percentageSpan) percentageSpan.textContent = Math.floor(currentPercentage) + '%';
+                if (bigPercentage) bigPercentage.textContent = Math.floor(currentPercentage) + '%';
+                const status1 = document.getElementById('status1'), status2 = document.getElementById('status2'), status3 = document.getElementById('status3'), status4 = document.getElementById('status4');
+                if (currentPercentage >= 20) { status1.classList.add('completed'); status1.classList.remove('active'); } else status1.classList.add('active');
+                if (currentPercentage >= 40) { status2.classList.add('completed'); status2.classList.remove('active'); } else if (currentPercentage >= 20) status2.classList.add('active');
+                if (currentPercentage >= 70) { status3.classList.add('completed'); status3.classList.remove('active'); } else if (currentPercentage >= 40) status3.classList.add('active');
+                if (currentPercentage >= 90) { status4.classList.add('completed'); status4.classList.remove('active'); } else if (currentPercentage >= 70) status4.classList.add('active');
+                updateSentimentGauge();
+                return elapsed >= 5 || currentPercentage >= 100;
+            }
+            
+            function startProfessionalLoading() {
+                initMatrix();
+                populateProTicker();
+                const loadingInterval = setInterval(() => {
+                    if (updateLoadingProgress()) {
+                        clearInterval(loadingInterval);
+                        setTimeout(() => {
+                            const overlay = document.getElementById('loadingOverlay');
+                            const mainContent = document.getElementById('mainContent');
+                            if (overlay) { overlay.classList.add('fade-out'); setTimeout(() => overlay.style.display = 'none', 800); }
+                            if (mainContent) { mainContent.classList.add('visible'); mainContent.style.opacity = '1'; }
+                            if (window.cleanupCandles) window.cleanupCandles();
+                            startMainApplication();
+                        }, 500);
+                    }
+                }, 60);
+            }
+            
+            // ========== MAIN APPLICATION (ORIGINAL FULL CODE) ==========
+            const STORAGE_KEY = 'CuanHuntersData';
+            const defaultData = { newUserBonusClaimed: false, newUserBonusData: null, proSubscription: null, proUsage: { count: 0, periodStart: new Date().toISOString() }, freeDailyUsage: { date: new Date().toDateString(), used: 0 }, cooldown: null, lastTotalUpdate: null, savedTotalUsers: 535 };
+            var memoryData = { ...defaultData };
+            function persistData() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ newUserBonusClaimed: memoryData.newUserBonusClaimed, newUserBonusData: memoryData.newUserBonusData, proSubscription: memoryData.proSubscription, proUsage: memoryData.proUsage, freeDailyUsage: memoryData.freeDailyUsage, cooldown: memoryData.cooldown, lastTotalUpdate: memoryData.lastTotalUpdate, savedTotalUsers: memoryData.savedTotalUsers })); } catch(e) {} }
+            function loadFromLocalStorage() {
+                try { var savedData = localStorage.getItem(STORAGE_KEY); if (savedData) memoryData = { ...defaultData, ...JSON.parse(savedData) }; else memoryData = { ...defaultData }; } catch(e) { memoryData = { ...defaultData }; }
+                if (!memoryData.freeDailyUsage) memoryData.freeDailyUsage = { date: new Date().toDateString(), used: 0 };
+                if (!memoryData.proUsage) memoryData.proUsage = { count: 0, periodStart: new Date().toISOString() };
+                if (typeof memoryData.savedTotalUsers !== 'number') memoryData.savedTotalUsers = 535;
+                persistData();
+            }
+            function initStorage() { loadFromLocalStorage(); updateUsageDisplay(); updateCooldownDisplay(); }
+            const PRO_WEEKLY_QUOTA = 15, DAILY_FREE_QUOTA = 2, NEW_USER_BONUS_QUOTA = 15, NEW_USER_BONUS_DAYS = 7, PRO_PRICE = 125000, COOLDOWN_MINUTES = 10, COOLDOWN_SECONDS = COOLDOWN_MINUTES * 60;
+            const API_KEY = '2bedbb1110384c058a570b0d7d1c4e40', BASE_URL = 'https://api.twelvedata.com';
+            const timeframeMap = { '1min':'1min','5min':'5min','15min':'15min','30min':'30min','1h':'1h','2h':'2h','4h':'4h','1d':'1day','1w':'1week','1M':'1month' };
+            const BASE_RISK_PERCENT = 0.005;
+            let currentUniqueCode = 0, cooldownInterval = null, chartCtx, chartPointsArray = [], currentSignalState = 'wait', chartAnimationId = null;
+            let curTotal=535, actUsers=187, proUs=124, freeUs=curTotal-proUs;
+            function showToast(m) { var t = document.createElement('div'); t.className = 'toast-notification'; t.innerHTML = '<i class="fas fa-check-circle"></i><span>' + m + '</span>'; document.body.appendChild(t); setTimeout(()=>t.remove(),3000); }
+            function generateUniqueCode() { return Math.floor(Math.random() * 999) + 1; }
+            function updatePaymentAmount() { currentUniqueCode = generateUniqueCode(); var total = PRO_PRICE + currentUniqueCode; document.getElementById('dynamicAmount').innerHTML = 'Rp ' + total.toLocaleString('id-ID'); document.getElementById('uniqueCodeDisplay').innerHTML = currentUniqueCode.toString().padStart(3,'0'); document.getElementById('nominalDisplay').innerHTML = 'Rp ' + total.toLocaleString('id-ID'); document.getElementById('paymentNominal').value = total; document.getElementById('uniqueCodeValue').value = currentUniqueCode; }
+            function getRiskAndRewardParts(value) { if (value>=6&&value<=9) { const map={6:2,7:3,8:4,9:5}; return { riskPart:2, rewardPart:map[value] }; } else { const map={0.5:0.5,1:1,2:2,3:3,4:4,5:5}; return { riskPart:1, rewardPart:map[value] }; } }
+            function getRRDisplayText(value) { const map={0.5:"1:0.5",1:"1:1",2:"1:2",3:"1:3",4:"1:4",5:"1:5",6:"2:2",7:"2:3",8:"2:4",9:"2:5"}; return map[value]||"1:2"; }
+            function getCooldownRemaining() { if (!memoryData.cooldown) return 0; return Math.max(0, COOLDOWN_SECONDS*1000 - (Date.now()-memoryData.cooldown))/1000; }
+            function setCooldown() { memoryData.cooldown = Date.now(); persistData(); updateCooldownDisplay(); }
+            function isOnCooldown() { return getCooldownRemaining() > 0; }
+            function updateCooldownDisplay() {
+                var remainingSec = getCooldownRemaining(), cooldownCard = document.getElementById('cooldownCard'), analyzeBtn = document.getElementById('analyzeBtn');
+                if(remainingSec>0) {
+                    cooldownCard.classList.remove('hidden');
+                    document.getElementById('cooldownTimerDisplay').textContent = Math.floor(remainingSec/60).toString().padStart(2,'0')+':'+Math.floor(remainingSec%60).toString().padStart(2,'0');
+                    analyzeBtn.classList.add('disabled');
+                    if(cooldownInterval===null) cooldownInterval = setInterval(()=>{ if(getCooldownRemaining()<=0) { clearInterval(cooldownInterval); cooldownInterval=null; cooldownCard.classList.add('hidden'); if(canPerformAnalysis()) analyzeBtn.classList.remove('disabled'); showToast('✅ Jeda 10 menit selesai!'); } else { var rs=getCooldownRemaining(); document.getElementById('cooldownTimerDisplay').textContent = Math.floor(rs/60).toString().padStart(2,'0')+':'+Math.floor(rs%60).toString().padStart(2,'0'); } },1000);
+                } else { cooldownCard.classList.add('hidden'); if(cooldownInterval) clearInterval(cooldownInterval); cooldownInterval=null; if(canPerformAnalysis()) analyzeBtn.classList.remove('disabled'); }
+            }
+            function isNewUserBonusClaimed() { return memoryData.newUserBonusClaimed; }
+            function setNewUserBonusClaimed() { memoryData.newUserBonusClaimed = true; persistData(); }
+            function getNewUserBonusData() { return memoryData.newUserBonusData; }
+            function saveNewUserBonusData(data) { memoryData.newUserBonusData = data; persistData(); }
+            function isNewUserBonusActive() { if(!isNewUserBonusClaimed()) return false; var d=getNewUserBonusData(); if(!d||d.used>=d.total) return false; return new Date() <= new Date(d.expiryDate); }
+            function getNewUserBonusRemaining() { if(!isNewUserBonusActive()) return 0; return Math.max(0, getNewUserBonusData().total - getNewUserBonusData().used); }
+            function getNewUserBonusUsed() { if(!isNewUserBonusClaimed()) return 0; var d=getNewUserBonusData(); return d?d.used:0; }
+            function getNewUserBonusTimeLeft() { if(!isNewUserBonusClaimed()) return {days:0,hours:0,minutes:0,seconds:0,isActive:false}; var d=getNewUserBonusData(); if(!d) return {days:0,hours:0,minutes:0,seconds:0,isActive:false}; var expiry=new Date(d.expiryDate), now=new Date(); if(now>expiry) return {days:0,hours:0,minutes:0,seconds:0,isActive:false}; var diff=expiry-now; return {days:Math.floor(diff/864e5),hours:Math.floor((diff%864e5)/36e5),minutes:Math.floor((diff%36e5)/6e4),seconds:Math.floor((diff%6e4)/1e3),isActive:true}; }
+            function claimNewUserBonus() { if(isNewUserBonusClaimed()){showToast('⚠️ Bonus sudah pernah diklaim!');return false;} var expiry=new Date(); expiry.setDate(expiry.getDate()+NEW_USER_BONUS_DAYS); saveNewUserBonusData({claimed:true,used:0,total:NEW_USER_BONUS_QUOTA,expiryDate:expiry.toISOString(),startDate:new Date().toISOString()}); setNewUserBonusClaimed(); showToast('🎉 Selamat! 15 analisa GRATIS 7 hari!'); updateUsageDisplay(); return true; }
+            function useNewUserBonus() { if(!isNewUserBonusActive()) return false; var d=getNewUserBonusData(); if(d.used<d.total){d.used++; saveNewUserBonusData(d); return true;} return false; }
+            function getProSubscription() { return memoryData.proSubscription; }
+            function saveProSubscription(data) { memoryData.proSubscription = data; persistData(); }
+            function getProUsage() { return memoryData.proUsage; }
+            function saveProUsage(data) { memoryData.proUsage = data; persistData(); }
+            function isProActive() { var sub=getProSubscription(); if(!sub) return false; return new Date() <= new Date(sub.endDate) && getProUsage().count < PRO_WEEKLY_QUOTA; }
+            function getProRemainingQuota() { if(!isProActive()) return 0; return Math.max(0, PRO_WEEKLY_QUOTA - getProUsage().count); }
+            function getProUsedQuota() { return getProUsage().count; }
+            function getProTimeLeft() { var sub=getProSubscription(); if(!sub) return {days:0,hours:0,minutes:0,seconds:0,isActive:false}; var end=new Date(sub.endDate), now=new Date(); if(now>end) return {days:0,hours:0,minutes:0,seconds:0,isActive:false}; var diff=end-now; return {days:Math.floor(diff/864e5),hours:Math.floor((diff%864e5)/36e5),minutes:Math.floor((diff%36e5)/6e4),seconds:Math.floor((diff%6e4)/1e3),isActive:true}; }
+            function useProQuota() { if(!isProActive()) return false; var usage=getProUsage(); if(usage.count<PRO_WEEKLY_QUOTA){usage.count++; saveProUsage(usage); return true;} return false; }
+            function activateProWeekly() { if(isNewUserBonusActive()){showToast('⚠️ Masih masa NEW USER BONUS!');return false;} var now=new Date(), end=new Date(now); end.setDate(now.getDate()+7); end.setHours(23,59,59,999); saveProSubscription({type:'pro',startDate:now.toISOString(),endDate:end.toISOString()}); saveProUsage({count:0,periodStart:now.toISOString()}); showToast('✅ Upgrade PRO berhasil! 15 analisa 7 hari.'); updateUsageDisplay(); resetAnalysis(); return true; }
+            function getFreeDailyUsage() { var today=new Date().toDateString(); if(!memoryData.freeDailyUsage||memoryData.freeDailyUsage.date!==today) memoryData.freeDailyUsage={date:today,used:0}, persistData(); return memoryData.freeDailyUsage; }
+            function saveFreeDailyUsage(data) { memoryData.freeDailyUsage=data; persistData(); }
+            function getFreeDailyRemaining() { return Math.max(0, DAILY_FREE_QUOTA - getFreeDailyUsage().used); }
+            function getFreeDailyUsed() { return getFreeDailyUsage().used; }
+            function useFreeDailyQuota() { var usage=getFreeDailyUsage(); if(usage.used<DAILY_FREE_QUOTA){usage.used++; saveFreeDailyUsage(usage); return true;} return false; }
+            function resetFreeDailyIfNeeded() { var usage=getFreeDailyUsage(); var today=new Date().toDateString(); if(usage.date!==today){usage.date=today; usage.used=0; saveFreeDailyUsage(usage); updateUsageDisplay(); return true;} return false; }
+            function getActiveQuotaType() { if(isNewUserBonusActive()) return 'NEW_USER_BONUS'; if(isProActive()) return 'PRO_WEEKLY'; return 'FREE_DAILY'; }
+            function getCurrentQuotaRemaining() { if(isNewUserBonusActive()) return getNewUserBonusRemaining(); if(isProActive()) return getProRemainingQuota(); return getFreeDailyRemaining(); }
+            function getCurrentQuotaTotal() { if(isNewUserBonusActive()) return NEW_USER_BONUS_QUOTA; if(isProActive()) return PRO_WEEKLY_QUOTA; return DAILY_FREE_QUOTA; }
+            function getCurrentQuotaUsed() { if(isNewUserBonusActive()) return getNewUserBonusUsed(); if(isProActive()) return getProUsedQuota(); return getFreeDailyUsed(); }
+            function canPerformAnalysis() { return !isOnCooldown() && getCurrentQuotaRemaining() > 0; }
+            function incrementUsage() { var success=false; if(isNewUserBonusActive()) success=useNewUserBonus(); else if(isProActive()) success=useProQuota(); else success=useFreeDailyQuota(); persistData(); return success; }
+            function updateCountdownDisplay() {
+                var now=new Date(), tomorrow=new Date(now); tomorrow.setDate(now.getDate()+1); tomorrow.setHours(0,0,0,0); var diff=tomorrow-now;
+                document.getElementById('countdownHours').textContent=Math.floor(diff/36e5); document.getElementById('countdownMinutes').textContent=Math.floor((diff%36e5)/6e4); document.getElementById('countdownSeconds').textContent=Math.floor((diff%6e4)/1e3).toString().padStart(2,'0');
+                var bt=getNewUserBonusTimeLeft(), bc=document.getElementById('bonusCountdown'); if(bt.isActive){bc.classList.remove('hidden'); document.getElementById('bonusTimer').textContent=`${bt.days} hari ${bt.hours} jam ${bt.minutes} menit ${bt.seconds} detik`;} else bc.classList.add('hidden');
+                var pt=getProTimeLeft(), pc=document.getElementById('proCountdown'), br=document.getElementById('billReminder'); if(pt.isActive){pc.classList.remove('hidden'); document.getElementById('proTimer').textContent=`${pt.days} hari ${pt.hours} jam ${pt.minutes} menit ${pt.seconds} detik`; document.getElementById('proRemainingDays').textContent=pt.days; if(pt.days<=2&&pt.days>0) br.classList.remove('hidden'); else br.classList.add('hidden');} else {pc.classList.add('hidden'); br.classList.add('hidden');}
+            }
+            function updateUsageDisplay() {
+                resetFreeDailyIfNeeded(); var rem=getCurrentQuotaRemaining(), used=getCurrentQuotaUsed(), total=getCurrentQuotaTotal(), percent=total>0?(used/total)*100:0, at=getActiveQuotaType();
+                document.getElementById('usedCount').textContent=used; document.getElementById('remainingCount').textContent=rem; document.getElementById('totalQuotaLabel').innerHTML='dari '+total; document.getElementById('usageBar').style.width=percent+'%'; document.getElementById('progressPercent').textContent=Math.round(percent)+'%'; document.getElementById('mainPercentage').textContent=Math.round(percent)+'%';
+                var badge=document.getElementById('activeQuotaType'); if(at==='NEW_USER_BONUS') badge.innerHTML='<i class="fas fa-gem text-emerald-400"></i> AKTIF: NEW USER BONUS (15 analisa, 7 hari)'; else if(at==='PRO_WEEKLY') badge.innerHTML='<i class="fas fa-crown text-purple-400"></i> AKTIF: PRO MINGGUAN (15 analisa/minggu)'; else badge.innerHTML='<i class="fas fa-sun text-yellow-400"></i> AKTIF: FREE DAILY (2 analisa/hari)';
+                var r=52, c=2*Math.PI*r, o=c-(percent/100)*c; var pc=document.getElementById('progressCircleMain'); if(pc){pc.style.strokeDasharray=c+' '+c; pc.style.strokeDashoffset=o;}
+                document.getElementById('dailyUsedToday').textContent=getFreeDailyUsed(); var btn=document.getElementById('analyzeBtn'), warn=document.getElementById('quotaExhaustedWarning'); if(!canPerformAnalysis()&&!isOnCooldown()){btn.classList.add('disabled'); warn.classList.remove('hidden');} else if(isOnCooldown()){btn.classList.add('disabled'); warn.classList.add('hidden');} else {btn.classList.remove('disabled'); warn.classList.add('hidden');}
+                var nua=document.getElementById('newUserBonusAlert'), fds=document.getElementById('freeDailyStatus'), sa=document.getElementById('subscriptionActive'); if(at==='NEW_USER_BONUS'){nua.classList.remove('hidden'); fds.classList.add('hidden'); sa.classList.add('hidden'); document.getElementById('bonusRemaining').textContent=rem; var tl=getNewUserBonusTimeLeft(); if(tl.isActive) document.getElementById('bonusTimeLeft').textContent=tl.days+' hari '+tl.hours+' jam';} else if(at==='PRO_WEEKLY'){nua.classList.add('hidden'); fds.classList.add('hidden'); sa.classList.remove('hidden');} else {nua.classList.add('hidden'); fds.classList.remove('hidden'); sa.classList.add('hidden');}
+            }
+            function generateOrderBook(cp,d){d=d||'neutral'; var b=[],a=[],bp=cp||1.09234; for(var i=0;i<5;i++){var v=d==='bid'?2+Math.random()*3:(d==='ask'?0.5+Math.random()*1:1+Math.random()*2); b.push({price:bp-(i*0.001),volume:v.toFixed(2)}); v=d==='ask'?2+Math.random()*3:(d==='bid'?0.5+Math.random()*1:1+Math.random()*2); a.push({price:bp+(i*0.001),volume:v.toFixed(2)});} b.sort((x,y)=>y.price-x.price); a.sort((x,y)=>x.price-y.price); return {bids:b,asks:a};}
+            function renderOrderBook(d,cp){d=d||'neutral'; cp=cp||1.09234; var ob=generateOrderBook(cp,d); var tb=0,ta=0; for(var i=0;i<ob.bids.length;i++) tb+=parseFloat(ob.bids[i].volume); for(var i=0;i<ob.asks.length;i++) ta+=parseFloat(ob.asks[i].volume); var mv=Math.max(tb,ta), bp=((tb/(tb+ta))*100).toFixed(1); document.getElementById('orderbookImbalance').innerHTML=d==='bid'?`<span class="text-emerald-400">BID ${bp}%</span>`:(d==='ask'?`<span class="text-red-400">ASK ${(100-bp)}%</span>`:'NEUTRAL'); document.getElementById('imbalancePct').textContent=bp+'/'+(100-bp).toFixed(1); document.getElementById('totalBid').textContent=tb.toFixed(1); document.getElementById('totalAsk').textContent=ta.toFixed(1); var bc=document.getElementById('bidRows'); bc.innerHTML=''; for(i=0;i<ob.bids.length;i++) bc.innerHTML+=`<div class="orderbook-row"><span class="orderbook-lot text-emerald-400">${ob.bids[i].volume}</span><div class="volume-bar-bid" style="width:${(parseFloat(ob.bids[i].volume)/mv)*100}%;"></div></div>`; var ac=document.getElementById('askRows'); ac.innerHTML=''; var asksRev=ob.asks.slice().reverse(); for(i=0;i<asksRev.length;i++) ac.innerHTML+=`<div class="orderbook-row"><div class="volume-bar-ask" style="width:${(parseFloat(asksRev[i].volume)/mv)*100}%;"></div><span class="orderbook-lot text-red-400">${asksRev[i].volume}</span></div>`; var dc=document.getElementById('depthChart'); dc.innerHTML=''; var bidsRev=ob.bids.slice().reverse(); for(i=0;i<bidsRev.length;i++) dc.innerHTML+=`<div style="flex:1;background:linear-gradient(to top,#10B981,rgba(16,185,129,0.2));height:${(parseFloat(bidsRev[i].volume)/mv)*24}px;border-radius:2px;"></div>`; for(i=0;i<ob.asks.length;i++) dc.innerHTML+=`<div style="flex:1;background:linear-gradient(to top,#F87171,rgba(248,113,113,0.2));height:${(parseFloat(ob.asks[i].volume)/mv)*24}px;border-radius:2px;"></div>`;}
+            function initChart(){var c=document.getElementById('chartCanvas'); if(!c)return; chartCtx=c.getContext('2d'); var p=c.parentElement; c.width=p.clientWidth; c.height=p.clientHeight; generateChartPoints(); animateChart(); window.addEventListener('resize',function(){c.width=p.clientWidth; c.height=p.clientHeight; generateChartPoints();});}
+            function generateChartPoints(){chartPointsArray=[]; var w=document.getElementById('chartCanvas').width, h=document.getElementById('chartCanvas').height, steps=25, step=w/(steps-1); for(var i=0;i<steps;i++){var y=currentSignalState==='buy'?h-30-(i*(h-50)/steps):(currentSignalState==='sell'?30+(i*(h-50)/steps):h/2+Math.sin(i*0.6)*12); chartPointsArray.push({x:i*step,y:Math.max(15,Math.min(h-15,y))});}}
+            function updateChartSignal(s){currentSignalState=s; var d=document.getElementById('signalDot'),dir=document.getElementById('signalDirection'),ct=document.getElementById('chartSignalText'),ti=document.getElementById('trendIcon'); if(s==='buy'){if(d)d.className='signal-dot buy'; if(dir){dir.textContent='Bullish ↑'; dir.style.color='#34d399';} if(ct){ct.textContent='BUY'; ct.style.color='#34d399';} if(ti)ti.className='fas fa-arrow-trend-up text-emerald-400';}else if(s==='sell'){if(d)d.className='signal-dot sell'; if(dir){dir.textContent='Bearish ↓'; dir.style.color='#f87171';} if(ct){ct.textContent='SELL'; ct.style.color='#f87171';} if(ti)ti.className='fas fa-arrow-trend-down text-red-400';}else{if(d)d.className='signal-dot wait'; if(dir){dir.textContent='Sideways'; dir.style.color='#fbbf24';} if(ct){ct.textContent='WAIT'; ct.style.color='#fbbf24';} if(ti)ti.className='fas fa-arrows-left-right text-amber-400';} generateChartPoints();}
+            function animateChart(){if(!chartCtx||!document.getElementById('chartCanvas')) return; var c=document.getElementById('chartCanvas'), h=c.height, w=c.width; for(var i=0;i<chartPointsArray.length;i++){if(currentSignalState==='buy') chartPointsArray[i].y-=0.3; else if(currentSignalState==='sell') chartPointsArray[i].y+=0.3; else chartPointsArray[i].y+=(Math.random()-0.5)*0.5; chartPointsArray[i].y=Math.max(12,Math.min(h-12,chartPointsArray[i].y));} if(currentSignalState!=='wait'){for(i=0;i<chartPointsArray.length;i++) chartPointsArray[i].x-=1; if(chartPointsArray[0].x<-15){chartPointsArray.shift(); var lx=chartPointsArray[chartPointsArray.length-1].x, st=w/24; var ny=currentSignalState==='buy'?chartPointsArray[chartPointsArray.length-1].y-0.6:chartPointsArray[chartPointsArray.length-1].y+0.6; chartPointsArray.push({x:lx+st,y:Math.max(12,Math.min(h-12,ny))});}} chartCtx.clearRect(0,0,w,h); chartCtx.beginPath(); chartCtx.moveTo(chartPointsArray[0].x,h); chartCtx.lineTo(chartPointsArray[0].x,chartPointsArray[0].y); for(i=1;i<chartPointsArray.length;i++) chartCtx.lineTo(chartPointsArray[i].x,chartPointsArray[i].y); chartCtx.lineTo(chartPointsArray[chartPointsArray.length-1].x,h); chartCtx.closePath(); var g=chartCtx.createLinearGradient(0,0,0,h); if(currentSignalState==='buy') g.addColorStop(0,'rgba(16,185,129,0.2)'),g.addColorStop(1,'rgba(16,185,129,0)'); else if(currentSignalState==='sell') g.addColorStop(0,'rgba(248,113,113,0.2)'),g.addColorStop(1,'rgba(248,113,113,0)'); else g.addColorStop(0,'rgba(251,191,36,0.2)'),g.addColorStop(1,'rgba(251,191,36,0)'); chartCtx.fillStyle=g; chartCtx.fill(); chartCtx.beginPath(); for(i=0;i<chartPointsArray.length;i++) chartCtx.lineTo(chartPointsArray[i].x,chartPointsArray[i].y); chartCtx.strokeStyle=currentSignalState==='buy'?'#10B981':(currentSignalState==='sell'?'#F87171':'#FBBF24'); chartCtx.lineWidth=1.5; chartCtx.stroke(); chartAnimationId=requestAnimationFrame(animateChart);}
+            function resetChartToWait(){updateChartSignal('wait');}
+            function formatPrice(p,s){if(!p)return '-'; if(s.includes('BTC')||s.includes('ETH')) return p.toFixed(2); if(s.includes('JPY')) return p.toFixed(3); if(s.includes('XAU')) return p.toFixed(2); return p.toFixed(5);}
+            function calculatePips(p1,p2,s){var d=Math.abs(p1-p2); if(s.includes('BTC')||s.includes('ETH')) return (d*100).toFixed(0); if(s.includes('JPY')) return (d*100).toFixed(1); if(s.includes('XAU')) return (d*10).toFixed(1); return (d*10000).toFixed(0);}
+            function setText(id,val){var e=document.getElementById(id); if(e) e.textContent=val||'-';}
+            function quickSelectStrategy(strategy){var p={scalp:{pair:'EUR/USD',tf:'1min',rr:'2'},intraday:{pair:'EUR/USD',tf:'15min',rr:'2'},swing:{pair:'EUR/USD',tf:'4h',rr:'3'}}[strategy]; if(p){document.getElementById('pairSelect').value=p.pair; document.getElementById('timeframeSelect').value=p.tf; document.getElementById('riskRewardSelect').value=p.rr;}}
+            function resetAnalysis(){document.getElementById('resultPanel').classList.add('hidden'); document.getElementById('emptyState').classList.remove('hidden'); resetChartToWait(); renderOrderBook('neutral',1.09234); setText('currentPrice','-'); setText('pairDisplay','EUR/USD'); setText('biasDisplay','-'); setText('biasValue','-'); setText('psarValue','-'); setText('smcValue','-'); setText('orderBlockValue','-'); setText('entrySignal','-'); setText('entryDesc','-'); setText('slValue','-'); setText('tpValue','-'); setText('slDistance','- pips'); setText('tpDistance','- pips'); document.getElementById('entryContainer').className='entry-card wait';}
+            function calculateATR(highs,lows,closes){var sum=0,period=Math.min(20,highs.length-1); for(var i=1;i<=period;i++){var tr=Math.max(highs[i]-lows[i],Math.abs(highs[i]-closes[i-1]),Math.abs(lows[i]-closes[i-1])); sum+=tr;} return sum/period;}
+            async function analyze(){if(isOnCooldown()){var rem=getCooldownRemaining(); showToast(`⏱️ Tunggu ${Math.floor(rem/60)} menit ${Math.floor(rem%60)} detik.`); return;} if(!canPerformAnalysis()){var at=getActiveQuotaType(), err=at==='NEW_USER_BONUS'?'⚠️ NEW USER BONUS habis!':(at==='PRO_WEEKLY'?'⚠️ KUOTA PRO habis!':'⚠️ FREE DAILY habis!'); document.getElementById('errorText').innerHTML=err; document.getElementById('errorMessage').classList.remove('hidden'); setTimeout(()=>document.getElementById('errorMessage').classList.add('hidden'),5000); return;} var sym=document.getElementById('pairSelect').value, iv=document.getElementById('timeframeSelect').value, rrVal=parseFloat(document.getElementById('riskRewardSelect').value); var rrParts=getRiskAndRewardParts(rrVal), riskPart=rrParts.riskPart, rewardPart=rrParts.rewardPart, rrDisplay=getRRDisplayText(rrVal); var riskPercent=BASE_RISK_PERCENT*riskPart, rewardPercent=riskPercent*(rewardPart/riskPart); document.getElementById('loadingSpinner').classList.remove('hidden'); document.getElementById('btnText').classList.add('hidden'); try{var quoteRes=await fetch(BASE_URL+'/quote?symbol='+sym+'&apikey='+API_KEY); var quote=await quoteRes.json(); if(!quote.close) throw new Error('Gagal harga'); var cp=parseFloat(quote.close); var tsRes=await fetch(BASE_URL+'/time_series?symbol='+sym+'&interval='+(timeframeMap[iv]||iv)+'&outputsize=100&apikey='+API_KEY); var ts=await tsRes.json(); if(!ts.values||ts.values.length<30) throw new Error('Data historis kurang'); var vals=ts.values, closes=vals.map(v=>parseFloat(v.close)), highs=vals.map(v=>parseFloat(v.high)), lows=vals.map(v=>parseFloat(v.low)); var atr=calculateATR(highs,lows,closes); var riskDist=cp*riskPercent, rewardDist=cp*rewardPercent; var ema20=0,ema50=0,ema100=0; for(var i=0;i<20;i++) ema20+=closes[i]; ema20/=20; for(i=0;i<50;i++) ema50+=closes[i]; ema50/=50; for(i=0;i<100;i++) ema100+=closes[i]; ema100/=100; var biasText=(cp>ema20&&cp>ema50&&cp>ema100)?'BULLISH':((cp<ema20&&cp<ema50&&cp<ema100)?'BEARISH':((ema20>ema50&&ema50>ema100&&cp>ema20)?'BULLISH':((ema20<ema50&&ema50<ema100&&cp<ema20)?'BEARISH':'NEUTRAL'))); var up=0,down=0; for(i=1;i<Math.min(14,highs.length);i++){if(highs[i]>highs[i-1]&&lows[i]>lows[i-1]) up++; else if(highs[i]<highs[i-1]&&lows[i]<lows[i-1]) down++;} var psarLong=up>=7, psarShort=down>=7, psar=psarLong?'BULLISH':(psarShort?'BEARISH':'NEUTRAL'); var hh=0,hl=0,lh=0,ll=0; for(i=0;i<Math.min(15,highs.length-2);i++){if(highs[i]>highs[i+1]&&highs[i]>highs[i+2]) hh++; if(lows[i]>lows[i+1]&&lows[i]>lows[i+2]) hl++; if(highs[i]<highs[i+1]&&highs[i]<highs[i+2]) lh++; if(lows[i]<lows[i+1]&&lows[i]<lows[i+2]) ll++;} var structure={type:'Ranging',strength:'Neutral',bias:'neutral'}; if(hh>=3&&hl>=2) structure={type:'Strong Uptrend',strength:'Strong',bias:'bullish'}; else if(ll>=3&&lh>=2) structure={type:'Strong Downtrend',strength:'Strong',bias:'bearish'}; else if(hh>=2) structure={type:'Uptrend',strength:'Moderate',bias:'bullish'}; else if(ll>=2) structure={type:'Downtrend',strength:'Moderate',bias:'bearish'}; var bullishScore=0,bearishScore=0; if(biasText==='BULLISH') bullishScore+=2; else if(biasText==='BEARISH') bearishScore+=2; if(psarLong) bullishScore+=2; else if(psarShort) bearishScore+=2; if(structure.bias==='bullish') bullishScore+=3; else if(structure.bias==='bearish') bearishScore+=3; var signal,sl,tp,dom='neutral'; if(bullishScore>=5&&bullishScore>bearishScore+2){signal='🟢 BUY'; sl=cp-riskDist; tp=cp+rewardDist; updateChartSignal('buy'); dom='bid';} else if(bearishScore>=5&&bearishScore>bullishScore+2){signal='🔴 SELL'; sl=cp+riskDist; tp=cp-rewardDist; updateChartSignal('sell'); dom='ask';} else{signal='⏳ WAIT'; sl=cp-riskDist; tp=cp+rewardDist; updateChartSignal('wait');} setText('currentPrice',formatPrice(cp,sym)); setText('pairDisplay',sym); setText('biasDisplay',biasText); setText('biasValue',biasText); setText('psarValue',psar); setText('smcValue',structure.bias.toUpperCase()); setText('orderBlockValue',formatPrice(cp-(cp*0.01),sym)); setText('entrySignal',signal); setText('entryDesc',`Skor B:${bullishScore} S:${bearishScore} | R:R ${rrDisplay}`); setText('slValue',formatPrice(sl,sym)); setText('tpValue',formatPrice(tp,sym)); setText('slDistance',calculatePips(cp,sl,sym)+' pips'); setText('tpDistance',calculatePips(cp,tp,sym)+' pips'); var ec=document.getElementById('entryContainer'); if(ec) ec.className='entry-card '+(signal.includes('BUY')?'buy':(signal.includes('SELL')?'sell':'wait')); renderOrderBook(dom,cp); document.getElementById('resultPanel').classList.remove('hidden'); document.getElementById('emptyState').classList.add('hidden'); incrementUsage(); setCooldown(); updateCooldownDisplay(); showToast(`✅ Analisa berhasil! Jeda 10 menit. Sisa: ${getCurrentQuotaRemaining()} dari ${getCurrentQuotaTotal()}`);} catch(e){console.error(e); document.getElementById('errorText').innerHTML='Gagal mendapatkan harga. Cek koneksi/API Key.'; document.getElementById('errorMessage').classList.remove('hidden'); setTimeout(()=>document.getElementById('errorMessage').classList.add('hidden'),5000);} finally{document.getElementById('loadingSpinner').classList.add('hidden'); document.getElementById('btnText').classList.remove('hidden');}}
+            function openPaymentGuide(){if(isNewUserBonusActive()){showToast('⚠️ Masih NEW USER BONUS!');return;} updatePaymentAmount(); document.getElementById('paymentModal').classList.remove('hidden'); document.getElementById('transactionId').value=''; document.getElementById('paymentSource').value=''; document.getElementById('accountHolder').value=''; document.getElementById('transactionDate').value=''; document.getElementById('userEmail').value=''; document.getElementById('userFullName').value='';}
+            function closePaymentModal(){document.getElementById('paymentModal').classList.add('hidden');}
+            function confirmPayment(){var tid=document.getElementById('transactionId').value, ps=document.getElementById('paymentSource').value, ah=document.getElementById('accountHolder').value, td=document.getElementById('transactionDate').value, em=document.getElementById('userEmail').value, fn=document.getElementById('userFullName').value, uc=document.getElementById('uniqueCodeValue').value; if(!tid){showToast('Isi nomor transaksi!');return;} if(!ps){showToast('Pilih sumber dana!');return;} if(!ah){showToast('Isi nama pemilik!');return;} if(!td){showToast('Pilih tanggal!');return;} if(!em){showToast('Isi email!');return;} if(!fn){showToast('Isi nama lengkap!');return;} if(!em.includes('@')){showToast('Email tidak valid!');return;} showToast('✅ Data tersimpan. Konfirmasi via DM @cuanhunters kode unik: '+uc); setTimeout(()=>{if(confirm('KONFIRMASI PEMBAYARAN\n\nApakah Anda sudah transfer dan ingin mengaktifkan PRO?')){activateProWeekly(); closePaymentModal(); showToast('✅ Upgrade PRO berhasil!'); updateUsageDisplay(); resetAnalysis();} else {showToast('⏳ Menunggu konfirmasi.'); closePaymentModal();}},2000);}
+            function updateTotalUsers(){var n=new Date(), lu=memoryData.lastTotalUpdate, st=memoryData.savedTotalUsers; if(lu&&st){var ld=new Date(parseInt(lu)), dd=Math.floor((n-ld)/864e5), inc=Math.floor(dd/2)*2; if(inc>0){curTotal=parseInt(st)+inc; memoryData.savedTotalUsers=curTotal; memoryData.lastTotalUpdate=n.getTime(); persistData();} else curTotal=parseInt(st);} return curTotal;}
+            function updateStatistics(){curTotal=updateTotalUsers(); var proPerc=0.23+Math.sin(Date.now()/36e5)*0.03, np=Math.floor(curTotal*proPerc); np=Math.max(Math.floor(curTotal*0.18),Math.min(Math.floor(curTotal*0.32),np)); var hod=new Date().getHours(), actBase=0.35+Math.sin(hod*Math.PI/12)*0.1, na=Math.floor(curTotal*actBase); na=Math.max(Math.floor(curTotal*0.28),Math.min(Math.floor(curTotal*0.48),na)); na+=Math.floor(Math.random()*11)-5; na=Math.max(Math.floor(curTotal*0.25),Math.min(Math.floor(curTotal*0.5),na)); var pdiff=np-proUs, adiff=na-actUsers; proUs+=Math.sign(pdiff)*Math.min(Math.abs(pdiff),3); actUsers+=Math.sign(adiff)*Math.min(Math.abs(adiff),4); proUs=Math.max(Math.floor(curTotal*0.18),Math.min(Math.floor(curTotal*0.32),proUs)); actUsers=Math.max(Math.floor(curTotal*0.28),Math.min(Math.floor(curTotal*0.48),actUsers)); freeUs=curTotal-proUs; var anim=(id,target,dur)=>{var el=document.getElementById(id); if(!el)return; var start=parseInt(el.textContent.replace(/,/g,''))||0; if(start===target)return; var inc=(target-start)/(dur/16), cur=start; var tmr=setInterval(()=>{cur+=inc; if(Math.abs(cur-target)<1){el.textContent=target.toLocaleString(); clearInterval(tmr);} else el.textContent=Math.floor(cur).toLocaleString();},16);}; anim('totalUsersCount',curTotal,800); anim('activeUsersCount',actUsers,600); anim('proUsersCount',proUs,700); anim('freeUsersCount',freeUs,750);}
+            function startMainApplication(){initStorage(); initChart(); renderOrderBook('neutral',1.09234); updateUsageDisplay(); updateCooldownDisplay(); curTotal=updateTotalUsers(); proUs=Math.floor(curTotal*0.23); freeUs=curTotal-proUs; actUsers=Math.floor(curTotal*0.35); document.getElementById('totalUsersCount').textContent=curTotal.toLocaleString(); document.getElementById('activeUsersCount').textContent=actUsers.toLocaleString(); document.getElementById('proUsersCount').textContent=proUs.toLocaleString(); document.getElementById('freeUsersCount').textContent=freeUs.toLocaleString(); setInterval(updateStatistics,15000); setInterval(()=>{updateCountdownDisplay(); resetFreeDailyIfNeeded(); updateUsageDisplay(); updateCooldownDisplay();},1000); document.getElementById('analyzeBtn').addEventListener('click',analyze); document.getElementById('refreshAnalysisBtn').addEventListener('click',analyze); document.getElementById('resetAnalysisBtn').addEventListener('click',resetAnalysis); document.getElementById('confirmPaymentBtn').addEventListener('click',confirmPayment); document.getElementById('closePaymentModalBtn').addEventListener('click',closePaymentModal); document.getElementById('buyProBtn').addEventListener('click',openPaymentGuide); document.getElementById('extendProBtn').addEventListener('click',openPaymentGuide); document.getElementById('proCard').addEventListener('click',openPaymentGuide); document.getElementById('newUserBonusCard').addEventListener('click',function(){if(isProActive()) showToast('⚠️ Sedang PRO aktif.'); else if(claimNewUserBonus()) updateUsageDisplay(); else showToast('Bonus sudah pernah diklaim.');}); document.getElementById('freeDailyCard').addEventListener('click',function(){document.getElementById('freeDailyStatus').scrollIntoView({behavior:'smooth'}); showToast('📊 Free Daily: 2 analisa/hari! Reset 00:00');}); var qItems=document.querySelectorAll('.quick-item'); for(var i=0;i<qItems.length;i++) qItems[i].addEventListener('click',function(){var s=this.getAttribute('data-strategy'); quickSelectStrategy(s); document.querySelectorAll('.quick-item').forEach(el=>el.classList.remove('active')); this.classList.add('active');});}
+            
+            startProfessionalLoading();
         })();
     </script>
 </body>
-    </html>
+                                                                                   </html>
