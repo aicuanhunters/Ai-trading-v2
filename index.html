@@ -1,0 +1,1619 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>AI CuanHunters Pro • Professional Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #0a0e17; min-height: 100vh; overflow-x: hidden; color: #e2e8f0; }
+        .premium-card { background: rgba(8, 14, 24, 0.85); backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.05); border-radius: 1.5rem; box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5); transition: all 0.3s ease; padding: 1rem; }
+        .premium-card:hover { border-color: rgba(16,185,129,0.2); transform: translateY(-1px); }
+        .header-card { background: linear-gradient(145deg, #0e1625, #080e18); border: 1px solid rgba(255,255,255,0.05); border-radius: 1.5rem; padding: 0.8rem 1rem; margin-bottom: 1rem; position: relative; overflow: hidden; }
+        .header-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, #10B981, #3B82F6, #8B5CF6, #10B981); background-size: 300% 100%; animation: gradientMove 6s linear infinite; }
+        @keyframes gradientMove { 0% { background-position: 0% 0%; } 100% { background-position: 300% 0%; } }
+        .logo-3d { width: 36px; height: 36px; flex-shrink: 0; perspective: 1200px; }
+        .logo-inner { width: 100%; height: 100%; transform-style: preserve-3d; animation: logoSpin 15s linear infinite; }
+        @keyframes logoSpin { from { transform: rotateY(0deg); } to { transform: rotateY(360deg); } }
+        .logo-face { position: absolute; width: 100%; height: 100%; border-radius: 50%; overflow: hidden; border: 1px solid rgba(16,185,129,0.4); }
+        .globe { position: relative; width: clamp(40px, 6vw, 70px); height: clamp(40px, 6vw, 70px); border-radius: 50%; background: radial-gradient(circle at 30% 30%, rgba(16,185,129,0.3), rgba(16,185,129,0.8)); animation: globeSpin 12s linear infinite; cursor: pointer; }
+        .globe::before { content: ''; position: absolute; top: 5%; left: 5%; width: 90%; height: 90%; border-radius: 50%; background: repeating-linear-gradient(45deg, transparent, transparent 15px, rgba(16,185,129,0.2) 15px, rgba(16,185,129,0.2) 25px); }
+        .globe-inner { position: absolute; top: 10%; left: 10%; width: 80%; height: 80%; border-radius: 50%; background: radial-gradient(circle at 60% 40%, rgba(16,185,129,0.6), rgba(16,185,129,0.2)); filter: blur(4px); animation: innerGlow 3s ease-in-out infinite alternate; }
+        .continent { position: absolute; background: rgba(16,185,129,0.4); border-radius: 50%; filter: blur(1px); }
+        .continent-1 { width: 25%; height: 20%; top: 25%; left: 20%; clip-path: polygon(30% 0%, 70% 0%, 85% 50%, 70% 100%, 30% 100%, 15% 50%); }
+        .continent-2 { width: 30%; height: 25%; bottom: 20%; right: 15%; clip-path: polygon(20% 0%, 80% 0%, 95% 50%, 80% 100%, 20% 100%, 5% 50%); }
+        @keyframes globeSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes innerGlow { 0% { opacity: 0.3; transform: scale(0.95); } 100% { opacity: 0.6; transform: scale(1.05); } }
+        .globe-wrapper { display: flex; align-items: center; gap: 0.5rem; background: rgba(16,185,129,0.08); padding: 0.2rem 0.6rem 0.2rem 0.4rem; border-radius: 40px; border: 1px solid rgba(16,185,129,0.2); }
+        .globe-text { font-size: 0.6rem; color: #94a3b8; }
+        .usage-card { background: linear-gradient(135deg, rgba(16,185,129,0.05), rgba(16,185,129,0.01)); border-radius: 1.5rem; padding: 1rem; border: 1px solid rgba(16,185,129,0.15); margin-bottom: 1rem; }
+        .stats-container { margin-top: 1rem; }
+        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+        .stat-card { background: linear-gradient(135deg, rgba(20, 28, 40, 0.9), rgba(15, 22, 32, 0.9)); border-radius: 1rem; padding: 0.85rem; border: 1px solid rgba(255,255,255,0.08); transition: all 0.3s ease; position: relative; overflow: hidden; backdrop-filter: blur(10px); }
+        .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #10B981, #3B82F6, #8B5CF6); opacity: 0; transition: opacity 0.3s ease; }
+        .stat-card:hover::before { opacity: 1; }
+        .stat-card:hover { transform: translateY(-2px); border-color: rgba(16,185,129,0.3); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3); }
+        .stat-icon { width: 36px; height: 36px; background: rgba(16,185,129,0.12); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 0.6rem; }
+        .stat-number { font-size: 1.8rem; font-weight: 800; font-family: 'Space Grotesk', monospace; color: #ffffff; line-height: 1.1; letter-spacing: -0.02em; }
+        .stat-label { font-size: 0.6rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.8px; margin-top: 0.3rem; font-weight: 500; }
+        .stat-trend { font-size: 0.5rem; display: flex; align-items: center; gap: 0.3rem; margin-top: 0.4rem; padding-top: 0.3rem; border-top: 1px solid rgba(255,255,255,0.05); }
+        .trend-up { color: #10B981; }
+        .online-indicator { width: 8px; height: 8px; background: #10B981; border-radius: 50%; display: inline-block; animation: pulseOnline 1.5s infinite; margin-right: 0.3rem; }
+        @keyframes pulseOnline { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.2); } }
+        .circular-progress { position: relative; width: 80px; height: 80px; }
+        .circular-progress svg { transform: rotate(-90deg); width: 80px; height: 80px; }
+        .circular-progress circle { fill: none; stroke-width: 6; stroke-linecap: round; }
+        .circular-progress .bg-circle { stroke: rgba(255,255,255,0.08); }
+        .circular-progress .progress-circle { stroke: url(#gradientProgress); transition: stroke-dashoffset 0.5s ease; }
+        .progress-percentage { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 1.1rem; font-weight: 800; background: linear-gradient(135deg, #10B981, #00D4FF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .stat-chip { background: rgba(16,185,129,0.08); border-radius: 12px; padding: 0.4rem 0.6rem; text-align: center; border: 1px solid rgba(16,185,129,0.12); }
+        .stat-chip .label { font-size: 0.55rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; }
+        .stat-chip .value { font-size: 1rem; font-weight: 700; background: linear-gradient(135deg, #10B981, #00D4FF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .countdown-timer { background: linear-gradient(135deg, rgba(16,185,129,0.08), rgba(16,185,129,0.02)); border-radius: 1rem; padding: 0.5rem; text-align: center; border: 1px solid rgba(16,185,129,0.15); }
+        .countdown-numbers { display: flex; gap: 0.4rem; justify-content: center; margin-top: 0.3rem; flex-wrap: wrap; }
+        .countdown-block { text-align: center; background: rgba(0,0,0,0.3); border-radius: 10px; padding: 0.3rem 0.3rem; min-width: 45px; }
+        .countdown-number { font-size: 1rem; font-weight: 700; background: linear-gradient(135deg, #FBBF24, #F59E0B); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .countdown-label { font-size: 0.45rem; color: #94a3b8; }
+        .price-info { background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(16,185,129,0.05)); border-radius: 12px; padding: 0.5rem; text-align: center; margin-bottom: 0.75rem; }
+        .info-banner-free { background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(59,130,246,0.05)); border-radius: 12px; padding: 0.6rem; margin-bottom: 0.75rem; border-left: 3px solid #3B82F6; display: flex; align-items: center; gap: 0.5rem; }
+        .info-banner-free i { color: #3B82F6; font-size: 0.8rem; }
+        .info-banner-free span { font-size: 0.6rem; color: #cbd5e1; }
+        .quick-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-bottom: 1rem; }
+        .quick-item { background: rgba(6,12,20,0.8); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 0.5rem 0.2rem; text-align: center; cursor: pointer; transition: all 0.2s ease; }
+        .quick-item:hover { background: rgba(16,185,129,0.08); border-color: rgba(16,185,129,0.3); }
+        .quick-item.active { background: rgba(16,185,129,0.15); border-color: #10B981; }
+        .quick-item i { font-size: 0.9rem; color: #10B981; margin-bottom: 0.1rem; display: block; }
+        .quick-item span { font-size: 0.55rem; font-weight: 600; color: #cbd5e1; }
+        .cyber-select select { width: 100%; background: #0b111e; border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 0.5rem 0.8rem; color: #e2e8f0; font-size: 0.7rem; appearance: none; cursor: pointer; }
+        .cyber-select { position: relative; }
+        .cyber-select i { position: absolute; right: 0.8rem; top: 50%; transform: translateY(-50%); color: #10B981; font-size: 0.7rem; pointer-events: none; }
+        .input-label { display: flex; align-items: center; gap: 0.3rem; margin-bottom: 0.3rem; font-size: 0.6rem; color: #94a3b8; text-transform: uppercase; }
+        .premium-btn { background: linear-gradient(135deg, #10B981, #059669); border: none; border-radius: 12px; padding: 0.6rem; color: white; font-weight: 600; font-size: 0.7rem; width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.4rem; transition: all 0.2s ease; }
+        .premium-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 20px -8px rgba(16,185,129,0.4); }
+        .premium-btn.disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; background: linear-gradient(135deg, #4b5563, #374151); }
+        .cooldown-timer-card { background: linear-gradient(135deg, rgba(245,158,11,0.15), rgba(245,158,11,0.05)); border-radius: 12px; padding: 0.5rem; margin-top: 0.5rem; border: 1px solid rgba(245,158,11,0.3); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; }
+        .cooldown-timer-card i { color: #F59E0B; font-size: 0.8rem; }
+        .cooldown-timer-card .cooldown-text { font-size: 0.6rem; color: #FBBF24; font-weight: 500; }
+        .cooldown-timer-card .cooldown-time { font-size: 1rem; font-weight: 800; font-family: monospace; color: #F59E0B; }
+        .chart-container { width: 100%; height: 100px; position: relative; border-radius: 12px; background: #0a101c; border: 1px solid rgba(16,185,129,0.1); margin-bottom: 0.5rem; }
+        .orderbook-card { background: #0c1320; border-radius: 1rem; padding: 0.8rem; border: 1px solid rgba(255,255,255,0.05); }
+        .orderbook-row { display: flex; align-items: center; justify-content: space-between; padding: 0.2rem 0.5rem; background: rgba(0,0,0,0.3); border-radius: 20px; margin-bottom: 0.2rem; }
+        .orderbook-lot { font-family: 'Space Grotesk', monospace; font-weight: 700; font-size: 0.6rem; }
+        .volume-bar-bid { background: #10B981; height: 4px; border-radius: 4px; }
+        .volume-bar-ask { background: #F87171; height: 4px; border-radius: 4px; }
+        .price-amount { font-size: 1.3rem; font-weight: 800; font-family: 'Space Grotesk', monospace; color: #34d399; }
+        .strategy-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-bottom: 0.5rem; }
+        .strategy-item { background: #0f1728; border-radius: 12px; padding: 0.5rem 0.2rem; text-align: center; border: 1px solid rgba(255,255,255,0.05); }
+        .strategy-item div:first-child { font-size: 0.5rem; color: #94a3b8; margin-bottom: 0.2rem; }
+        .strategy-item div:last-child { font-size: 0.7rem; font-weight: 700; color: #fff; }
+        .entry-card { background: #0f1728; border-radius: 12px; padding: 0.6rem; margin-bottom: 0.5rem; }
+        .entry-title { font-size: 0.9rem; font-weight: 800; }
+        .entry-card.buy .entry-title { color: #34d399; }
+        .entry-card.sell .entry-title { color: #f87171; }
+        .entry-card.wait .entry-title { color: #fbbf24; }
+        .sltp-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; margin-bottom: 0.5rem; }
+        .sltp-item { background: #0f1728; border-radius: 12px; padding: 0.5rem; border: 1px solid rgba(255,255,255,0.05); }
+        .sltp-item div:first-child { font-size: 0.55rem; color: #94a3b8; }
+        .sltp-item div:nth-child(2) { font-size: 0.85rem; font-weight: 700; }
+        .signal-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+        .signal-dot.buy { background: #10B981; box-shadow: 0 0 8px #10B981; animation: pulseDot 1.2s infinite; }
+        .signal-dot.sell { background: #F87171; box-shadow: 0 0 8px #F87171; animation: pulseDot 1.2s infinite; }
+        .signal-dot.wait { background: #FBBF24; box-shadow: 0 0 8px #FBBF24; animation: pulseDot 1.2s infinite; }
+        @keyframes pulseDot { 0%,100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+        .badge-subscribed { background: linear-gradient(135deg, #10B981, #059669); color: white; padding: 0.2rem 0.5rem; border-radius: 20px; font-size: 0.6rem; font-weight: 600; }
+        .badge-unsubscribed { background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.3); color: #f87171; padding: 0.2rem 0.5rem; border-radius: 20px; font-size: 0.6rem; font-weight: 600; }
+        .badge-free-tier { background: linear-gradient(135deg, #3B82F6, #2563EB); color: white; padding: 0.2rem 0.5rem; border-radius: 20px; font-size: 0.6rem; font-weight: 600; }
+        .subscription-btn { padding: 0.4rem 0.6rem; border-radius: 10px; font-weight: 600; font-size: 0.6rem; display: inline-flex; align-items: center; gap: 0.3rem; cursor: pointer; border: none; color: white; background: linear-gradient(135deg, #10B981, #059669); transition: all 0.2s ease; }
+        .subscription-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(16,185,129,0.3); }
+        .subscription-btn.disabled-upgrade { opacity: 0.5; cursor: not-allowed; pointer-events: none; background: linear-gradient(135deg, #4b5563, #374151); }
+        .hidden { display: none !important; }
+        .ai-container { max-width: 1200px; margin: 1rem auto; padding: 0 1rem; }
+        .dashboard-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+        @media (min-width: 1024px) { .dashboard-grid { grid-template-columns: repeat(2, 1fr); } }
+        .left-column, .right-column { display: flex; flex-direction: column; gap: 1rem; }
+        .loading-spinner { width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.1); border-radius: 50%; border-top-color: #10B981; animation: spin 0.6s linear infinite; display: inline-block; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .live-badge { background: rgba(16,185,129,0.12); padding: 0.15rem 0.5rem; border-radius: 20px; font-size: 0.6rem; color: #34d399; }
+        .pulse-dot { width: 6px; height: 6px; background: #10B981; border-radius: 50%; animation: pulse 1.2s infinite; display: inline-block; }
+        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .toast-notification { position: fixed; bottom: 1rem; right: 1rem; background: linear-gradient(135deg, #10B981, #059669); color: white; padding: 0.6rem 1rem; border-radius: 12px; display: flex; align-items: center; gap: 0.5rem; z-index: 10000; font-size: 0.7rem; animation: slideIn 0.3s ease, fadeOut 0.3s ease 2.7s forwards; }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
+        .bill-reminder { background: linear-gradient(135deg, rgba(245,158,11,0.2), rgba(245,158,11,0.08)); border: 2px solid rgba(245,158,11,0.5); border-radius: 12px; padding: 0.8rem; margin-top: 0.8rem; animation: pulseOrange 1.5s infinite; position: relative; overflow: hidden; }
+        .bill-reminder::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(245,158,11,0.2), transparent); animation: shineBill 2s infinite; }
+        @keyframes shineBill { 0% { left: -100%; } 100% { left: 100%; } }
+        @keyframes pulseOrange { 0%,100% { border-color: rgba(245,158,11,0.5); } 50% { border-color: rgba(245,158,11,0.9); box-shadow: 0 0 15px rgba(245,158,11,0.3); } }
+        .free-tier-card { background: linear-gradient(135deg, rgba(59,130,246,0.1), rgba(59,130,246,0.05)); border: 1px solid rgba(59,130,246,0.3); border-radius: 12px; padding: 0.6rem; margin-top: 0.5rem; }
+        .subscription-warning { background: linear-gradient(135deg, rgba(239,68,68,0.1), rgba(239,68,68,0.05)); border: 1px solid rgba(239,68,68,0.3); border-radius: 12px; padding: 0.6rem; margin-top: 0.5rem; }
+        .payment-modal-content { max-width: 500px; width: 95%; max-height: 85vh; overflow-y: auto; background: linear-gradient(145deg, #121b2b, #0b111e); border-radius: 1.5rem; border: 1px solid rgba(16,185,129,0.3); }
+        .confirmation-input { background: #0f1728; border: 1px solid rgba(16,185,129,0.2); border-radius: 10px; padding: 0.5rem 0.8rem; color: #e2e8f0; width: 100%; font-size: 0.7rem; }
+        .confirmation-input::placeholder { color: #64748b; }
+        .confirm-payment-btn { background: linear-gradient(135deg, #10B981, #059669); border: none; border-radius: 12px; padding: 0.6rem; color: white; font-weight: 600; font-size: 0.7rem; cursor: pointer; width: 100%; }
+        .step-number { width: 24px; height: 24px; background: linear-gradient(135deg, #10B981, #00D4FF); border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; color: white; font-size: 0.7rem; }
+        .qr-code-container { background: white; border-radius: 16px; padding: 1rem; text-align: center; margin-bottom: 1rem; }
+        .qr-code-container img { max-width: 200px; width: 100%; height: auto; margin: 0 auto; border-radius: 12px; }
+        .unique-code { font-family: monospace; font-size: 1.2rem; font-weight: bold; color: #F59E0B; background: rgba(0,0,0,0.3); padding: 0.2rem 0.6rem; border-radius: 8px; letter-spacing: 2px; }
+        .amount-highlight { font-size: 1.5rem; font-weight: 800; color: #10B981; }
+        .social-links { display: flex; justify-content: center; gap: 1.5rem; margin-top: 0.5rem; }
+        .social-icon { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; background: rgba(255,255,255,0.05); border-radius: 50%; transition: all 0.3s ease; color: #94a3b8; }
+        .social-icon:hover { transform: translateY(-2px); background: rgba(16,185,129,0.2); }
+        .social-icon.tiktok:hover { color: #010101; background: #ffffff; }
+        .social-icon.instagram:hover { color: #E4405F; background: white; }
+        .form-group { margin-bottom: 0.75rem; }
+        .form-label { font-size: 0.6rem; color: #94a3b8; margin-bottom: 0.25rem; display: block; font-weight: 500; }
+        .fixed-nominal { background: linear-gradient(135deg, #10B981, #059669); padding: 0.3rem 0.8rem; border-radius: 20px; display: inline-block; font-weight: 700; color: white; font-size: 0.7rem; }
+        .premium-offer-section { margin-bottom: 1rem; }
+        .offer-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem; }
+        .offer-badge { background: linear-gradient(135deg, rgba(16,185,129,0.2), rgba(59,130,246,0.2)); padding: 0.25rem 0.75rem; border-radius: 40px; border: 1px solid rgba(16,185,129,0.3); }
+        .offer-badge i { color: #F59E0B; font-size: 0.65rem; margin-right: 0.3rem; }
+        .offer-badge span { font-size: 0.55rem; font-weight: 600; background: linear-gradient(135deg, #F59E0B, #FBBF24); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .promo-cards-modern { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-bottom: 0.75rem; }
+        .promo-card-modern { background: linear-gradient(145deg, rgba(12, 20, 30, 0.9), rgba(8, 14, 24, 0.95)); border-radius: 1rem; padding: 0.8rem 0.5rem; text-align: center; border: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden; }
+        .promo-card-modern::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #10B981, #3B82F6, #8B5CF6); transform: scaleX(0); transition: transform 0.3s ease; }
+        .promo-card-modern:hover { transform: translateY(-4px); border-color: rgba(16,185,129,0.3); box-shadow: 0 15px 30px -12px rgba(0,0,0,0.5); }
+        .promo-card-modern:hover::before { transform: scaleX(1); }
+        .promo-card-modern.disabled-upgrade-card { opacity: 0.6; cursor: not-allowed; pointer-events: none; filter: grayscale(0.3); }
+        .promo-icon-modern { width: 40px; height: 40px; margin: 0 auto 0.5rem; background: rgba(16,185,129,0.12); border-radius: 20px; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; }
+        .promo-card-modern:hover .promo-icon-modern { background: rgba(16,185,129,0.25); transform: scale(1.05); }
+        .promo-icon-modern i { font-size: 1.2rem; }
+        .promo-title-modern { font-size: 0.75rem; font-weight: 700; color: #fff; margin-bottom: 0.2rem; }
+        .promo-price-modern { font-size: 0.9rem; font-weight: 800; background: linear-gradient(135deg, #10B981, #00D4FF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 0.2rem 0; }
+        .promo-desc-modern { font-size: 0.55rem; color: #94a3b8; line-height: 1.3; }
+        .promo-feature { font-size: 0.5rem; color: #64748b; margin-top: 0.3rem; display: flex; align-items: center; justify-content: center; gap: 0.2rem; }
+        .info-panel { background: linear-gradient(135deg, rgba(16,185,129,0.05), rgba(59,130,246,0.03)); border-radius: 1rem; padding: 0.6rem 0.8rem; margin-bottom: 1rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; border: 1px solid rgba(16,185,129,0.1); }
+        .info-panel-item { display: flex; align-items: center; gap: 0.4rem; }
+        .info-panel-item i { font-size: 0.7rem; color: #10B981; }
+        .info-panel-item span { font-size: 0.55rem; color: #cbd5e1; }
+        .daily-quota-badge { background: linear-gradient(135deg, #F59E0B, #D97706); border-radius: 20px; padding: 0.2rem 0.6rem; font-size: 0.55rem; font-weight: 600; color: white; display: inline-flex; align-items: center; gap: 0.3rem; }
+        .quota-type-badge { background: rgba(16,185,129,0.2); border-radius: 12px; padding: 0.2rem 0.5rem; font-size: 0.5rem; color: #10B981; font-weight: 500; }
+        .bonus-countdown { background: linear-gradient(135deg, rgba(16,185,129,0.2), rgba(16,185,129,0.05)); border-radius: 12px; padding: 0.4rem; text-align: center; margin-top: 0.5rem; border: 1px solid rgba(16,185,129,0.2); }
+        .bonus-countdown .label { font-size: 0.55rem; color: #94a3b8; }
+        .bonus-countdown .time { font-size: 0.9rem; font-weight: 700; color: #10B981; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <div class="ai-container">
+        <!-- HEADER -->
+        <div class="header-card">
+            <div class="flex items-center justify-between flex-wrap gap-2">
+                <div class="flex items-center gap-2">
+                    <div class="logo-3d"><div class="logo-inner"><div class="logo-face"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh9YQmaIHSrk0AT8IpfU-nDQ2NmGo700YpMQSj3Lvo-_7kX4G6xyX_pd5KyxCznX6r0Tl2vYvZkZf797uCgHXQflFsDW5-HThG2rIg3PCR1LXrhuU3GDndJkLyyfdhC5LfsQuw2TFnwTAePABrvRF-PVrOF3ZTqBqMNYZ-ErDcXvCW5sCzLGcIkWzO_6YwN/s1024/1000832791.png" style="width:100%; height:100%; object-fit:cover; border-radius:50%;"></div></div></div>
+                    <div><h1 class="text-sm font-bold text-white">AI CUANHUNTERS PRO</h1><p class="text-[0.55rem] text-slate-400">Smart Money Concepts • Bias • PSAR</p></div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="globe-wrapper"><div class="globe"><div class="globe-inner"></div><div class="continent continent-1"></div><div class="continent continent-2"></div></div><span class="globe-text">Global Market</span></div>
+                    <div class="flex items-center gap-1"><div class="pulse-dot"></div><span class="text-[0.6rem] text-emerald-400">LIVE</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- USAGE CARD -->
+        <div class="usage-card">
+            <div class="flex justify-between items-center mb-3 flex-wrap gap-2">
+                <div class="flex items-center gap-2"><i class="fas fa-chart-line text-emerald-400 text-sm"></i><div><h3 class="text-sm font-semibold text-white" id="planTitle">Layanan paket</h3><p class="text-[0.55rem] text-slate-400" id="planDesc">Rp 125.000/minggu • 15 analisa</p></div></div>
+            </div>
+
+            <div class="info-banner-free">
+                <i class="fas fa-info-circle"></i>
+                <span><strong class="text-blue-400">📋 KEBIJAKAN TERBARU</strong> 
+                <strong class="text-emerald-400">Pengguna baru: 15 analisa GRATIS dengan masa aktif 7 hari. Hanya bisa diklaim SEKALI seumur hidup!</strong>
+            </div>
+
+            <div class="premium-offer-section">
+                <div class="offer-header">
+                    <div class="offer-badge"><i class="fas fa-bolt"></i><span>PILIH SALAH SATU PAKET</span></div>
+                    <div class="text-[0.5rem] text-slate-500"><i class="fas fa-clock"></i> Aktif 7 hari</div>
+                </div>
+                <div class="promo-cards-modern">
+                    <div class="promo-card-modern" id="newUserBonusCard">
+                        <div class="promo-icon-modern"><i class="fas fa-gem"></i></div>
+                        <div class="promo-title-modern">NEW USER BONUS</div>
+                        <div class="promo-price-modern">GRATIS</div>
+                        <div class="promo-desc-modern">15 analisa • 7 hari aktif</div>
+                        <div class="promo-feature"><i class="fas fa-check-circle"></i> <span>SEKALI SEUMUR HIDUP</span></div>
+                    </div>
+                    <div class="promo-card-modern" id="proCard">
+                        <div class="promo-icon-modern"><i class="fas fa-crown"></i></div>
+                        <div class="promo-title-modern">PRO MINGGUAN</div>
+                        <div class="promo-price-modern">Rp 125.000</div>
+                        <div class="promo-desc-modern">15 analisa / minggu</div>
+                        <div class="promo-feature"><i class="fas fa-chart-line"></i> <span>Akun pro</span></div>
+                    </div>
+                    <div class="promo-card-modern" id="freeDailyCard">
+                        <div class="promo-icon-modern"><i class="fas fa-chart-simple"></i></div>
+                        <div class="promo-title-modern">FREE DAILY</div>
+                        <div class="promo-price-modern">GRATIS</div>
+                        <div class="promo-desc-modern">2 analisa / hari</div>
+                        <div class="promo-feature"><i class="fas fa-infinity"></i> <span>Non pro</span></div>
+                    </div>
+                </div>
+                <div class="info-panel">
+                    <div class="info-panel-item"><i class="fas fa-gem text-emerald-400"></i><span>New User: 15 analisa (7 hari) - SEKALI SEUMUR HIDUP</span></div>
+                    <div class="info-panel-item"><i class="fas fa-crown text-purple-400"></i><span>PRO: 15 analisa/minggu - Bisa diperpanjang</span></div>
+                    <div class="info-panel-item"><i class="fas fa-sun text-yellow-400"></i><span>Free Daily: 2 analisa/hari - Selamanya gratis</span></div>
+                </div>
+            </div>
+
+            <div class="price-info">
+                <i class="fas fa-tag text-emerald-400 text-[0.6rem]"></i>
+                <span class="font-bold text-emerald-400 text-xs" id="priceAmount">Rp 125.000</span>
+                <span class="text-slate-400 text-[0.6rem]" id="pricePeriod"> / minggu</span>
+                <p class="text-[0.55rem] text-slate-500 mt-1" id="priceNote">SETIAP ANALISA AKAN MENGURANGI KUOTA. NEW USER BONUS: 15 analisa GRATIS (hanya 1x seumur hidup). Upgrade ke PRO untuk 15 analisa/minggu.</p>
+            </div>
+
+            <div class="flex items-center justify-between gap-3 flex-wrap">
+                <div class="circular-progress"><svg viewBox="0 0 120 120"><defs><linearGradient id="gradientProgress" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#10B981"/><stop offset="100%" stop-color="#00D4FF"/></linearGradient></defs><circle cx="60" cy="60" r="52" class="bg-circle"/><circle cx="60" cy="60" r="52" class="progress-circle" id="progressCircleMain" stroke-dasharray="326.9" stroke-dashoffset="326.9"/></svg><div class="progress-percentage" id="mainPercentage">0%</div></div>
+                <div class="flex gap-2 flex-1">
+                    <div class="stat-chip flex-1"><div class="label"><i class="fas fa-chart-simple"></i> TERPAKAI</div><div class="value" id="usedCount">0</div><div class="text-[0.5rem] text-slate-500" id="totalQuotaLabel">dari quota</div></div>
+                    <div class="stat-chip flex-1"><div class="label"><i class="fas fa-hourglass-half"></i> SISA</div><div class="value" id="remainingCount">0</div><div class="text-[0.5rem] text-slate-500" id="remainingLabel">analisa</div></div>
+                </div>
+            </div>
+
+            <div class="mt-2">
+                <div class="flex justify-between text-[0.55rem] text-slate-400 mb-1"><span>Progress Kuota</span><span id="progressPercent" class="text-emerald-400">0%</span></div>
+                <div class="bg-white/5 rounded-full h-1.5 overflow-hidden"><div id="usageBar" class="h-full bg-gradient-to-r from-emerald-500 to-cyan-400 rounded-full transition-all" style="width:0%"></div></div>
+            </div>
+
+            <div id="bonusCountdown" class="bonus-countdown hidden">
+                <div class="label"><i class="fas fa-hourglass-half"></i> Sisa Waktu Bonus New User</div>
+                <div class="time" id="bonusTimer">7 hari 0 jam 0 menit</div>
+                <div class="text-[0.5rem] text-slate-500 mt-1">Setelah masa bonus berakhir, Anda akan beralih ke FREE DAILY (2 analisa/hari)</div>
+            </div>
+
+            <div id="proCountdown" class="bonus-countdown hidden" style="background: linear-gradient(135deg, rgba(139,92,246,0.2), rgba(139,92,246,0.05)); border-color: rgba(139,92,246,0.3);">
+                <div class="label"><i class="fas fa-crown text-purple-400"></i> Sisa Waktu PRO Mingguan</div>
+                <div class="time" id="proTimer" style="color: #A78BFA;">7 hari 0 jam 0 menit</div>
+                <div class="text-[0.5rem] text-slate-500 mt-1">Setelah masa PRO berakhir, Anda akan beralih ke FREE DAILY (2 analisa/hari)</div>
+            </div>
+
+            <div class="flex justify-center mt-2">
+                <div id="activeQuotaType" class="quota-type-badge"><i class="fas fa-info-circle"></i> Menentukan kuota aktif...</div>
+            </div>
+
+            <div id="cooldownCard" class="cooldown-timer-card hidden">
+                <div><i class="fas fa-hourglass-half"></i> <span class="cooldown-text">⏱️ Jeda Analisa</span></div>
+                <div><span class="cooldown-time" id="cooldownTimerDisplay">10:00</span></div>
+                <div><span class="cooldown-text">Silakan tunggu sebelum analisa berikutnya</span></div>
+            </div>
+
+            <div class="countdown-timer mt-2">
+                <div class="flex items-center justify-center gap-1"><i class="fas fa-clock text-amber-400 text-[0.6rem]"></i><span class="text-[0.6rem] text-slate-400">Reset Harian Free Daily dalam</span></div>
+                <div class="countdown-numbers">
+                    <div class="countdown-block"><div class="countdown-number" id="countdownDays">0</div><div class="countdown-label">Hari</div></div>
+                    <div class="countdown-block"><div class="countdown-number" id="countdownHours">0</div><div class="countdown-label">Jam</div></div>
+                    <div class="countdown-block"><div class="countdown-number" id="countdownMinutes">0</div><div class="countdown-label">Menit</div></div>
+                    <div class="countdown-block"><div class="countdown-number" id="countdownSeconds">00</div><div class="countdown-label">Detik</div></div>
+                </div>
+            </div>
+
+            <div id="billReminder" class="bill-reminder hidden">
+                <div class="reminder-title"><i class="fas fa-bell fa-beat-fade"></i><span>⚠️ PERIODE PRO AKAN BERAKHIR ⚠️</span></div>
+                <div class="reminder-content"><p><strong>Paket PRO Mingguan Anda akan segera berakhir!</strong></p><p>Sisa waktu: <span id="remainingDays" style="color:#F59E0B; font-weight:700;">0</span> hari.</p></div>
+                <div class="reminder-highlight"><p><i class="fas fa-info-circle"></i> <strong>Informasi Penting:</strong></p><p>• Setelah periode berakhir, Anda akan beralih ke <strong class="text-yellow-400">FREE DAILY (2 analisa/hari)</strong></p><p>• Upgrade kembali ke PRO: Rp 125.000/minggu untuk 15 analisa</p></div>
+                <div style="margin-top: 0.5rem;"><button id="extendProBtn" class="subscription-btn" style="padding: 0.4rem 0.8rem; font-size: 0.6rem; width: 100%; justify-content: center;"><i class="fas fa-crown"></i> PERPANJANG PRO MINGGUAN</button></div>
+            </div>
+            
+            <div id="freeDailyStatus" class="free-tier-card">
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-sun text-yellow-400"></i>
+                    <div>
+                        <div class="font-bold text-yellow-400 text-[0.6rem]">📊 FREE DAILY ACTIVE</div>
+                        <div class="text-[0.55rem] text-slate-400">Anda mendapatkan <strong class="text-yellow-400">2 analisa GRATIS per HARI</strong>. Reset setiap pukul 00:00.</div>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between mt-2">
+                    <span class="text-[0.5rem] text-slate-500"><i class="fas fa-redo-alt"></i> Reset setiap pukul 00:00</span>
+                    <span class="daily-quota-badge"><i class="fas fa-chart-line"></i> <span id="dailyUsedToday">0</span>/2 hari ini</span>
+                </div>
+            </div>
+            
+            <div id="newUserBonusAlert" class="hidden bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-2 mt-2">
+                <div class="flex items-center gap-2"><i class="fas fa-gift text-emerald-400"></i><div><div class="font-bold text-emerald-400 text-[0.6rem]">🎉 NEW USER BONUS ACTIVE!</div><div class="text-[0.55rem] text-slate-400">Anda memiliki <strong class="text-emerald-400" id="bonusRemaining">15</strong> analisa gratis. Masa aktif <strong class="text-emerald-400" id="bonusTimeLeft">7 hari</strong>. <strong class="text-yellow-400">FREE DAILY (2/hari) TIDAK AKTIF</strong> selama bonus berlangsung.</div></div></div>
+            </div>
+            
+            <div id="subscriptionActive" class="hidden bg-purple-500/10 border border-purple-500/30 rounded-xl p-2 mt-2">
+                <div class="flex items-center gap-2"><i class="fas fa-crown text-purple-400"></i><div><div class="font-bold text-purple-400 text-[0.6rem]" id="activePlanLabel">PRO MINGGUAN AKTIF</div><div class="text-[0.55rem] text-slate-400" id="activePlanDesc">15 analisa per minggu • <strong class="text-yellow-400">FREE DAILY (2/hari) TIDAK AKTIF</strong></div></div></div>
+                <div class="text-[0.5rem] text-slate-500 mt-1"><i class="fas fa-clock"></i> Masa aktif tersisa: <span id="proRemainingDays">7</span> hari</div>
+            </div>
+            
+            <div id="quotaExhaustedWarning" class="subscription-warning hidden">
+                <div class="flex items-center gap-2"><i class="fas fa-exclamation-triangle text-red-400"></i><div><div class="font-bold text-red-400 text-[0.6rem]">⚠️ KUOTA ANALISA HABIS! ⚠️</div><div class="text-[0.55rem] text-red-300">Anda telah menghabiskan semua analisa. Silakan <strong>berlangganan PRO Mingguan (Rp 125.000)</strong> untuk melanjutkan analisa.</div></div></div>
+                <button id="buyProBtn" class="subscription-btn text-[0.55rem] mt-2 w-full"><i class="fas fa-crown"></i> BELI PAKET PRO MINGGUAN</button>
+            </div>
+        </div>
+
+        <!-- DASHBOARD GRID -->
+        <div class="dashboard-grid">
+            <div class="left-column">
+                <div class="premium-card">
+                    <div class="flex items-center gap-2 mb-2"><i class="fas fa-sliders-h text-emerald-400 text-sm"></i><div><div class="font-semibold text-white text-xs">Strategy Configuration</div><div class="text-[0.55rem] text-slate-400">Customize your trading parameters</div></div></div>
+                    <div class="quick-grid"><div class="quick-item" data-strategy="scalp"><i class="fas fa-bolt"></i><span>SCALP</span></div><div class="quick-item active" data-strategy="intraday"><i class="fas fa-clock"></i><span>INTRADAY</span></div><div class="quick-item" data-strategy="swing"><i class="fas fa-calendar-alt"></i><span>SWING</span></div></div>
+                    
+                    <div class="mb-2"><div class="input-label"><i class="fas fa-coins"></i><span>TRADING PAIR (40+ Pasangan)</span></div><div class="cyber-select"><select id="pairSelect">
+                        <optgroup label="🇺🇸 MAJOR PAIRS"><option value="EUR/USD" selected>🇪🇺 EUR/USD - Euro / US Dollar</option><option value="GBP/USD">🇬🇧 GBP/USD - Pound Sterling / US Dollar</option><option value="USD/JPY">🇯🇵 USD/JPY - US Dollar / Japanese Yen</option><option value="USD/CHF">🇨🇭 USD/CHF - US Dollar / Swiss Franc</option><option value="AUD/USD">🇦🇺 AUD/USD - Australian Dollar / US Dollar</option><option value="USD/CAD">🇨🇦 USD/CAD - US Dollar / Canadian Dollar</option><option value="NZD/USD">🇳🇿 NZD/USD - New Zealand Dollar / US Dollar</option></optgroup>
+                        <optgroup label="🇪🇺 MINOR / CROSS PAIRS"><option value="EUR/GBP">🇪🇺🇬🇧 EUR/GBP - Euro / Pound Sterling</option><option value="EUR/AUD">🇪🇺🇦🇺 EUR/AUD - Euro / Australian Dollar</option><option value="EUR/CAD">🇪🇺🇨🇦 EUR/CAD - Euro / Canadian Dollar</option><option value="EUR/CHF">🇪🇺🇨🇭 EUR/CHF - Euro / Swiss Franc</option><option value="EUR/JPY">🇪🇺🇯🇵 EUR/JPY - Euro / Japanese Yen</option><option value="EUR/NZD">🇪🇺🇳🇿 EUR/NZD - Euro / New Zealand Dollar</option><option value="GBP/JPY">🇬🇧🇯🇵 GBP/JPY - Pound Sterling / Japanese Yen</option><option value="GBP/AUD">🇬🇧🇦🇺 GBP/AUD - Pound Sterling / Australian Dollar</option><option value="GBP/CAD">🇬🇧🇨🇦 GBP/CAD - Pound Sterling / Canadian Dollar</option><option value="GBP/CHF">🇬🇧🇨🇭 GBP/CHF - Pound Sterling / Swiss Franc</option><option value="GBP/NZD">🇬🇧🇳🇿 GBP/NZD - Pound Sterling / New Zealand Dollar</option><option value="AUD/JPY">🇦🇺🇯🇵 AUD/JPY - Australian Dollar / Japanese Yen</option><option value="AUD/CAD">🇦🇺🇨🇦 AUD/CAD - Australian Dollar / Canadian Dollar</option><option value="AUD/CHF">🇦🇺🇨🇭 AUD/CHF - Australian Dollar / Swiss Franc</option><option value="AUD/NZD">🇦🇺🇳🇿 AUD/NZD - Australian Dollar / New Zealand Dollar</option><option value="CAD/JPY">🇨🇦🇯🇵 CAD/JPY - Canadian Dollar / Japanese Yen</option><option value="CHF/JPY">🇨🇭🇯🇵 CHF/JPY - Swiss Franc / Japanese Yen</option><option value="NZD/JPY">🇳🇿🇯🇵 NZD/JPY - New Zealand Dollar / Japanese Yen</option></optgroup>
+                        <optgroup label="🌍 EXOTIC PAIRS"><option value="USD/TRY">🇹🇷 USD/TRY - US Dollar / Turkish Lira</option><option value="USD/ZAR">🇿🇦 USD/ZAR - US Dollar / South African Rand</option><option value="USD/MXN">🇲🇽 USD/MXN - US Dollar / Mexican Peso</option><option value="USD/SEK">🇸🇪 USD/SEK - US Dollar / Swedish Krona</option><option value="USD/NOK">🇳🇴 USD/NOK - US Dollar / Norwegian Krone</option><option value="USD/DKK">🇩🇰 USD/DKK - US Dollar / Danish Krone</option><option value="USD/HKD">🇭🇰 USD/HKD - US Dollar / Hong Kong Dollar</option><option value="USD/SGD">🇸🇬 USD/SGD - US Dollar / Singapore Dollar</option><option value="USD/THB">🇹🇭 USD/THB - US Dollar / Thai Baht</option><option value="USD/CNH">🇨🇳 USD/CNH - US Dollar / Chinese Yuan Offshore</option><option value="EUR/TRY">🇪🇺🇹🇷 EUR/TRY - Euro / Turkish Lira</option><option value="EUR/ZAR">🇪🇺🇿🇦 EUR/ZAR - Euro / South African Rand</option></optgroup>
+                        <optgroup label="🏆 COMMODITIES & CRYPTO"><option value="XAU/USD">🥇 XAU/USD - Gold / US Dollar</option><option value="BTC/USD">₿ BTC/USD - Bitcoin / US Dollar</option><option value="ETH/USD">⟠ ETH/USD - Ethereum / US Dollar</option></optgroup>
+                    </select><i class="fas fa-chevron-down"></i></div></div>
+                    
+                    <div class="mb-2"><div class="input-label"><i class="far fa-clock"></i><span>TIMEFRAME</span></div><div class="cyber-select"><select id="timeframeSelect">
+                        <option value="1min">⚡ M1 - 1 Menit</option><option value="5min">⚡ M5 - 5 Menit</option><option value="15min" selected>📊 M15 - 15 Menit</option><option value="30min">📊 M30 - 30 Menit</option><option value="1h">⏰ H1 - 1 Jam</option><option value="2h">⏰ H2 - 2 Jam</option><option value="4h">📈 H4 - 4 Jam</option><option value="1d">📅 D1 - Harian</option><option value="1w">📆 W1 - Mingguan</option><option value="1M">📆 MN - Bulanan</option>
+                    </select><i class="fas fa-chevron-down"></i></div></div>
+                    
+                    <div class="mb-2"><div class="input-label"><i class="fas fa-bullseye"></i><span>RISK : REWARD</span></div><div class="cyber-select"><select id="riskRewardSelect">
+                        <option value="0.5">1:0.5 - Ultra Konservatif</option>
+                        <option value="1">1:1 - Konservatif</option>
+                        <option value="2" selected>1:2 - Standar</option>
+                        <option value="3">1:3 - Agresif</option>
+                        <option value="4">1:4 - Sangat Agresif</option>
+                        <option value="5">1:5 - High Risk</option>
+                        <option value="6">2:2 - Standar Pro</option>
+                        <option value="7">2:3 - Agresif Pro</option>
+                        <option value="8">2:4 - Sangat Agresif Pro</option>
+                        <option value="9">2:5 - High Risk Pro</option>
+                    </select><i class="fas fa-chevron-down"></i></div></div>
+                    
+                    <button id="analyzeBtn" class="premium-btn"><i class="fas fa-microchip"></i><span id="btnText">MULAI ANALISA</span><span id="loadingSpinner" class="loading-spinner hidden"></span></button>
+                    <button id="resetAnalysisBtn" class="w-full mt-2 bg-red-500/10 border border-red-500/20 rounded-xl py-1.5 text-red-400 text-[0.6rem] font-semibold"><i class="fas fa-undo-alt"></i> RESET ANALISA</button>
+                </div>
+                <div class="premium-card">
+                    <div class="flex items-center justify-between mb-1"><div class="flex items-center gap-1"><i class="fas fa-chart-line text-emerald-400 text-sm"></i><span class="text-white text-xs font-semibold">Signal Movement</span></div><div class="live-badge" id="chartSignalText">WAIT</div></div>
+                    <div class="chart-container"><canvas id="chartCanvas" width="300" height="100"></canvas></div>
+                    <div class="flex justify-between items-center"><div class="flex items-center gap-1"><span class="signal-dot" id="signalDot"></span><span id="signalDirection" class="text-[0.65rem] text-slate-400">Menunggu Signal</span></div><i class="fas fa-arrows-left-right text-amber-400 text-sm" id="trendIcon"></i></div>
+                </div>
+            </div>
+
+            <div class="right-column">
+                <div class="orderbook-card">
+                    <div class="flex items-center justify-between mb-2"><div class="flex items-center gap-1"><i class="fas fa-book-open text-emerald-400 text-sm"></i><span class="text-white text-xs font-semibold">ORDER BOOK</span></div><div id="orderbookImbalance" class="text-[0.55rem] text-slate-400">NEUTRAL</div></div>
+                    <div class="flex gap-2"><div class="flex-1"><div class="flex justify-between text-[0.5rem] text-slate-400 mb-1"><span><i class="fas fa-arrow-up"></i> BID</span><span>LOT</span></div><div id="bidRows"></div></div><div class="flex-1"><div class="flex justify-between text-[0.5rem] text-slate-400 mb-1"><span>LOT</span><span><i class="fas fa-arrow-down"></i> ASK</span></div><div id="askRows"></div></div></div>
+                    <div id="depthChart" class="flex gap-1 h-6 mt-1 items-end"></div>
+                    <div class="flex justify-between mt-1 pt-1 border-t border-emerald-500/20"><div><div class="text-[0.5rem] text-slate-400">TOTAL BID</div><div class="font-bold text-emerald-400 text-[0.7rem]" id="totalBid">0</div></div><div><div class="text-[0.5rem] text-slate-400">IMBALANCE</div><div class="font-bold text-[0.7rem] text-white" id="imbalancePct">50/50</div></div><div><div class="text-[0.5rem] text-slate-400">TOTAL ASK</div><div class="font-bold text-red-400 text-[0.7rem]" id="totalAsk">0</div></div></div>
+                </div>
+
+                <div id="resultPanel" class="premium-card hidden">
+                    <div class="bg-emerald-500/5 rounded-xl p-2 mb-2"><div class="flex justify-between text-[0.55rem] text-slate-400"><span><i class="fas fa-circle text-emerald-400"></i> LIVE PRICE</span><span id="pairDisplay" class="text-slate-400">EUR/USD</span></div><div class="flex justify-between items-center"><span class="price-amount" id="currentPrice">-</span><span id="biasDisplay" class="text-[0.7rem] font-bold px-2 py-0.5 rounded-full bg-black/30 text-white">-</span></div></div>
+                    <div class="strategy-grid"><div class="strategy-item"><div>BIAS</div><div id="biasValue">-</div></div><div class="strategy-item"><div>PSAR</div><div id="psarValue">-</div></div><div class="strategy-item"><div>SMC</div><div id="smcValue">-</div></div></div>
+                    <div id="orderBlockContainer" class="bg-[#0f1728] rounded-xl p-2 mb-2 border-l-4 border-emerald-400"><div class="text-[0.6rem] text-slate-400">ORDER BLOCK</div><div class="text-sm font-bold text-white" id="orderBlockValue">-</div></div>
+                    <div id="entryContainer" class="entry-card wait"><div class="entry-title" id="entrySignal">-</div><div class="text-[0.6rem] text-slate-400" id="entryDesc">-</div></div>
+                    <div class="sltp-grid"><div class="sltp-item"><div><i class="fas fa-shield-alt"></i> STOP LOSS</div><div id="slValue" class="text-red-400">-</div><div class="text-[0.5rem] text-slate-500" id="slDistance">- pips</div></div><div class="sltp-item"><div><i class="fas fa-flag"></i> TAKE PROFIT</div><div id="tpValue" class="text-emerald-400">-</div><div class="text-[0.5rem] text-slate-500" id="tpDistance">- pips</div></div></div>
+                    <button id="refreshAnalysisBtn" class="w-full bg-emerald-500/10 border border-emerald-500/20 rounded-xl py-1.5 text-emerald-400 text-[0.6rem] font-semibold"><i class="fas fa-rotate-right"></i> REFRESH ANALYSIS</button>
+                </div>
+
+                <div id="emptyState" class="premium-card text-center py-4"><i class="fas fa-robot text-3xl text-emerald-500/20 mb-1"></i><p class="text-slate-400 text-[0.7rem]">No Analysis Yet</p><p class="text-[0.6rem] text-slate-500">Configure parameters and click "MULAI ANALISA"</p></div>
+                <div id="errorMessage" class="hidden bg-red-500/10 border border-red-500/20 rounded-xl p-2 text-red-400 text-[0.7rem]"><i class="fas fa-circle-exclamation"></i> <span id="errorText"></span></div>
+            </div>
+        </div>
+
+        <!-- STATISTICS SECTION -->
+        <div class="stats-container">
+            <div class="stats-grid">
+                <div class="stat-card"><div class="stat-icon"><i class="fas fa-users text-slate-300 text-sm"></i></div><div class="stat-number" id="totalUsersCount">535</div><div class="stat-label">Total Pengguna Terdaftar</div><div class="stat-trend"><i class="fas fa-chart-line trend-up"></i> <span class="trend-up">+2 setiap 2 hari</span></div></div>
+                <div class="stat-card"><div class="stat-icon"><i class="fas fa-circle text-emerald-400 text-sm"></i></div><div class="stat-number" id="activeUsersCount">0</div><div class="stat-label"><span class="online-indicator"></span> Aktif / Online</div><div class="stat-trend"><i class="fas fa-exchange-alt trend-neutral"></i> <span class="trend-neutral">Fluktuasi real-time</span></div></div>
+                <div class="stat-card"><div class="stat-icon"><i class="fas fa-crown text-amber-400 text-sm"></i></div><div class="stat-number" id="proUsersCount">0</div><div class="stat-label">Langganan PRO</div><div class="stat-trend"><i class="fas fa-chart-line trend-up"></i> <span class="trend-up">Dinamis naik/turun</span></div></div>
+                <div class="stat-card"><div class="stat-icon"><i class="fas fa-sun text-yellow-400 text-sm"></i></div><div class="stat-number" id="freeUsersCount">0</div><div class="stat-label">Free Daily Users</div><div class="stat-trend"><i class="fas fa-gift"></i> <span>2 analisa/hari</span></div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PEMBAYARAN QRIS -->
+    <div id="paymentModal" class="hidden fixed inset-0 bg-black/95 z-50 flex items-center justify-center backdrop-blur-sm">
+        <div class="payment-modal-content p-4">
+            <div class="text-center border-b border-emerald-500/20 pb-2 mb-3">
+                <i class="fas fa-qrcode text-emerald-400 text-2xl"></i>
+                <h2 class="text-lg font-bold text-white">Upgrade ke PRO Mingguan</h2>
+                <p class="text-[0.6rem] text-slate-400">Scan QRIS • Transfer dengan Kode Unik</p>
+            </div>
+            <div class="qr-code-container">
+                <img src="https://blogger.googleusercontent.com/img/a/AVvXsEhH0Z6ewE2H7V-Maa0448YScMvF2qjha4Xt6uKlioFSJeUXHSzYesEbB2CsWE1LRdJSN7QxwYW1yGRDN2uyYVY6DtaTfKn_727s9cC2dWr3mNoezeKIFci6rRK6HzbQzCE1DYg8q1F5DWOm9RbypUNB5ipKcIDbXL0GW9d9SRIQ3QePOqw_lcEL4t1Wh_DK" alt="QRIS Pembayaran" style="max-width: 220px; width: 100%; margin: 0 auto; display: block;">
+                <p class="text-[0.55rem] text-slate-400 mt-2">Scan QRIS di atas menggunakan aplikasi bank atau e-wallet</p>
+            </div>
+            <div class="price-info">
+                <div class="text-[0.65rem] text-slate-400">Total Pembayaran (Rp 125.000 + Kode Unik)</div>
+                <div class="amount-highlight" id="dynamicAmount">Rp 125.000</div>
+                <div class="text-[0.5rem] text-amber-400 mt-1 flex items-center justify-center gap-2"><i class="fas fa-hashtag"></i><span>Kode Unik: <strong id="uniqueCodeDisplay" class="unique-code">000</strong></span></div>
+                <div class="text-[0.45rem] text-slate-500 mt-1">*Kode unik berubah setiap kali modal dibuka untuk memudahkan verifikasi</div>
+            </div>
+            <div class="mt-2">
+                <div class="flex items-center gap-2 mb-3"><div class="step-number">1</div><span class="text-[0.7rem] font-semibold text-white">Data Pembayaran QRIS</span></div>
+                <div class="form-group"><label class="form-label"><i class="fas fa-qrcode"></i> Nomor ID Transaksi / No Referensi QR / RRN</label><input type="text" id="transactionId" placeholder="Contoh: QR123456789 / RRN20241201001" class="confirmation-input"></div>
+                <div class="form-group"><label class="form-label"><i class="fas fa-wallet"></i> Sumber Dana Pengirim</label><select id="paymentSource" class="confirmation-input"><option value="">Pilih Sumber Dana</option><option value="BCA">BCA</option><option value="MANDIRI">Mandiri</option><option value="BRI">BRI</option><option value="BNI">BNI</option><option value="QRIS">QRIS</option><option value="OVO">OVO</option><option value="DANA">DANA</option><option value="GOPAY">GoPay</option></select></div>
+                <div class="form-group"><label class="form-label"><i class="fas fa-user-circle"></i> Atas Nama (Pemilik Rekening/E-Wallet)</label><input type="text" id="accountHolder" placeholder="Nama lengkap pemilik rekening/ewallet" class="confirmation-input"></div>
+                <div class="form-group"><label class="form-label"><i class="fas fa-calendar-alt"></i> Tanggal Transaksi</label><input type="date" id="transactionDate" class="confirmation-input"></div>
+                <div class="form-group"><label class="form-label"><i class="fas fa-money-bill-wave"></i> Nominal Transfer (Otomatis)</label><div class="fixed-nominal" id="nominalDisplay">Rp 125.000</div><input type="hidden" id="paymentNominal" value="125000"><input type="hidden" id="uniqueCodeValue" value="0"></div>
+            </div>
+            <div class="mt-2">
+                <div class="flex items-center gap-2 mb-3"><div class="step-number">2</div><span class="text-[0.7rem] font-semibold text-white">Data Akun</span></div>
+                <div class="form-group"><label class="form-label"><i class="fas fa-envelope"></i> Email Terdaftar</label><input type="email" id="userEmail" placeholder="Email yang digunakan untuk mendaftar" class="confirmation-input"></div>
+                <div class="form-group"><label class="form-label"><i class="fas fa-user"></i> Nama Lengkap</label><input type="text" id="userFullName" placeholder="Nama lengkap sesuai data akun" class="confirmation-input"></div>
+            </div>
+            <button id="confirmPaymentBtn" class="confirm-payment-btn mt-3"><i class="fas fa-paper-plane"></i> KONFIRMASI PEMBAYARAN</button>
+            <button id="closePaymentModalBtn" class="w-full mt-2 bg-red-500/10 border border-red-500/30 rounded-xl py-2 text-red-400 text-[0.6rem]">BATAL</button>
+            <div class="bg-emerald-500/5 rounded-lg p-2 mt-3 text-center">
+                <p class="text-[0.5rem] text-slate-400 mb-2">Follow & Hubungi Kami di Media Sosial</p>
+                <div class="social-links"><a href="https://www.tiktok.com/@cuannhunters?_r=1&_t=ZS-95B3xj9eVyW" target="_blank" class="social-icon tiktok"><i class="fab fa-tiktok"></i></a><a href="https://www.instagram.com/cuaanhunters?igsh=bWtoN3kzeHBzYnIw" target="_blank" class="social-icon instagram"><i class="fab fa-instagram"></i></a></div>
+                <p class="text-[0.45rem] text-slate-500 mt-2">@cuanhunters • Update signal & info terbaru</p>
+                <p class="text-[0.45rem] text-amber-400 mt-1">*Setelah transfer, konfirmasi via DM Instagram/TikTok dengan menyertakan kode unik</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function(){
+            // ==================== LOCALSTORAGE (PENGGANTI INDEXEDDB) ====================
+            const STORAGE_KEY = 'CuanHuntersData';
+            
+            // Data default (akan digunakan pertama kali)
+            const defaultData = {
+                newUserBonusClaimed: false,
+                newUserBonusData: null,
+                proSubscription: null,
+                proUsage: { count: 0, periodStart: new Date().toISOString() },
+                freeDailyUsage: { date: new Date().toDateString(), used: 0 },
+                cooldown: null,
+                lastTotalUpdate: null,
+                savedTotalUsers: 535
+            };
+            
+            // Memory cache (data sementara)
+            var memoryData = { ...defaultData };
+            
+            // Fungsi menyimpan data ke localStorage
+            function persistData() {
+                try {
+                    var dataToSave = {
+                        newUserBonusClaimed: memoryData.newUserBonusClaimed,
+                        newUserBonusData: memoryData.newUserBonusData,
+                        proSubscription: memoryData.proSubscription,
+                        proUsage: memoryData.proUsage,
+                        freeDailyUsage: memoryData.freeDailyUsage,
+                        cooldown: memoryData.cooldown,
+                        lastTotalUpdate: memoryData.lastTotalUpdate,
+                        savedTotalUsers: memoryData.savedTotalUsers
+                    };
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave));
+                    console.log('Data saved to localStorage');
+                } catch(e) {
+                    console.error('Failed to save to localStorage:', e);
+                }
+            }
+            
+            // Fungsi memuat data dari localStorage
+            function loadFromLocalStorage() {
+                try {
+                    var savedData = localStorage.getItem(STORAGE_KEY);
+                    if (savedData) {
+                        var parsedData = JSON.parse(savedData);
+                        memoryData = { ...defaultData, ...parsedData };
+                        console.log('Data loaded from localStorage:', memoryData);
+                    } else {
+                        memoryData = { ...defaultData };
+                        console.log('No data in localStorage, using default');
+                    }
+                } catch(e) {
+                    console.error('Failed to load from localStorage:', e);
+                    memoryData = { ...defaultData };
+                }
+                
+                // Validasi dan perbaikan data jika diperlukan
+                if (!memoryData.freeDailyUsage || typeof memoryData.freeDailyUsage !== 'object') {
+                    memoryData.freeDailyUsage = { date: new Date().toDateString(), used: 0 };
+                }
+                if (!memoryData.proUsage || typeof memoryData.proUsage !== 'object') {
+                    memoryData.proUsage = { count: 0, periodStart: new Date().toISOString() };
+                }
+                if (typeof memoryData.savedTotalUsers !== 'number') {
+                    memoryData.savedTotalUsers = 535;
+                }
+                
+                persistData(); // Simpan kembali untuk memastikan format benar
+            }
+            
+            // Inisialisasi localStorage
+            function initStorage() {
+                loadFromLocalStorage();
+                updateUsageDisplay();
+                updateCooldownDisplay();
+            }
+            
+            // ==================== KONSTANTA ====================
+            const PRO_WEEKLY_QUOTA = 15;
+            const DAILY_FREE_QUOTA = 2;
+            const NEW_USER_BONUS_QUOTA = 15;
+            const NEW_USER_BONUS_DAYS = 7;
+            const PRO_PRICE = 125000;
+            const COOLDOWN_MINUTES = 10;
+            const COOLDOWN_SECONDS = COOLDOWN_MINUTES * 60;
+            const API_KEY = '2bedbb1110384c058a570b0d7d1c4e40';
+            const BASE_URL = 'https://api.twelvedata.com';
+            const timeframeMap = { '1min':'1min', '5min':'5min', '15min':'15min', '30min':'30min', '1h':'1h', '2h':'2h', '4h':'4h', '1d':'1day', '1w':'1week', '1M':'1month' };
+            
+            const BASE_RISK_PERCENT = 0.005;
+            
+            let currentUniqueCode = 0;
+            let cooldownInterval = null;
+            let chartCtx, chartPointsArray = [], currentSignalState = 'wait';
+            let chartAnimationId = null;
+            let curTotal=535, actUsers=187, proUs=124, freeUs=curTotal-proUs;
+            
+            // ==================== FUNGSI UTILITY ====================
+            function showToast(m) { 
+                var t = document.createElement('div'); 
+                t.className = 'toast-notification'; 
+                t.innerHTML = '<i class="fas fa-check-circle"></i><span>' + m + '</span>'; 
+                document.body.appendChild(t); 
+                setTimeout(function(){ t.remove(); }, 3000); 
+            }
+            
+            function formatDate(d) { 
+                return d.toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit'}); 
+            }
+            
+            function generateUniqueCode() { 
+                return Math.floor(Math.random() * 999) + 1; 
+            }
+            
+            function updatePaymentAmount() { 
+                currentUniqueCode = generateUniqueCode(); 
+                var total = PRO_PRICE + currentUniqueCode; 
+                document.getElementById('dynamicAmount').innerHTML = 'Rp ' + total.toLocaleString('id-ID'); 
+                document.getElementById('uniqueCodeDisplay').innerHTML = currentUniqueCode.toString().padStart(3, '0'); 
+                document.getElementById('nominalDisplay').innerHTML = 'Rp ' + total.toLocaleString('id-ID'); 
+                document.getElementById('paymentNominal').value = total; 
+                document.getElementById('uniqueCodeValue').value = currentUniqueCode; 
+            }
+            
+            // ==================== RR UTILITY ====================
+            function getRiskAndRewardParts(value) {
+                if (value >= 6 && value <= 9) {
+                    const rewardPartsMap = {6:2, 7:3, 8:4, 9:5};
+                    return { riskPart: 2, rewardPart: rewardPartsMap[value] };
+                } else {
+                    const rewardPartsMap = {0.5:0.5, 1:1, 2:2, 3:3, 4:4, 5:5};
+                    return { riskPart: 1, rewardPart: rewardPartsMap[value] };
+                }
+            }
+            
+            function getRRDisplayText(value) {
+                const displayMap = {
+                    0.5: "1:0.5", 1: "1:1", 2: "1:2", 3: "1:3", 4: "1:4", 5: "1:5",
+                    6: "2:2", 7: "2:3", 8: "2:4", 9: "2:5"
+                };
+                return displayMap[value] || "1:2";
+            }
+            
+            // ==================== COOLDOWN ====================
+            function getCooldownRemaining() {
+                if (!memoryData.cooldown) return 0;
+                var elapsed = Date.now() - memoryData.cooldown;
+                var remaining = Math.max(0, COOLDOWN_SECONDS * 1000 - elapsed);
+                return Math.floor(remaining / 1000);
+            }
+            
+            function setCooldown() {
+                memoryData.cooldown = Date.now();
+                persistData();
+                updateCooldownDisplay();
+            }
+            
+            function isOnCooldown() {
+                return getCooldownRemaining() > 0;
+            }
+            
+            function updateCooldownDisplay() {
+                var remainingSec = getCooldownRemaining();
+                var cooldownCard = document.getElementById('cooldownCard');
+                var analyzeBtn = document.getElementById('analyzeBtn');
+                
+                if(remainingSec > 0) {
+                    cooldownCard.classList.remove('hidden');
+                    var minutes = Math.floor(remainingSec / 60);
+                    var seconds = remainingSec % 60;
+                    document.getElementById('cooldownTimerDisplay').textContent = minutes.toString().padStart(2,'0') + ':' + seconds.toString().padStart(2,'0');
+                    analyzeBtn.classList.add('disabled');
+                    if(cooldownInterval === null) {
+                        cooldownInterval = setInterval(function(){
+                            var newRemaining = getCooldownRemaining();
+                            if(newRemaining <= 0) {
+                                clearInterval(cooldownInterval);
+                                cooldownInterval = null;
+                                cooldownCard.classList.add('hidden');
+                                if(canPerformAnalysis()) {
+                                    analyzeBtn.classList.remove('disabled');
+                                }
+                                showToast('✅ Jeda 10 menit selesai! Anda dapat melakukan analisa kembali.');
+                            } else {
+                                var mins = Math.floor(newRemaining / 60);
+                                var secs = newRemaining % 60;
+                                document.getElementById('cooldownTimerDisplay').textContent = mins.toString().padStart(2,'0') + ':' + secs.toString().padStart(2,'0');
+                            }
+                        }, 1000);
+                    }
+                } else {
+                    cooldownCard.classList.add('hidden');
+                    if(cooldownInterval) {
+                        clearInterval(cooldownInterval);
+                        cooldownInterval = null;
+                    }
+                    if(canPerformAnalysis()) {
+                        analyzeBtn.classList.remove('disabled');
+                    }
+                }
+            }
+            
+            // ==================== NEW USER BONUS (SEKALI SEUMUR HIDUP) ====================
+            function isNewUserBonusClaimed() {
+                return memoryData.newUserBonusClaimed;
+            }
+            
+            function setNewUserBonusClaimed() {
+                memoryData.newUserBonusClaimed = true;
+                persistData();
+            }
+            
+            function getNewUserBonusData() {
+                return memoryData.newUserBonusData;
+            }
+            
+            function saveNewUserBonusData(data) {
+                memoryData.newUserBonusData = data;
+                persistData();
+            }
+            
+            function isNewUserBonusActive() {
+                if (!isNewUserBonusClaimed()) return false;
+                var data = getNewUserBonusData();
+                if (!data) return false;
+                if (data.used >= data.total) return false;
+                var expiryDate = new Date(data.expiryDate);
+                var now = new Date();
+                if (now > expiryDate) return false;
+                return true;
+            }
+            
+            function getNewUserBonusRemaining() {
+                if (!isNewUserBonusClaimed()) return 0;
+                var data = getNewUserBonusData();
+                if (!data) return 0;
+                var expiryDate = new Date(data.expiryDate);
+                var now = new Date();
+                if (now > expiryDate) return 0;
+                return Math.max(0, data.total - data.used);
+            }
+            
+            function getNewUserBonusUsed() {
+                if (!isNewUserBonusClaimed()) return 0;
+                var data = getNewUserBonusData();
+                if (!data) return 0;
+                return data.used;
+            }
+            
+            function getNewUserBonusTimeLeft() {
+                if (!isNewUserBonusClaimed()) return { days: 0, hours: 0, minutes: 0, seconds: 0, isActive: false };
+                var data = getNewUserBonusData();
+                if (!data) return { days: 0, hours: 0, minutes: 0, seconds: 0, isActive: false };
+                var expiryDate = new Date(data.expiryDate);
+                var now = new Date();
+                if (now > expiryDate) return { days: 0, hours: 0, minutes: 0, seconds: 0, isActive: false };
+                var diff = expiryDate - now;
+                return {
+                    days: Math.floor(diff / 86400000),
+                    hours: Math.floor((diff % 86400000) / 3600000),
+                    minutes: Math.floor((diff % 3600000) / 60000),
+                    seconds: Math.floor((diff % 60000) / 1000),
+                    isActive: true
+                };
+            }
+            
+            function claimNewUserBonus() {
+                if (isNewUserBonusClaimed()) {
+                    showToast('⚠️ Bonus New User sudah pernah diklaim sebelumnya! Hanya bisa diklaim SEKALI seumur hidup.');
+                    return false;
+                }
+                
+                var expiryDate = new Date();
+                expiryDate.setDate(expiryDate.getDate() + NEW_USER_BONUS_DAYS);
+                var bonusData = {
+                    claimed: true,
+                    used: 0,
+                    total: NEW_USER_BONUS_QUOTA,
+                    expiryDate: expiryDate.toISOString(),
+                    startDate: new Date().toISOString()
+                };
+                saveNewUserBonusData(bonusData);
+                setNewUserBonusClaimed();
+                showToast('🎉 Selamat! Anda mendapatkan 15 analisa GRATIS dengan masa aktif 7 hari! Hanya bisa diklaim SEKALI seumur hidup.');
+                updateUsageDisplay();
+                return true;
+            }
+            
+            function useNewUserBonus() {
+                if (!isNewUserBonusActive()) return false;
+                var data = getNewUserBonusData();
+                if (data.used < data.total) {
+                    data.used++;
+                    saveNewUserBonusData(data);
+                    return true;
+                }
+                return false;
+            }
+            
+            // ==================== PRO WEEKLY ====================
+            function getProSubscription() {
+                return memoryData.proSubscription;
+            }
+            
+            function saveProSubscription(data) {
+                memoryData.proSubscription = data;
+                persistData();
+            }
+            
+            function getProUsage() {
+                return memoryData.proUsage;
+            }
+            
+            function saveProUsage(data) {
+                memoryData.proUsage = data;
+                persistData();
+            }
+            
+            function isProActive() {
+                var sub = getProSubscription();
+                if (!sub) return false;
+                var now = new Date();
+                var endDate = new Date(sub.endDate);
+                if (now > endDate) return false;
+                var usage = getProUsage();
+                return usage.count < PRO_WEEKLY_QUOTA;
+            }
+            
+            function getProRemainingQuota() {
+                if (!isProActive()) return 0;
+                var usage = getProUsage();
+                return Math.max(0, PRO_WEEKLY_QUOTA - usage.count);
+            }
+            
+            function getProUsedQuota() {
+                var usage = getProUsage();
+                return usage.count;
+            }
+            
+            function getProTimeLeft() {
+                var sub = getProSubscription();
+                if (!sub) return { days: 0, hours: 0, minutes: 0, seconds: 0, isActive: false };
+                var endDate = new Date(sub.endDate);
+                var now = new Date();
+                if (now > endDate) return { days: 0, hours: 0, minutes: 0, seconds: 0, isActive: false };
+                var diff = endDate - now;
+                return {
+                    days: Math.floor(diff / 86400000),
+                    hours: Math.floor((diff % 86400000) / 3600000),
+                    minutes: Math.floor((diff % 3600000) / 60000),
+                    seconds: Math.floor((diff % 60000) / 1000),
+                    isActive: true
+                };
+            }
+            
+            function useProQuota() {
+                if (!isProActive()) return false;
+                var usage = getProUsage();
+                if (usage.count < PRO_WEEKLY_QUOTA) {
+                    usage.count++;
+                    saveProUsage(usage);
+                    return true;
+                }
+                return false;
+            }
+            
+            function activateProWeekly() {
+                if (isNewUserBonusActive()) {
+                    showToast('⚠️ Anda masih dalam masa NEW USER BONUS. Upgrade ke PRO hanya bisa dilakukan setelah masa bonus berakhir!');
+                    return false;
+                }
+                
+                var now = new Date();
+                var endDate = new Date(now);
+                endDate.setDate(now.getDate() + 7);
+                endDate.setHours(23, 59, 59, 999);
+                
+                saveProSubscription({
+                    type: 'pro',
+                    startDate: now.toISOString(),
+                    endDate: endDate.toISOString()
+                });
+                saveProUsage({ count: 0, periodStart: now.toISOString() });
+                
+                showToast('✅ Upgrade PRO Mingguan berhasil! Anda mendapatkan 15 analisa untuk 7 hari ke depan.');
+                updateUsageDisplay();
+                resetAnalysis();
+                return true;
+            }
+            
+            // ==================== FREE DAILY ====================
+            function getFreeDailyUsage() {
+                var today = new Date().toDateString();
+                if (!memoryData.freeDailyUsage || memoryData.freeDailyUsage.date !== today) {
+                    memoryData.freeDailyUsage = { date: today, used: 0 };
+                    persistData();
+                }
+                return memoryData.freeDailyUsage;
+            }
+            
+            function saveFreeDailyUsage(data) {
+                memoryData.freeDailyUsage = data;
+                persistData();
+            }
+            
+            function getFreeDailyRemaining() {
+                var usage = getFreeDailyUsage();
+                return Math.max(0, DAILY_FREE_QUOTA - usage.used);
+            }
+            
+            function getFreeDailyUsed() {
+                var usage = getFreeDailyUsage();
+                return usage.used;
+            }
+            
+            function useFreeDailyQuota() {
+                var usage = getFreeDailyUsage();
+                if (usage.used < DAILY_FREE_QUOTA) {
+                    usage.used++;
+                    saveFreeDailyUsage(usage);
+                    return true;
+                }
+                return false;
+            }
+            
+            function resetFreeDailyIfNeeded() {
+                var usage = getFreeDailyUsage();
+                var today = new Date().toDateString();
+                if (usage.date !== today) {
+                    usage.date = today;
+                    usage.used = 0;
+                    saveFreeDailyUsage(usage);
+                    updateUsageDisplay();
+                    return true;
+                }
+                return false;
+            }
+            
+            // ==================== MAIN QUOTA ====================
+            function getActiveQuotaType() {
+                if (isNewUserBonusActive()) return 'NEW_USER_BONUS';
+                if (isProActive()) return 'PRO_WEEKLY';
+                return 'FREE_DAILY';
+            }
+            
+            function getCurrentQuotaRemaining() {
+                if (isNewUserBonusActive()) return getNewUserBonusRemaining();
+                if (isProActive()) return getProRemainingQuota();
+                return getFreeDailyRemaining();
+            }
+            
+            function getCurrentQuotaTotal() {
+                if (isNewUserBonusActive()) return NEW_USER_BONUS_QUOTA;
+                if (isProActive()) return PRO_WEEKLY_QUOTA;
+                return DAILY_FREE_QUOTA;
+            }
+            
+            function getCurrentQuotaUsed() {
+                if (isNewUserBonusActive()) return getNewUserBonusUsed();
+                if (isProActive()) return getProUsedQuota();
+                return getFreeDailyUsed();
+            }
+            
+            function canPerformAnalysis() {
+                if (isOnCooldown()) return false;
+                return getCurrentQuotaRemaining() > 0;
+            }
+            
+            function incrementUsage() {
+                var success = false;
+                if (isNewUserBonusActive()) {
+                    success = useNewUserBonus();
+                } else if (isProActive()) {
+                    success = useProQuota();
+                } else {
+                    success = useFreeDailyQuota();
+                }
+                persistData();
+                return success;
+            }
+            
+            // ==================== UI UPDATE ====================
+            function updateCountdownDisplay() {
+                var now = new Date();
+                var tomorrow = new Date(now);
+                tomorrow.setDate(now.getDate() + 1);
+                tomorrow.setHours(0, 0, 0, 0);
+                var diff = tomorrow - now;
+                var hours = Math.floor(diff / 3600000);
+                var minutes = Math.floor((diff % 3600000) / 60000);
+                var seconds = Math.floor((diff % 60000) / 1000);
+                
+                document.getElementById('countdownDays').textContent = '0';
+                document.getElementById('countdownHours').textContent = hours;
+                document.getElementById('countdownMinutes').textContent = minutes;
+                document.getElementById('countdownSeconds').textContent = seconds.toString().padStart(2, '0');
+                
+                var bonusTime = getNewUserBonusTimeLeft();
+                var bonusCountdown = document.getElementById('bonusCountdown');
+                if (bonusTime.isActive) {
+                    bonusCountdown.classList.remove('hidden');
+                    var timeString = '';
+                    if (bonusTime.days > 0) timeString += bonusTime.days + ' hari ';
+                    if (bonusTime.hours > 0 || bonusTime.days > 0) timeString += bonusTime.hours + ' jam ';
+                    timeString += bonusTime.minutes + ' menit ' + bonusTime.seconds + ' detik';
+                    document.getElementById('bonusTimer').textContent = timeString;
+                } else {
+                    bonusCountdown.classList.add('hidden');
+                }
+                
+                var proTime = getProTimeLeft();
+                var proCountdown = document.getElementById('proCountdown');
+                var billReminder = document.getElementById('billReminder');
+                if (proTime.isActive) {
+                    proCountdown.classList.remove('hidden');
+                    var proTimeString = '';
+                    if (proTime.days > 0) proTimeString += proTime.days + ' hari ';
+                    if (proTime.hours > 0 || proTime.days > 0) proTimeString += proTime.hours + ' jam ';
+                    proTimeString += proTime.minutes + ' menit ' + proTime.seconds + ' detik';
+                    document.getElementById('proTimer').textContent = proTimeString;
+                    document.getElementById('proRemainingDays').textContent = proTime.days;
+                    
+                    if (proTime.days <= 2 && proTime.days > 0) {
+                        billReminder.classList.remove('hidden');
+                        document.getElementById('remainingDays').textContent = proTime.days;
+                    } else {
+                        billReminder.classList.add('hidden');
+                    }
+                } else {
+                    proCountdown.classList.add('hidden');
+                    billReminder.classList.add('hidden');
+                }
+            }
+            
+            function updateUsageDisplay() {
+                resetFreeDailyIfNeeded();
+                
+                var remaining = getCurrentQuotaRemaining();
+                var used = getCurrentQuotaUsed();
+                var total = getCurrentQuotaTotal();
+                var percent = total > 0 ? (used / total) * 100 : 0;
+                var activeType = getActiveQuotaType();
+                
+                document.getElementById('usedCount').textContent = used;
+                document.getElementById('remainingCount').textContent = remaining;
+                document.getElementById('totalQuotaLabel').innerHTML = 'dari ' + total;
+                document.getElementById('usageBar').style.width = percent + '%';
+                document.getElementById('progressPercent').textContent = Math.round(percent) + '%';
+                document.getElementById('mainPercentage').textContent = Math.round(percent) + '%';
+                
+                var quotaBadge = document.getElementById('activeQuotaType');
+                if(activeType === 'NEW_USER_BONUS') {
+                    quotaBadge.innerHTML = '<i class="fas fa-gem text-emerald-400"></i> AKTIF: NEW USER BONUS (15 analisa, 7 hari) • FREE DAILY TIDAK AKTIF';
+                    quotaBadge.style.background = 'rgba(16,185,129,0.2)';
+                    quotaBadge.style.color = '#10B981';
+                } else if(activeType === 'PRO_WEEKLY') {
+                    quotaBadge.innerHTML = '<i class="fas fa-crown text-purple-400"></i> AKTIF: PRO MINGGUAN (15 analisa/minggu) • FREE DAILY TIDAK AKTIF';
+                    quotaBadge.style.background = 'rgba(139,92,246,0.2)';
+                    quotaBadge.style.color = '#A78BFA';
+                } else {
+                    quotaBadge.innerHTML = '<i class="fas fa-sun text-yellow-400"></i> AKTIF: FREE DAILY (2 analisa/hari)';
+                    quotaBadge.style.background = 'rgba(245,158,11,0.2)';
+                    quotaBadge.style.color = '#FBBF24';
+                }
+                
+                var r = 52, c = 2 * Math.PI * r, o = c - (percent / 100) * c;
+                var pc = document.getElementById('progressCircleMain');
+                if(pc) { pc.style.strokeDasharray = c + ' ' + c; pc.style.strokeDashoffset = o; }
+                
+                document.getElementById('dailyUsedToday').textContent = getFreeDailyUsed();
+                
+                var analyzeBtn = document.getElementById('analyzeBtn');
+                var quotaExhaustedWarning = document.getElementById('quotaExhaustedWarning');
+                
+                if(!canPerformAnalysis() && !isOnCooldown()) {
+                    analyzeBtn.classList.add('disabled');
+                    quotaExhaustedWarning.classList.remove('hidden');
+                } else if(isOnCooldown()) {
+                    analyzeBtn.classList.add('disabled');
+                    quotaExhaustedWarning.classList.add('hidden');
+                } else {
+                    analyzeBtn.classList.remove('disabled');
+                    quotaExhaustedWarning.classList.add('hidden');
+                }
+                
+                var newUserAlert = document.getElementById('newUserBonusAlert');
+                var freeDailyStatus = document.getElementById('freeDailyStatus');
+                var subscriptionActive = document.getElementById('subscriptionActive');
+                
+                if(activeType === 'NEW_USER_BONUS') {
+                    newUserAlert.classList.remove('hidden');
+                    freeDailyStatus.classList.add('hidden');
+                    subscriptionActive.classList.add('hidden');
+                    document.getElementById('bonusRemaining').textContent = remaining;
+                    var timeLeft = getNewUserBonusTimeLeft();
+                    if(timeLeft.isActive) {
+                        document.getElementById('bonusTimeLeft').textContent = timeLeft.days + ' hari ' + timeLeft.hours + ' jam';
+                    }
+                } else if(activeType === 'PRO_WEEKLY') {
+                    newUserAlert.classList.add('hidden');
+                    freeDailyStatus.classList.add('hidden');
+                    subscriptionActive.classList.remove('hidden');
+                    var tl = getProTimeLeft();
+                    document.getElementById('proRemainingDays').textContent = tl.days;
+                } else {
+                    newUserAlert.classList.add('hidden');
+                    freeDailyStatus.classList.remove('hidden');
+                    subscriptionActive.classList.add('hidden');
+                }
+            }
+            
+            // ==================== ORDER BOOK ====================
+            function generateOrderBook(cp, d) {
+                d = d || 'neutral';
+                var b=[], a=[];
+                var bp=cp||1.09234;
+                for(var i=0;i<5;i++){
+                    var v = d==='bid' ? 2+Math.random()*3 : (d==='ask' ? 0.5+Math.random()*1 : 1+Math.random()*2);
+                    b.push({price:bp-(i*0.001), volume:v.toFixed(2)});
+                    v = d==='ask' ? 2+Math.random()*3 : (d==='bid' ? 0.5+Math.random()*1 : 1+Math.random()*2);
+                    a.push({price:bp+(i*0.001), volume:v.toFixed(2)});
+                }
+                b.sort(function(x,y){ return y.price - x.price; });
+                a.sort(function(x,y){ return x.price - y.price; });
+                return {bids:b, asks:a};
+            }
+            
+            function renderOrderBook(d, cp) {
+                d = d || 'neutral';
+                cp = cp || 1.09234;
+                var ob = generateOrderBook(cp, d);
+                var tb = 0, ta = 0;
+                for(var i=0; i<ob.bids.length; i++) tb += parseFloat(ob.bids[i].volume);
+                for(var i=0; i<ob.asks.length; i++) ta += parseFloat(ob.asks[i].volume);
+                var mv = Math.max(tb, ta);
+                var bp = ((tb/(tb+ta))*100).toFixed(1);
+                
+                document.getElementById('orderbookImbalance').innerHTML = d==='bid' ? '<span class="text-emerald-400">BID ' + bp + '%</span>' : (d==='ask' ? '<span class="text-red-400">ASK ' + (100-bp) + '%</span>' : 'NEUTRAL');
+                document.getElementById('imbalancePct').textContent = bp + '/' + (100-bp).toFixed(1);
+                document.getElementById('totalBid').textContent = tb.toFixed(1);
+                document.getElementById('totalAsk').textContent = ta.toFixed(1);
+                
+                var bc = document.getElementById('bidRows');
+                bc.innerHTML = '';
+                for(var i=0; i<ob.bids.length; i++) {
+                    var vp = (parseFloat(ob.bids[i].volume)/mv)*100;
+                    bc.innerHTML += '<div class="orderbook-row"><span class="orderbook-lot text-emerald-400">' + ob.bids[i].volume + '</span><div class="volume-bar-bid" style="width: ' + vp + '%;"></div></div>';
+                }
+                
+                var ac = document.getElementById('askRows');
+                ac.innerHTML = '';
+                var asksRev = ob.asks.slice().reverse();
+                for(var i=0; i<asksRev.length; i++) {
+                    var vp = (parseFloat(asksRev[i].volume)/mv)*100;
+                    ac.innerHTML += '<div class="orderbook-row"><div class="volume-bar-ask" style="width: ' + vp + '%;"></div><span class="orderbook-lot text-red-400">' + asksRev[i].volume + '</span></div>';
+                }
+                
+                var dc = document.getElementById('depthChart');
+                dc.innerHTML = '';
+                var bidsRev = ob.bids.slice().reverse();
+                for(var i=0; i<bidsRev.length; i++) {
+                    dc.innerHTML += '<div style="flex:1;background:linear-gradient(to top,#10B981,rgba(16,185,129,0.2));height:' + (parseFloat(bidsRev[i].volume)/mv)*24 + 'px;border-radius:2px;"></div>';
+                }
+                for(var i=0; i<ob.asks.length; i++) {
+                    dc.innerHTML += '<div style="flex:1;background:linear-gradient(to top,#F87171,rgba(248,113,113,0.2));height:' + (parseFloat(ob.asks[i].volume)/mv)*24 + 'px;border-radius:2px;"></div>';
+                }
+            }
+            
+            // ==================== CHART ====================
+            function initChart() {
+                var c = document.getElementById('chartCanvas');
+                if(!c) return;
+                chartCtx = c.getContext('2d');
+                var p = c.parentElement;
+                c.width = p.clientWidth;
+                c.height = p.clientHeight;
+                generateChartPoints();
+                animateChart();
+                window.addEventListener('resize', function(){
+                    c.width = p.clientWidth;
+                    c.height = p.clientHeight;
+                    generateChartPoints();
+                });
+            }
+            
+            function generateChartPoints() {
+                chartPointsArray = [];
+                var w = document.getElementById('chartCanvas').width;
+                var h = document.getElementById('chartCanvas').height;
+                var steps = 25;
+                var step = w/(steps-1);
+                for(var i=0;i<steps;i++){
+                    var y = currentSignalState==='buy' ? h-30-(i*(h-50)/steps) : (currentSignalState==='sell' ? 30+(i*(h-50)/steps) : h/2+Math.sin(i*0.6)*12);
+                    chartPointsArray.push({x:i*step, y:Math.max(15,Math.min(h-15,y))});
+                }
+            }
+            
+            function updateChartSignal(s) {
+                currentSignalState = s;
+                var d = document.getElementById('signalDot');
+                var dir = document.getElementById('signalDirection');
+                var ct = document.getElementById('chartSignalText');
+                var ti = document.getElementById('trendIcon');
+                if(s==='buy'){
+                    if(d) d.className = 'signal-dot buy';
+                    if(dir){ dir.textContent = 'Bullish ↑'; dir.style.color = '#34d399'; }
+                    if(ct){ ct.textContent = 'BUY'; ct.style.color = '#34d399'; }
+                    if(ti) ti.className = 'fas fa-arrow-trend-up text-emerald-400';
+                }else if(s==='sell'){
+                    if(d) d.className = 'signal-dot sell';
+                    if(dir){ dir.textContent = 'Bearish ↓'; dir.style.color = '#f87171'; }
+                    if(ct){ ct.textContent = 'SELL'; ct.style.color = '#f87171'; }
+                    if(ti) ti.className = 'fas fa-arrow-trend-down text-red-400';
+                }else{
+                    if(d) d.className = 'signal-dot wait';
+                    if(dir){ dir.textContent = 'Sideways'; dir.style.color = '#fbbf24'; }
+                    if(ct){ ct.textContent = 'WAIT'; ct.style.color = '#fbbf24'; }
+                    if(ti) ti.className = 'fas fa-arrows-left-right text-amber-400';
+                }
+                generateChartPoints();
+            }
+            
+            function animateChart() {
+                if(!chartCtx || !document.getElementById('chartCanvas')) return;
+                var c = document.getElementById('chartCanvas');
+                var h = c.height;
+                var w = c.width;
+                for(var i=0;i<chartPointsArray.length;i++){
+                    if(currentSignalState==='buy') chartPointsArray[i].y -= 0.3;
+                    else if(currentSignalState==='sell') chartPointsArray[i].y += 0.3;
+                    else chartPointsArray[i].y += (Math.random()-0.5)*0.5;
+                    chartPointsArray[i].y = Math.max(12, Math.min(h-12, chartPointsArray[i].y));
+                }
+                if(currentSignalState !== 'wait'){
+                    for(var i=0;i<chartPointsArray.length;i++) chartPointsArray[i].x -= 1;
+                    if(chartPointsArray[0].x < -15){
+                        chartPointsArray.shift();
+                        var lx = chartPointsArray[chartPointsArray.length-1].x;
+                        var st = w/24;
+                        var ny = currentSignalState==='buy' ? chartPointsArray[chartPointsArray.length-1].y - 0.6 : chartPointsArray[chartPointsArray.length-1].y + 0.6;
+                        chartPointsArray.push({x:lx+st, y:Math.max(12,Math.min(h-12,ny))});
+                    }
+                }
+                chartCtx.clearRect(0,0,w,h);
+                chartCtx.beginPath();
+                chartCtx.moveTo(chartPointsArray[0].x, h);
+                chartCtx.lineTo(chartPointsArray[0].x, chartPointsArray[0].y);
+                for(var i=1;i<chartPointsArray.length;i++) chartCtx.lineTo(chartPointsArray[i].x, chartPointsArray[i].y);
+                chartCtx.lineTo(chartPointsArray[chartPointsArray.length-1].x, h);
+                chartCtx.closePath();
+                var g = chartCtx.createLinearGradient(0,0,0,h);
+                if(currentSignalState==='buy') { g.addColorStop(0,'rgba(16,185,129,0.2)'); g.addColorStop(1,'rgba(16,185,129,0)'); }
+                else if(currentSignalState==='sell') { g.addColorStop(0,'rgba(248,113,113,0.2)'); g.addColorStop(1,'rgba(248,113,113,0)'); }
+                else { g.addColorStop(0,'rgba(251,191,36,0.2)'); g.addColorStop(1,'rgba(251,191,36,0)'); }
+                chartCtx.fillStyle = g;
+                chartCtx.fill();
+                chartCtx.beginPath();
+                for(var i=0;i<chartPointsArray.length;i++) chartCtx.lineTo(chartPointsArray[i].x, chartPointsArray[i].y);
+                chartCtx.strokeStyle = currentSignalState==='buy' ? '#10B981' : (currentSignalState==='sell' ? '#F87171' : '#FBBF24');
+                chartCtx.lineWidth = 1.5;
+                chartCtx.stroke();
+                chartAnimationId = requestAnimationFrame(animateChart);
+            }
+            
+            function resetChartToWait() { updateChartSignal('wait'); }
+            
+            // ==================== TRADING ANALYSIS ====================
+            function formatPrice(p, s) {
+                if(!p) return '-';
+                if(s.includes('BTC')||s.includes('ETH')) return p.toFixed(2);
+                if(s.includes('JPY')) return p.toFixed(3);
+                if(s.includes('XAU')) return p.toFixed(2);
+                return p.toFixed(5);
+            }
+            
+            function calculatePips(p1, p2, s) {
+                var d = Math.abs(p1-p2);
+                if(s.includes('BTC')||s.includes('ETH')) return (d*100).toFixed(0);
+                if(s.includes('JPY')) return (d*100).toFixed(1);
+                if(s.includes('XAU')) return (d*10).toFixed(1);
+                return (d*10000).toFixed(0);
+            }
+            
+            function setText(id, val) {
+                var e = document.getElementById(id);
+                if(e) e.textContent = val || '-';
+            }
+            
+            function quickSelectStrategy(strategy) {
+                var p = { scalp:{pair:'EUR/USD',tf:'1min',rr:'2'}, intraday:{pair:'EUR/USD',tf:'15min',rr:'2'}, swing:{pair:'EUR/USD',tf:'4h',rr:'3'} }[strategy];
+                if(p){
+                    document.getElementById('pairSelect').value = p.pair;
+                    document.getElementById('timeframeSelect').value = p.tf;
+                    document.getElementById('riskRewardSelect').value = p.rr;
+                }
+            }
+            
+            function resetAnalysis() {
+                document.getElementById('resultPanel').classList.add('hidden');
+                document.getElementById('emptyState').classList.remove('hidden');
+                resetChartToWait();
+                renderOrderBook('neutral',1.09234);
+                setText('currentPrice','-');
+                setText('pairDisplay','EUR/USD');
+                setText('biasDisplay','-');
+                setText('biasValue','-');
+                setText('psarValue','-');
+                setText('smcValue','-');
+                setText('orderBlockValue','-');
+                setText('entrySignal','-');
+                setText('entryDesc','-');
+                setText('slValue','-');
+                setText('tpValue','-');
+                setText('slDistance','- pips');
+                setText('tpDistance','- pips');
+                document.getElementById('entryContainer').className = 'entry-card wait';
+            }
+            
+            function calculateATR(highs, lows, closes) {
+                var sum = 0;
+                var period = Math.min(20, highs.length - 1);
+                for (var i = 1; i <= period; i++) {
+                    var tr = Math.max(highs[i] - lows[i], Math.abs(highs[i] - closes[i-1]), Math.abs(lows[i] - closes[i-1]));
+                    sum += tr;
+                }
+                return sum / period;
+            }
+            
+            async function analyze() {
+                if(isOnCooldown()) {
+                    var remaining = getCooldownRemaining();
+                    var minutes = Math.floor(remaining / 60);
+                    var seconds = remaining % 60;
+                    showToast('⏱️ Mohon tunggu ' + minutes + ' menit ' + seconds + ' detik sebelum analisa berikutnya.');
+                    return;
+                }
+                
+                if(!canPerformAnalysis()){
+                    var activeType = getActiveQuotaType();
+                    var errorMsg = '';
+                    if(activeType === 'NEW_USER_BONUS') errorMsg = '⚠️ NEW USER BONUS (15 analisa) Anda telah habis atau masa aktif 7 hari telah berakhir! Silakan upgrade ke PRO Mingguan.';
+                    else if(activeType === 'PRO_WEEKLY') errorMsg = '⚠️ KUOTA PRO MINGGUAN Anda telah habis! Silakan perpanjang langganan.';
+                    else errorMsg = '⚠️ FREE DAILY (2 analisa/hari) Anda telah habis! Silakan tunggu reset besok pukul 00:00.';
+                    document.getElementById('errorText').innerHTML = errorMsg;
+                    document.getElementById('errorMessage').classList.remove('hidden');
+                    setTimeout(function(){ document.getElementById('errorMessage').classList.add('hidden'); }, 5000);
+                    return;
+                }
+                
+                var sym = document.getElementById('pairSelect').value;
+                var iv = document.getElementById('timeframeSelect').value;
+                var rrValue = parseFloat(document.getElementById('riskRewardSelect').value);
+                var rrParts = getRiskAndRewardParts(rrValue);
+                var riskPart = rrParts.riskPart;
+                var rewardPart = rrParts.rewardPart;
+                var rrDisplay = getRRDisplayText(rrValue);
+                
+                var riskPercent = BASE_RISK_PERCENT * riskPart;
+                var rewardPercent = riskPercent * (rewardPart / riskPart);
+                
+                document.getElementById('loadingSpinner').classList.remove('hidden');
+                document.getElementById('btnText').classList.add('hidden');
+                
+                try{
+                    var quoteRes = await fetch(BASE_URL + '/quote?symbol=' + sym + '&apikey=' + API_KEY);
+                    var quote = await quoteRes.json();
+                    if(!quote.close) throw new Error('Gagal mendapatkan harga');
+                    var currentPrice = parseFloat(quote.close);
+                    
+                    var tsRes = await fetch(BASE_URL + '/time_series?symbol=' + sym + '&interval=' + (timeframeMap[iv]||iv) + '&outputsize=100&apikey=' + API_KEY);
+                    var ts = await tsRes.json();
+                    if(!ts.values || ts.values.length < 30) throw new Error('Data historis tidak mencukupi');
+                    
+                    var values = ts.values;
+                    var closes = values.map(function(v) { return parseFloat(v.close); });
+                    var highs = values.map(function(v) { return parseFloat(v.high); });
+                    var lows = values.map(function(v) { return parseFloat(v.low); });
+                    var opens = values.map(function(v) { return parseFloat(v.open); });
+                    
+                    var atr = calculateATR(highs, lows, closes);
+                    
+                    var riskDistance = currentPrice * riskPercent;
+                    var rewardDistance = currentPrice * rewardPercent;
+                    
+                    var ema20 = 0, ema50 = 0, ema100 = 0;
+                    for(var i=0;i<20;i++) ema20 += closes[i];
+                    ema20 = ema20 / 20;
+                    for(var i=0;i<50;i++) ema50 += closes[i];
+                    ema50 = ema50 / 50;
+                    for(var i=0;i<100;i++) ema100 += closes[i];
+                    ema100 = ema100 / 100;
+                    
+                    var biasText, biasClass;
+                    if (currentPrice > ema20 && currentPrice > ema50 && currentPrice > ema100) {
+                        biasText = 'BULLISH';
+                        biasClass = 'text-cyber-green';
+                    } else if (currentPrice < ema20 && currentPrice < ema50 && currentPrice < ema100) {
+                        biasText = 'BEARISH';
+                        biasClass = 'text-cyber-red';
+                    } else if (ema20 > ema50 && ema50 > ema100 && currentPrice > ema20) {
+                        biasText = 'BULLISH';
+                        biasClass = 'text-cyber-green';
+                    } else if (ema20 < ema50 && ema50 < ema100 && currentPrice < ema20) {
+                        biasText = 'BEARISH';
+                        biasClass = 'text-cyber-red';
+                    } else {
+                        biasText = 'NEUTRAL';
+                        biasClass = 'text-gray-400';
+                    }
+                    
+                    var upCount = 0, downCount = 0;
+                    for (var i = 1; i < Math.min(14, highs.length); i++) {
+                        if (highs[i] > highs[i-1] && lows[i] > lows[i-1]) upCount++;
+                        else if (highs[i] < highs[i-1] && lows[i] < lows[i-1]) downCount++;
+                    }
+                    var psarLong = upCount >= 7;
+                    var psarShort = downCount >= 7;
+                    var psar = psarLong ? 'BULLISH' : (psarShort ? 'BEARISH' : 'NEUTRAL');
+                    
+                    var hh = 0, hl = 0, lh = 0, ll = 0;
+                    for (var i = 0; i < Math.min(15, highs.length - 2); i++) {
+                        if (highs[i] > highs[i+1] && highs[i] > highs[i+2]) hh++;
+                        if (lows[i] > lows[i+1] && lows[i] > lows[i+2]) hl++;
+                        if (highs[i] < highs[i+1] && highs[i] < highs[i+2]) lh++;
+                        if (lows[i] < lows[i+1] && lows[i] < lows[i+2]) ll++;
+                    }
+                    var structure = { type: 'Ranging', strength: 'Neutral', bias: 'neutral' };
+                    if (hh >= 3 && hl >= 2) structure = { type: 'Strong Uptrend', strength: 'Strong', bias: 'bullish' };
+                    else if (ll >= 3 && lh >= 2) structure = { type: 'Strong Downtrend', strength: 'Strong', bias: 'bearish' };
+                    else if (hh >= 2) structure = { type: 'Uptrend', strength: 'Moderate', bias: 'bullish' };
+                    else if (ll >= 2) structure = { type: 'Downtrend', strength: 'Moderate', bias: 'bearish' };
+                    
+                    var bullishScore = 0, bearishScore = 0;
+                    if (biasText === 'BULLISH') bullishScore += 2;
+                    else if (biasText === 'BEARISH') bearishScore += 2;
+                    if (psarLong) bullishScore += 2;
+                    else if (psarShort) bearishScore += 2;
+                    if (structure.bias === 'bullish') bullishScore += 3;
+                    else if (structure.bias === 'bearish') bearishScore += 3;
+                    
+                    var signal, sl, tp, dom = 'neutral';
+                    
+                    if (bullishScore >= 5 && bullishScore > bearishScore + 2) {
+                        signal = '🟢 BUY';
+                        sl = currentPrice - riskDistance;
+                        tp = currentPrice + rewardDistance;
+                        updateChartSignal('buy');
+                        dom = 'bid';
+                    } else if (bearishScore >= 5 && bearishScore > bullishScore + 2) {
+                        signal = '🔴 SELL';
+                        sl = currentPrice + riskDistance;
+                        tp = currentPrice - rewardDistance;
+                        updateChartSignal('sell');
+                        dom = 'ask';
+                    } else {
+                        signal = '⏳ WAIT';
+                        sl = currentPrice - riskDistance;
+                        tp = currentPrice + rewardDistance;
+                        updateChartSignal('wait');
+                    }
+                    
+                    setText('currentPrice', formatPrice(currentPrice, sym));
+                    setText('pairDisplay', sym);
+                    setText('biasDisplay', biasText);
+                    setText('biasValue', biasText);
+                    setText('psarValue', psar);
+                    setText('smcValue', structure.bias.toUpperCase());
+                    setText('orderBlockValue', formatPrice(currentPrice - (currentPrice * 0.01), sym));
+                    setText('entrySignal', signal);
+                    setText('entryDesc', 'Skor B:' + bullishScore + ' S:' + bearishScore + ' | R:R ' + rrDisplay);
+                    setText('slValue', formatPrice(sl, sym));
+                    setText('tpValue', formatPrice(tp, sym));
+                    setText('slDistance', calculatePips(currentPrice, sl, sym) + ' pips');
+                    setText('tpDistance', calculatePips(currentPrice, tp, sym) + ' pips');
+                    
+                    var ec = document.getElementById('entryContainer');
+                    if(ec) ec.className = 'entry-card ' + (signal.includes('BUY') ? 'buy' : (signal.includes('SELL') ? 'sell' : 'wait'));
+                    
+                    renderOrderBook(dom, currentPrice);
+                    document.getElementById('resultPanel').classList.remove('hidden');
+                    document.getElementById('emptyState').classList.add('hidden');
+                    
+                    incrementUsage();
+                    setCooldown();
+                    updateCooldownDisplay();
+                    
+                    var quotaMsg = ' (Sisa: ' + getCurrentQuotaRemaining() + ' dari ' + getCurrentQuotaTotal() + ')';
+                    showToast('✅ Analisa berhasil! Jeda 10 menit dimulai.' + quotaMsg);
+                } catch(e) {
+                    console.error(e);
+                    document.getElementById('errorText').innerHTML = 'Gagal mendapatkan harga. Silakan cek koneksi internet atau API Key.';
+                    document.getElementById('errorMessage').classList.remove('hidden');
+                    setTimeout(function(){ document.getElementById('errorMessage').classList.add('hidden'); }, 5000);
+                } finally {
+                    document.getElementById('loadingSpinner').classList.add('hidden');
+                    document.getElementById('btnText').classList.remove('hidden');
+                }
+            }
+            
+            // ==================== PAYMENT ====================
+            function openPaymentGuide() {
+                if(isNewUserBonusActive()) {
+                    showToast('⚠️ Anda masih dalam masa NEW USER BONUS (7 hari). Upgrade ke PRO hanya bisa dilakukan setelah masa bonus berakhir!');
+                    return;
+                }
+                updatePaymentAmount();
+                document.getElementById('paymentModal').classList.remove('hidden');
+                document.getElementById('transactionId').value = '';
+                document.getElementById('paymentSource').value = '';
+                document.getElementById('accountHolder').value = '';
+                document.getElementById('transactionDate').value = '';
+                document.getElementById('userEmail').value = '';
+                document.getElementById('userFullName').value = '';
+            }
+            
+            function closePaymentModal() {
+                document.getElementById('paymentModal').classList.add('hidden');
+            }
+            
+            function confirmPayment() {
+                var tid = document.getElementById('transactionId').value;
+                var ps = document.getElementById('paymentSource').value;
+                var ah = document.getElementById('accountHolder').value;
+                var td = document.getElementById('transactionDate').value;
+                var em = document.getElementById('userEmail').value;
+                var fn = document.getElementById('userFullName').value;
+                var amt = parseInt(document.getElementById('paymentNominal').value);
+                var uc = document.getElementById('uniqueCodeValue').value;
+                
+                if(!tid){ showToast('Harap isi nomor transaksi!'); return; }
+                if(!ps){ showToast('Harap pilih sumber dana!'); return; }
+                if(!ah){ showToast('Harap isi nama pemilik!'); return; }
+                if(!td){ showToast('Harap pilih tanggal transaksi!'); return; }
+                if(!em){ showToast('Harap isi email!'); return; }
+                if(!fn){ showToast('Harap isi nama lengkap!'); return; }
+                if(!em.includes('@')){ showToast('Email tidak valid!'); return; }
+                
+                showToast('✅ Data pembayaran telah disimpan. Silakan konfirmasi via DM Instagram/TikTok @cuanhunters dengan kode unik: ' + uc);
+                
+                setTimeout(function(){
+                    if(confirm('KONFIRMASI PEMBAYARAN\n\nApakah Anda sudah melakukan pembayaran dan ingin mengaktifkan PRO MINGGUAN?\n\nKlik OK untuk LANJUTKAN')){
+                        activateProWeekly();
+                        closePaymentModal();
+                        showToast('✅ Upgrade PRO Mingguan berhasil! Anda mendapatkan 15 analisa untuk 7 hari ke depan.');
+                        updateUsageDisplay();
+                        resetAnalysis();
+                    } else {
+                        showToast('⏳ Menunggu konfirmasi pembayaran. Silakan konfirmasi via DM @cuanhunters.');
+                        closePaymentModal();
+                    }
+                }, 2000);
+            }
+            
+            // ==================== STATISTICS ====================
+            function updateTotalUsers(){
+                var n = new Date();
+                var lu = memoryData.lastTotalUpdate;
+                var st = memoryData.savedTotalUsers;
+                if(lu && st){
+                    var ld = new Date(parseInt(lu));
+                    var dd = Math.floor((n - ld) / 86400000);
+                    var inc = Math.floor(dd/2)*2;
+                    if(inc>0){
+                        curTotal = parseInt(st) + inc;
+                        memoryData.savedTotalUsers = curTotal;
+                        memoryData.lastTotalUpdate = n.getTime();
+                        persistData();
+                    } else curTotal = parseInt(st);
+                }
+                return curTotal;
+            }
+            
+            function updateStatistics(){
+                curTotal = updateTotalUsers();
+                var proPerc = 0.23 + (Math.sin(Date.now()/3600000)*0.03);
+                var np = Math.floor(curTotal * proPerc);
+                np = Math.max(Math.floor(curTotal*0.18), Math.min(Math.floor(curTotal*0.32), np));
+                var hod = new Date().getHours();
+                var actBase = 0.35 + Math.sin(hod * Math.PI/12) * 0.1;
+                var na = Math.floor(curTotal * actBase);
+                na = Math.max(Math.floor(curTotal*0.28), Math.min(Math.floor(curTotal*0.48), na));
+                na += Math.floor(Math.random()*11)-5;
+                na = Math.max(Math.floor(curTotal*0.25), Math.min(Math.floor(curTotal*0.5), na));
+                var pdiff = np - proUs;
+                var adiff = na - actUsers;
+                proUs += Math.sign(pdiff) * Math.min(Math.abs(pdiff), 3);
+                actUsers += Math.sign(adiff) * Math.min(Math.abs(adiff), 4);
+                proUs = Math.max(Math.floor(curTotal*0.18), Math.min(Math.floor(curTotal*0.32), proUs));
+                actUsers = Math.max(Math.floor(curTotal*0.28), Math.min(Math.floor(curTotal*0.48), actUsers));
+                freeUs = curTotal - proUs;
+                
+                var animateCount = function(id, target, duration){
+                    var el = document.getElementById(id);
+                    if(!el) return;
+                    var start = parseInt(el.textContent.replace(/,/g,'')) || 0;
+                    if(start === target) return;
+                    var inc = (target - start) / (duration/16);
+                    var current = start;
+                    var timer = setInterval(function(){
+                        current += inc;
+                        if(Math.abs(current - target) < 1){
+                            el.textContent = target.toLocaleString();
+                            clearInterval(timer);
+                        } else {
+                            el.textContent = Math.floor(current).toLocaleString();
+                        }
+                    }, 16);
+                };
+                animateCount('totalUsersCount', curTotal, 800);
+                animateCount('activeUsersCount', actUsers, 600);
+                animateCount('proUsersCount', proUs, 700);
+                animateCount('freeUsersCount', freeUs, 750);
+            }
+            
+            // ==================== EVENT LISTENERS & INIT ====================
+            document.addEventListener('DOMContentLoaded', async function(){
+                initStorage();
+                initChart();
+                renderOrderBook('neutral', 1.09234);
+                updateUsageDisplay();
+                updateCooldownDisplay();
+                curTotal = updateTotalUsers();
+                proUs = Math.floor(curTotal * 0.23);
+                freeUs = curTotal - proUs;
+                actUsers = Math.floor(curTotal * 0.35);
+                document.getElementById('totalUsersCount').textContent = curTotal.toLocaleString();
+                document.getElementById('activeUsersCount').textContent = actUsers.toLocaleString();
+                document.getElementById('proUsersCount').textContent = proUs.toLocaleString();
+                document.getElementById('freeUsersCount').textContent = freeUs.toLocaleString();
+                setInterval(updateStatistics, 15000);
+                setInterval(function(){
+                    updateCountdownDisplay();
+                    resetFreeDailyIfNeeded();
+                    updateUsageDisplay();
+                    updateCooldownDisplay();
+                }, 1000);
+                
+                document.getElementById('analyzeBtn').addEventListener('click', analyze);
+                document.getElementById('refreshAnalysisBtn').addEventListener('click', analyze);
+                document.getElementById('resetAnalysisBtn').addEventListener('click', resetAnalysis);
+                document.getElementById('confirmPaymentBtn').addEventListener('click', confirmPayment);
+                document.getElementById('closePaymentModalBtn').addEventListener('click', closePaymentModal);
+                document.getElementById('buyProBtn').addEventListener('click', openPaymentGuide);
+                document.getElementById('extendProBtn').addEventListener('click', openPaymentGuide);
+                document.getElementById('proCard').addEventListener('click', openPaymentGuide);
+                document.getElementById('newUserBonusCard').addEventListener('click', function(){
+                    if(isProActive()) {
+                        showToast('⚠️ Anda sedang dalam masa PRO aktif. New User Bonus tidak dapat diaktifkan.');
+                        return;
+                    }
+                    if(claimNewUserBonus()) {
+                        updateUsageDisplay();
+                    } else {
+                        showToast('Bonus pengguna baru sudah pernah diklaim sebelumnya.');
+                    }
+                });
+                document.getElementById('freeDailyCard').addEventListener('click', function(){
+                    document.getElementById('freeDailyStatus').scrollIntoView({behavior: 'smooth'});
+                    showToast('📊 Free Daily: 2 analisa gratis per hari! Reset setiap pukul 00:00');
+                });
+                
+                var quickItems = document.querySelectorAll('.quick-item');
+                for(var i=0; i<quickItems.length; i++){
+                    quickItems[i].addEventListener('click', function(e){
+                        var strategy = this.getAttribute('data-strategy');
+                        quickSelectStrategy(strategy);
+                        document.querySelectorAll('.quick-item').forEach(function(el){ el.classList.remove('active'); });
+                        this.classList.add('active');
+                    });
+                }
+            });
+        })();
+    </script>
+</body>
+</html>
