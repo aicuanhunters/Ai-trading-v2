@@ -56,7 +56,6 @@
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
         
-        /* Logo from URL */
         .loading-logo-img {
             width: 70px;
             height: 70px;
@@ -81,7 +80,6 @@
             -webkit-text-fill-color: transparent;
         }
         
-        /* Candlestick Chart Container */
         .candlestick-container {
             margin: 1.5rem 0;
             background: rgba(0,0,0,0.3);
@@ -97,7 +95,6 @@
             border-radius: 8px;
         }
         
-        /* Sentiment Gauge */
         .sentiment-gauge {
             margin: 1rem 0;
             padding: 0.8rem;
@@ -137,7 +134,6 @@
             color: #64748b;
         }
         
-        /* VWAP Progress */
         .vwap-progress {
             margin: 1rem 0;
         }
@@ -186,7 +182,6 @@
             50% { opacity: 0.3; }
         }
         
-        /* Status Cards */
         .status-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -272,7 +267,6 @@
         .ticker-change.up { color: #10B981; background: rgba(16,185,129,0.1); }
         .ticker-change.down { color: #F87171; background: rgba(248,113,113,0.1); }
         
-        /* Main content styles (same as original, kept) */
         .premium-card { background: rgba(8, 14, 24, 0.85); backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.05); border-radius: 1.5rem; box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5); transition: all 0.3s ease; padding: 1rem; }
         .premium-card:hover { border-color: rgba(16,185,129,0.2); transform: translateY(-1px); }
         .header-card { background: linear-gradient(145deg, #0e1625, #080e18); border: 1px solid rgba(255,255,255,0.05); border-radius: 1.5rem; padding: 0.8rem 1rem; margin-bottom: 1rem; position: relative; overflow: hidden; }
@@ -484,32 +478,27 @@
     <div id="loadingOverlay" class="loading-overlay">
         <canvas id="matrixCanvas"></canvas>
         <div class="loading-container">
-            <!-- Logo from URL -->
             <img class="loading-logo-img" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh9YQmaIHSrk0AT8IpfU-nDQ2NmGo700YpMQSj3Lvo-_7kX4G6xyX_pd5KyxCznX6r0Tl2vYvZkZf797uCgHXQflFsDW5-HThG2rIg3PCR1LXrhuU3GDndJkLyyfdhC5LfsQuw2TFnwTAePABrvRF-PVrOF3ZTqBqMNYZ-ErDcXvCW5sCzLGcIkWzO_6YwN/s1024/1000832791.png" alt="Logo">
             <div class="institutional-text">
                 <h1>AI CUANHUNTERS PRO</h1>
                 <p>INSTITUTIONAL GRADE TRADING TERMINAL</p>
             </div>
             
-            <!-- Candlestick Chart Canvas -->
             <div class="candlestick-container">
                 <canvas id="candlestickCanvas" class="candlestick-canvas" width="700" height="150" style="width:100%; height:150px;"></canvas>
             </div>
             
-            <!-- Sentiment Gauge -->
             <div class="sentiment-gauge">
                 <div class="gauge-label">MARKET SENTIMENT INDEX</div>
                 <div class="gauge-bar-container"><div id="sentimentBar" class="gauge-bar"></div></div>
                 <div class="gauge-markers"><span>BEARISH</span><span>NEUTRAL</span><span>BULLISH</span></div>
             </div>
             
-            <!-- VWAP Progress -->
             <div class="vwap-progress">
                 <div class="vwap-header"><span class="vwap-label">SYSTEM INITIALIZATION</span><span id="loadingPercentage" class="vwap-value">0%</span></div>
                 <div class="vwap-bar"><div id="vwapFill" class="vwap-fill"></div></div>
             </div>
             
-            <!-- Status Cards -->
             <div class="status-grid">
                 <div id="status1" class="status-card"><div class="status-icon"><i class="fas fa-microchip"></i></div><div class="status-title">CORE ENGINE</div><div class="status-desc">Initializing AI</div></div>
                 <div id="status2" class="status-card"><div class="status-icon"><i class="fas fa-database"></i></div><div class="status-title">DATA FEEDS</div><div class="status-desc">Loading markets</div></div>
@@ -523,7 +512,7 @@
         <div class="pro-ticker"><div id="proTicker" class="ticker-scroll"></div></div>
     </div>
 
-    <!-- MAIN CONTENT (SAME AS ORIGINAL, FULL) -->
+    <!-- MAIN CONTENT -->
     <div id="mainContent" class="main-content" style="opacity: 0;">
         <div class="ai-container">
             <!-- HEADER -->
@@ -677,7 +666,6 @@
                 const numCandles = 40;
                 let candleInterval;
                 
-                // Generate initial random candles
                 function generateCandle(basePrice) {
                     const open = basePrice;
                     const close = basePrice + (Math.random() - 0.5) * (basePrice * 0.01);
@@ -696,7 +684,6 @@
                 }
                 
                 function updateCandles() {
-                    // Remove first, add new
                     candleData.shift();
                     const lastPrice = candleData[candleData.length-1].close;
                     const newCandle = generateCandle(lastPrice);
@@ -713,7 +700,6 @@
                     const padding = 2;
                     const barWidth = candleWidth - padding;
                     
-                    // Find min/max for scaling
                     let minPrice = Infinity, maxPrice = -Infinity;
                     candleData.forEach(c => {
                         minPrice = Math.min(minPrice, c.low);
@@ -740,7 +726,6 @@
                 initCandles();
                 drawCandles();
                 candleInterval = setInterval(updateCandles, 800);
-                // Cleanup later
                 window.cleanupCandles = function() { if(candleInterval) clearInterval(candleInterval); };
             }
             
@@ -756,7 +741,7 @@
                 document.getElementById('lightbox').classList.remove('active');
             };
             
-            // ========== PROFESSIONAL LOADING ANIMATION (SAME AS BEFORE) ==========
+            // ========== PROFESSIONAL LOADING ANIMATION ==========
             let loadingStartTime = Date.now();
             let currentPercentage = 0;
             let sentimentValue = 0;
@@ -854,7 +839,7 @@
                 }, 60);
             }
             
-            // ========== MAIN APPLICATION (ORIGINAL FULL CODE) ==========
+            // ========== MAIN APPLICATION ==========
             const STORAGE_KEY = 'CuanHuntersData';
             const defaultData = { newUserBonusClaimed: false, newUserBonusData: null, proSubscription: null, proUsage: { count: 0, periodStart: new Date().toISOString() }, freeDailyUsage: { date: new Date().toDateString(), used: 0 }, cooldown: null, lastTotalUpdate: null, savedTotalUsers: 535 };
             var memoryData = { ...defaultData };
@@ -949,7 +934,132 @@
             function quickSelectStrategy(strategy){var p={scalp:{pair:'EUR/USD',tf:'1min',rr:'2'},intraday:{pair:'EUR/USD',tf:'15min',rr:'2'},swing:{pair:'EUR/USD',tf:'4h',rr:'3'}}[strategy]; if(p){document.getElementById('pairSelect').value=p.pair; document.getElementById('timeframeSelect').value=p.tf; document.getElementById('riskRewardSelect').value=p.rr;}}
             function resetAnalysis(){document.getElementById('resultPanel').classList.add('hidden'); document.getElementById('emptyState').classList.remove('hidden'); resetChartToWait(); renderOrderBook('neutral',1.09234); setText('currentPrice','-'); setText('pairDisplay','EUR/USD'); setText('biasDisplay','-'); setText('biasValue','-'); setText('psarValue','-'); setText('smcValue','-'); setText('orderBlockValue','-'); setText('entrySignal','-'); setText('entryDesc','-'); setText('slValue','-'); setText('tpValue','-'); setText('slDistance','- pips'); setText('tpDistance','- pips'); document.getElementById('entryContainer').className='entry-card wait';}
             function calculateATR(highs,lows,closes){var sum=0,period=Math.min(20,highs.length-1); for(var i=1;i<=period;i++){var tr=Math.max(highs[i]-lows[i],Math.abs(highs[i]-closes[i-1]),Math.abs(lows[i]-closes[i-1])); sum+=tr;} return sum/period;}
-            async function analyze(){if(isOnCooldown()){var rem=getCooldownRemaining(); showToast(`⏱️ Tunggu ${Math.floor(rem/60)} menit ${Math.floor(rem%60)} detik.`); return;} if(!canPerformAnalysis()){var at=getActiveQuotaType(), err=at==='NEW_USER_BONUS'?'⚠️ NEW USER BONUS habis!':(at==='PRO_WEEKLY'?'⚠️ KUOTA PRO habis!':'⚠️ FREE DAILY habis!'); document.getElementById('errorText').innerHTML=err; document.getElementById('errorMessage').classList.remove('hidden'); setTimeout(()=>document.getElementById('errorMessage').classList.add('hidden'),5000); return;} var sym=document.getElementById('pairSelect').value, iv=document.getElementById('timeframeSelect').value, rrVal=parseFloat(document.getElementById('riskRewardSelect').value); var rrParts=getRiskAndRewardParts(rrVal), riskPart=rrParts.riskPart, rewardPart=rrParts.rewardPart, rrDisplay=getRRDisplayText(rrVal); var riskPercent=BASE_RISK_PERCENT*riskPart, rewardPercent=riskPercent*(rewardPart/riskPart); document.getElementById('loadingSpinner').classList.remove('hidden'); document.getElementById('btnText').classList.add('hidden'); try{var quoteRes=await fetch(BASE_URL+'/quote?symbol='+sym+'&apikey='+API_KEY); var quote=await quoteRes.json(); if(!quote.close) throw new Error('Gagal harga'); var cp=parseFloat(quote.close); var tsRes=await fetch(BASE_URL+'/time_series?symbol='+sym+'&interval='+(timeframeMap[iv]||iv)+'&outputsize=100&apikey='+API_KEY); var ts=await tsRes.json(); if(!ts.values||ts.values.length<30) throw new Error('Data historis kurang'); var vals=ts.values, closes=vals.map(v=>parseFloat(v.close)), highs=vals.map(v=>parseFloat(v.high)), lows=vals.map(v=>parseFloat(v.low)); var atr=calculateATR(highs,lows,closes); var riskDist=cp*riskPercent, rewardDist=cp*rewardPercent; var ema20=0,ema50=0,ema100=0; for(var i=0;i<20;i++) ema20+=closes[i]; ema20/=20; for(i=0;i<50;i++) ema50+=closes[i]; ema50/=50; for(i=0;i<100;i++) ema100+=closes[i]; ema100/=100; var biasText=(cp>ema20&&cp>ema50&&cp>ema100)?'BULLISH':((cp<ema20&&cp<ema50&&cp<ema100)?'BEARISH':((ema20>ema50&&ema50>ema100&&cp>ema20)?'BULLISH':((ema20<ema50&&ema50<ema100&&cp<ema20)?'BEARISH':'NEUTRAL'))); var up=0,down=0; for(i=1;i<Math.min(14,highs.length);i++){if(highs[i]>highs[i-1]&&lows[i]>lows[i-1]) up++; else if(highs[i]<highs[i-1]&&lows[i]<lows[i-1]) down++;} var psarLong=up>=7, psarShort=down>=7, psar=psarLong?'BULLISH':(psarShort?'BEARISH':'NEUTRAL'); var hh=0,hl=0,lh=0,ll=0; for(i=0;i<Math.min(15,highs.length-2);i++){if(highs[i]>highs[i+1]&&highs[i]>highs[i+2]) hh++; if(lows[i]>lows[i+1]&&lows[i]>lows[i+2]) hl++; if(highs[i]<highs[i+1]&&highs[i]<highs[i+2]) lh++; if(lows[i]<lows[i+1]&&lows[i]<lows[i+2]) ll++;} var structure={type:'Ranging',strength:'Neutral',bias:'neutral'}; if(hh>=3&&hl>=2) structure={type:'Strong Uptrend',strength:'Strong',bias:'bullish'}; else if(ll>=3&&lh>=2) structure={type:'Strong Downtrend',strength:'Strong',bias:'bearish'}; else if(hh>=2) structure={type:'Uptrend',strength:'Moderate',bias:'bullish'}; else if(ll>=2) structure={type:'Downtrend',strength:'Moderate',bias:'bearish'}; var bullishScore=0,bearishScore=0; if(biasText==='BULLISH') bullishScore+=2; else if(biasText==='BEARISH') bearishScore+=2; if(psarLong) bullishScore+=2; else if(psarShort) bearishScore+=2; if(structure.bias==='bullish') bullishScore+=3; else if(structure.bias==='bearish') bearishScore+=3; var signal,sl,tp,dom='neutral'; if(bullishScore>=5&&bullishScore>bearishScore+2){signal='🟢 BUY'; sl=cp-riskDist; tp=cp+rewardDist; updateChartSignal('buy'); dom='bid';} else if(bearishScore>=5&&bearishScore>bullishScore+2){signal='🔴 SELL'; sl=cp+riskDist; tp=cp-rewardDist; updateChartSignal('sell'); dom='ask';} else{signal='⏳ WAIT'; sl=cp-riskDist; tp=cp+rewardDist; updateChartSignal('wait');} setText('currentPrice',formatPrice(cp,sym)); setText('pairDisplay',sym); setText('biasDisplay',biasText); setText('biasValue',biasText); setText('psarValue',psar); setText('smcValue',structure.bias.toUpperCase()); setText('orderBlockValue',formatPrice(cp-(cp*0.01),sym)); setText('entrySignal',signal); setText('entryDesc',`Skor B:${bullishScore} S:${bearishScore} | R:R ${rrDisplay}`); setText('slValue',formatPrice(sl,sym)); setText('tpValue',formatPrice(tp,sym)); setText('slDistance',calculatePips(cp,sl,sym)+' pips'); setText('tpDistance',calculatePips(cp,tp,sym)+' pips'); var ec=document.getElementById('entryContainer'); if(ec) ec.className='entry-card '+(signal.includes('BUY')?'buy':(signal.includes('SELL')?'sell':'wait')); renderOrderBook(dom,cp); document.getElementById('resultPanel').classList.remove('hidden'); document.getElementById('emptyState').classList.add('hidden'); incrementUsage(); setCooldown(); updateCooldownDisplay(); showToast(`✅ Analisa berhasil! Jeda 10 menit. Sisa: ${getCurrentQuotaRemaining()} dari ${getCurrentQuotaTotal()}`);} catch(e){console.error(e); document.getElementById('errorText').innerHTML='Gagal mendapatkan harga. Cek koneksi/API Key.'; document.getElementById('errorMessage').classList.remove('hidden'); setTimeout(()=>document.getElementById('errorMessage').classList.add('hidden'),5000);} finally{document.getElementById('loadingSpinner').classList.add('hidden'); document.getElementById('btnText').classList.remove('hidden');}}
+            
+            // ========== FUNGSI ANALISIS DENGAN PERHITUNGAN PSAR, BIAS, SMC YANG SAMA PERSIS DENGAN KODE YANG ANDA BERIKAN ==========
+            // PSAR - menghitung tren berdasarkan pergerakan candlestick
+            function calculateParabolicSAR(highs, lows) {
+                var up = 0, down = 0;
+                for(var i = 1; i < Math.min(14, highs.length); i++){
+                    if(highs[i] > highs[i-1] && lows[i] > lows[i-1]) up++;
+                    else if(highs[i] < highs[i-1] && lows[i] < lows[i-1]) down++;
+                }
+                var psarLong = up >= 7;
+                var psarShort = down >= 7;
+                var psar = psarLong ? 'BULLISH' : (psarShort ? 'BEARISH' : 'NEUTRAL');
+                return psar;
+            }
+            
+            // SMC - mendeteksi struktur market (Higher High, Higher Low, Lower High, Lower Low)
+            function analyzeMarketStructure(highs, lows) {
+                var hh = 0, hl = 0, lh = 0, ll = 0;
+                for(var i = 0; i < Math.min(15, highs.length-2); i++){
+                    if(highs[i] > highs[i+1] && highs[i] > highs[i+2]) hh++;
+                    if(lows[i] > lows[i+1] && lows[i] > lows[i+2]) hl++;
+                    if(highs[i] < highs[i+1] && highs[i] < highs[i+2]) lh++;
+                    if(lows[i] < lows[i+1] && lows[i] < lows[i+2]) ll++;
+                }
+                
+                var structure = { type: 'Ranging', strength: 'Neutral', bias: 'neutral' };
+                if(hh >= 3 && hl >= 2) structure = { type: 'Strong Uptrend', strength: 'Strong', bias: 'bullish' };
+                else if(ll >= 3 && lh >= 2) structure = { type: 'Strong Downtrend', strength: 'Strong', bias: 'bearish' };
+                else if(hh >= 2) structure = { type: 'Uptrend', strength: 'Moderate', bias: 'bullish' };
+                else if(ll >= 2) structure = { type: 'Downtrend', strength: 'Moderate', bias: 'bearish' };
+                
+                return structure;
+            }
+            
+            // BIAS - berdasarkan perbandingan harga dengan EMA
+            function calculateBias(currentPrice, closes) {
+                var ema20 = 0, ema50 = 0, ema100 = 0;
+                for(var i = 0; i < 20; i++) ema20 += closes[i];
+                ema20 /= 20;
+                for(var i = 0; i < 50; i++) ema50 += closes[i];
+                ema50 /= 50;
+                for(var i = 0; i < 100; i++) ema100 += closes[i];
+                ema100 /= 100;
+                
+                var biasText = (currentPrice > ema20 && currentPrice > ema50 && currentPrice > ema100) ? 'BULLISH' : 
+                               ((currentPrice < ema20 && currentPrice < ema50 && currentPrice < ema100) ? 'BEARISH' : 'NEUTRAL');
+                return biasText;
+            }
+            
+            async function analyze(){
+                if(isOnCooldown()){var rem=getCooldownRemaining(); showToast(`⏱️ Tunggu ${Math.floor(rem/60)} menit ${Math.floor(rem%60)} detik.`); return;} 
+                if(!canPerformAnalysis()){var at=getActiveQuotaType(), err=at==='NEW_USER_BONUS'?'⚠️ NEW USER BONUS habis!':(at==='PRO_WEEKLY'?'⚠️ KUOTA PRO habis!':'⚠️ FREE DAILY habis!'); document.getElementById('errorText').innerHTML=err; document.getElementById('errorMessage').classList.remove('hidden'); setTimeout(()=>document.getElementById('errorMessage').classList.add('hidden'),5000); return;} 
+                var sym=document.getElementById('pairSelect').value, iv=document.getElementById('timeframeSelect').value, rrVal=parseFloat(document.getElementById('riskRewardSelect').value); 
+                var rrParts=getRiskAndRewardParts(rrVal), riskPart=rrParts.riskPart, rewardPart=rrParts.rewardPart, rrDisplay=getRRDisplayText(rrVal); 
+                var riskPercent=BASE_RISK_PERCENT*riskPart, rewardPercent=riskPercent*(rewardPart/riskPart); 
+                document.getElementById('loadingSpinner').classList.remove('hidden'); document.getElementById('btnText').classList.add('hidden'); 
+                try{
+                    var quoteRes=await fetch(BASE_URL+'/quote?symbol='+sym+'&apikey='+API_KEY); 
+                    var quote=await quoteRes.json(); 
+                    if(!quote.close) throw new Error('Gagal harga'); 
+                    var cp=parseFloat(quote.close); 
+                    var tsRes=await fetch(BASE_URL+'/time_series?symbol='+sym+'&interval='+(timeframeMap[iv]||iv)+'&outputsize=100&apikey='+API_KEY); 
+                    var ts=await tsRes.json(); 
+                    if(!ts.values||ts.values.length<30) throw new Error('Data historis kurang'); 
+                    var vals=ts.values, closes=vals.map(v=>parseFloat(v.close)), highs=vals.map(v=>parseFloat(v.high)), lows=vals.map(v=>parseFloat(v.low)); 
+                    var atr=calculateATR(highs,lows,closes); 
+                    var riskDist=cp*riskPercent, rewardDist=cp*rewardPercent; 
+                    
+                    // ========== PERHITUNGAN BIAS (SAMA PERSIS DENGAN KODE ANDA) ==========
+                    var ema20=0,ema50=0,ema100=0; 
+                    for(var i=0;i<20;i++) ema20+=closes[i]; ema20/=20; 
+                    for(i=0;i<50;i++) ema50+=closes[i]; ema50/=50; 
+                    for(i=0;i<100;i++) ema100+=closes[i]; ema100/=100; 
+                    var biasText=(cp>ema20&&cp>ema50&&cp>ema100)?'BULLISH':((cp<ema20&&cp<ema50&&cp<ema100)?'BEARISH':((ema20>ema50&&ema50>ema100&&cp>ema20)?'BULLISH':((ema20<ema50&&ema50<ema100&&cp<ema20)?'BEARISH':'NEUTRAL'))); 
+                    
+                    // ========== PERHITUNGAN PSAR (SAMA PERSIS DENGAN KODE ANDA) ==========
+                    var up=0,down=0; 
+                    for(i=1;i<Math.min(14,highs.length);i++){if(highs[i]>highs[i-1]&&lows[i]>lows[i-1]) up++; else if(highs[i]<highs[i-1]&&lows[i]<lows[i-1]) down++;} 
+                    var psarLong=up>=7, psarShort=down>=7, psar=psarLong?'BULLISH':(psarShort?'BEARISH':'NEUTRAL'); 
+                    
+                    // ========== PERHITUNGAN SMC (SAMA PERSIS DENGAN KODE ANDA) ==========
+                    var hh=0,hl=0,lh=0,ll=0; 
+                    for(i=0;i<Math.min(15,highs.length-2);i++){if(highs[i]>highs[i+1]&&highs[i]>highs[i+2]) hh++; if(lows[i]>lows[i+1]&&lows[i]>lows[i+2]) hl++; if(highs[i]<highs[i+1]&&highs[i]<highs[i+2]) lh++; if(lows[i]<lows[i+1]&&lows[i]<lows[i+2]) ll++;} 
+                    var structure={type:'Ranging',strength:'Neutral',bias:'neutral'}; 
+                    if(hh>=3&&hl>=2) structure={type:'Strong Uptrend',strength:'Strong',bias:'bullish'}; 
+                    else if(ll>=3&&lh>=2) structure={type:'Strong Downtrend',strength:'Strong',bias:'bearish'}; 
+                    else if(hh>=2) structure={type:'Uptrend',strength:'Moderate',bias:'bullish'}; 
+                    else if(ll>=2) structure={type:'Downtrend',strength:'Moderate',bias:'bearish'}; 
+                    
+                    // ========== PENENTUAN SIGNAL BERDASARKAN SCORING ==========
+                    var bullishScore=0,bearishScore=0; 
+                    if(biasText==='BULLISH') bullishScore+=2; else if(biasText==='BEARISH') bearishScore+=2; 
+                    if(psarLong) bullishScore+=2; else if(psarShort) bearishScore+=2; 
+                    if(structure.bias==='bullish') bullishScore+=3; else if(structure.bias==='bearish') bearishScore+=3; 
+                    
+                    var signal,sl,tp,dom='neutral'; 
+                    if(bullishScore>=5&&bullishScore>bearishScore+2){signal='🟢 BUY'; sl=cp-riskDist; tp=cp+rewardDist; updateChartSignal('buy'); dom='bid';} 
+                    else if(bearishScore>=5&&bearishScore>bullishScore+2){signal='🔴 SELL'; sl=cp+riskDist; tp=cp-rewardDist; updateChartSignal('sell'); dom='ask';} 
+                    else{signal='⏳ WAIT'; sl=cp-riskDist; tp=cp+rewardDist; updateChartSignal('wait');} 
+                    
+                    setText('currentPrice',formatPrice(cp,sym)); 
+                    setText('pairDisplay',sym); 
+                    setText('biasDisplay',biasText); 
+                    setText('biasValue',biasText); 
+                    setText('psarValue',psar); 
+                    setText('smcValue',structure.bias.toUpperCase()); 
+                    setText('orderBlockValue',formatPrice(cp-(cp*0.01),sym)); 
+                    setText('entrySignal',signal); 
+                    setText('entryDesc',`Skor B:${bullishScore} S:${bearishScore} | R:R ${rrDisplay}`); 
+                    setText('slValue',formatPrice(sl,sym)); 
+                    setText('tpValue',formatPrice(tp,sym)); 
+                    setText('slDistance',calculatePips(cp,sl,sym)+' pips'); 
+                    setText('tpDistance',calculatePips(cp,tp,sym)+' pips'); 
+                    var ec=document.getElementById('entryContainer'); 
+                    if(ec) ec.className='entry-card '+(signal.includes('BUY')?'buy':(signal.includes('SELL')?'sell':'wait')); 
+                    renderOrderBook(dom,cp); 
+                    document.getElementById('resultPanel').classList.remove('hidden'); 
+                    document.getElementById('emptyState').classList.add('hidden'); 
+                    incrementUsage(); 
+                    setCooldown(); 
+                    updateCooldownDisplay(); 
+                    showToast(`✅ Analisa berhasil! Jeda 10 menit. Sisa: ${getCurrentQuotaRemaining()} dari ${getCurrentQuotaTotal()}`);
+                } catch(e){console.error(e); document.getElementById('errorText').innerHTML='Gagal mendapatkan harga. Cek koneksi/API Key.'; document.getElementById('errorMessage').classList.remove('hidden'); setTimeout(()=>document.getElementById('errorMessage').classList.add('hidden'),5000);} 
+                finally{document.getElementById('loadingSpinner').classList.add('hidden'); document.getElementById('btnText').classList.remove('hidden');}
+            }
+            
             function openPaymentGuide(){if(isNewUserBonusActive()){showToast('⚠️ Masih NEW USER BONUS!');return;} updatePaymentAmount(); document.getElementById('paymentModal').classList.remove('hidden'); document.getElementById('transactionId').value=''; document.getElementById('paymentSource').value=''; document.getElementById('accountHolder').value=''; document.getElementById('transactionDate').value=''; document.getElementById('userEmail').value=''; document.getElementById('userFullName').value='';}
             function closePaymentModal(){document.getElementById('paymentModal').classList.add('hidden');}
             function confirmPayment(){var tid=document.getElementById('transactionId').value, ps=document.getElementById('paymentSource').value, ah=document.getElementById('accountHolder').value, td=document.getElementById('transactionDate').value, em=document.getElementById('userEmail').value, fn=document.getElementById('userFullName').value, uc=document.getElementById('uniqueCodeValue').value; if(!tid){showToast('Isi nomor transaksi!');return;} if(!ps){showToast('Pilih sumber dana!');return;} if(!ah){showToast('Isi nama pemilik!');return;} if(!td){showToast('Pilih tanggal!');return;} if(!em){showToast('Isi email!');return;} if(!fn){showToast('Isi nama lengkap!');return;} if(!em.includes('@')){showToast('Email tidak valid!');return;} showToast('✅ Data tersimpan. Konfirmasi via DM @cuanhunters kode unik: '+uc); setTimeout(()=>{if(confirm('KONFIRMASI PEMBAYARAN\n\nApakah Anda sudah transfer dan ingin mengaktifkan PRO?')){activateProWeekly(); closePaymentModal(); showToast('✅ Upgrade PRO berhasil!'); updateUsageDisplay(); resetAnalysis();} else {showToast('⏳ Menunggu konfirmasi.'); closePaymentModal();}},2000);}
@@ -961,4 +1071,4 @@
         })();
     </script>
 </body>
-                                                                                   </html>
+</html>
