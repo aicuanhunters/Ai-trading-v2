@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-    <title>AI CuanHunters Pro • Limit System</title>
+    <title>AI CuanHunters Pro • Limit System Fixed</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        /* ========== SAME STYLES AS BEFORE (simplified) ========== */
+        /* ========== ALL STYLES (same as before, fully included) ========== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: #0a0e17; min-height: 100vh; overflow-x: hidden; color: #e2e8f0; }
         .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #060b14; z-index: 10000; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
@@ -88,20 +88,6 @@
         .trend-up { color: #10B981; }
         .online-indicator { width: 8px; height: 8px; background: #10B981; border-radius: 50%; display: inline-block; animation: pulseOnline 1.5s infinite; margin-right: 0.3rem; }
         @keyframes pulseOnline { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.2); } }
-        .circular-progress { position: relative; width: 80px; height: 80px; }
-        .circular-progress svg { transform: rotate(-90deg); width: 80px; height: 80px; }
-        .circular-progress circle { fill: none; stroke-width: 6; stroke-linecap: round; }
-        .circular-progress .bg-circle { stroke: rgba(255,255,255,0.08); }
-        .circular-progress .progress-circle { stroke: url(#gradientProgress); transition: stroke-dashoffset 0.5s ease; }
-        .progress-percentage { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 1.1rem; font-weight: 800; background: linear-gradient(135deg, #10B981, #00D4FF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-        .stat-chip { background: rgba(16,185,129,0.08); border-radius: 12px; padding: 0.4rem 0.6rem; text-align: center; border: 1px solid rgba(16,185,129,0.12); }
-        .stat-chip .label { font-size: 0.55rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; }
-        .stat-chip .value { font-size: 1.2rem; font-weight: 700; background: linear-gradient(135deg, #10B981, #00D4FF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-        .countdown-timer { background: linear-gradient(135deg, rgba(16,185,129,0.08), rgba(16,185,129,0.02)); border-radius: 1rem; padding: 0.5rem; text-align: center; border: 1px solid rgba(16,185,129,0.15); margin-top: 0.5rem; }
-        .countdown-numbers { display: flex; gap: 0.4rem; justify-content: center; margin-top: 0.3rem; flex-wrap: wrap; }
-        .countdown-block { text-align: center; background: rgba(0,0,0,0.3); border-radius: 10px; padding: 0.3rem 0.3rem; min-width: 45px; }
-        .countdown-number { font-size: 1rem; font-weight: 700; background: linear-gradient(135deg, #FBBF24, #F59E0B); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-        .countdown-label { font-size: 0.45rem; color: #94a3b8; }
         .price-info { background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(16,185,129,0.05)); border-radius: 12px; padding: 0.5rem; text-align: center; margin-bottom: 0.75rem; }
         .info-banner-free { background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(59,130,246,0.05)); border-radius: 12px; padding: 0.6rem; margin-bottom: 0.75rem; border-left: 3px solid #3B82F6; display: flex; align-items: center; gap: 0.5rem; }
         .info-banner-free i { color: #3B82F6; font-size: 0.8rem; }
@@ -159,8 +145,6 @@
         .toast-notification { position: fixed; bottom: 1rem; right: 1rem; background: linear-gradient(135deg, #10B981, #059669); color: white; padding: 0.6rem 1rem; border-radius: 12px; display: flex; align-items: center; gap: 0.5rem; z-index: 10000; font-size: 0.7rem; animation: slideIn 0.3s ease, fadeOut 0.3s ease 2.7s forwards; }
         @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
         @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
-        
-        /* MODERN TOTAL ANALISA CARD */
         .total-analisa-card {
             background: linear-gradient(145deg, rgba(16,185,129,0.12), rgba(16,185,129,0.02));
             border-radius: 2rem;
@@ -211,16 +195,11 @@
             gap: 0.5rem;
         }
         .btn-add-limit:hover { transform: scale(1.02); box-shadow: 0 5px 15px rgba(16,185,129,0.4); }
-        
-        /* FREE DAILY CARD DIHILANGKAN - tidak ada lagi */
-        
         .bonus-card { background: linear-gradient(135deg, rgba(245,158,11,0.15), rgba(245,158,11,0.05)); border: 1px solid rgba(245,158,11,0.4); border-radius: 1.2rem; padding: 1rem; margin-bottom: 1rem; text-align: center; transition: all 0.3s ease; }
         .bonus-card:hover { transform: translateY(-2px); box-shadow: 0 10px 25px -5px rgba(245,158,11,0.2); }
         .claim-btn { background: linear-gradient(135deg, #F59E0B, #D97706); border: none; color: white; padding: 0.5rem 1.2rem; border-radius: 40px; font-weight: 600; font-size: 0.7rem; cursor: pointer; transition: all 0.2s ease; }
         .claim-btn:hover { transform: scale(1.02); box-shadow: 0 5px 15px rgba(245,158,11,0.4); }
         .claimed-badge { background: rgba(16,185,129,0.2); color: #10B981; padding: 0.25rem 1rem; border-radius: 40px; font-size: 0.6rem; font-weight: 600; display: inline-flex; align-items: center; gap: 0.3rem; }
-        
-        /* Modal untuk tambah limit (harga per limit) - with plus/minus buttons */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -279,7 +258,6 @@
             min-width: 80px;
             text-align: center;
         }
-        
         .payment-modal-content { max-width: 550px; width: 95%; max-height: 85vh; overflow-y: auto; background: linear-gradient(145deg, #121b2b, #0b111e); border-radius: 1.5rem; border: 1px solid rgba(16,185,129,0.3); backdrop-filter: blur(20px); }
         .confirmation-input { background: #0f1728; border: 1px solid rgba(16,185,129,0.2); border-radius: 10px; padding: 0.5rem 0.8rem; color: #e2e8f0; width: 100%; font-size: 0.7rem; }
         .confirm-payment-btn { background: linear-gradient(135deg, #10B981, #059669); border: none; border-radius: 12px; padding: 0.6rem; color: white; font-weight: 600; font-size: 0.7rem; cursor: pointer; width: 100%; }
@@ -303,10 +281,15 @@
         .lightbox img { max-width: 90%; max-height: 90%; border-radius: 16px; border: 2px solid #10B981; }
         .main-content { opacity: 0; transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
         .main-content.visible { opacity: 1; }
+        .countdown-timer { background: linear-gradient(135deg, rgba(16,185,129,0.08), rgba(16,185,129,0.02)); border-radius: 1rem; padding: 0.5rem; text-align: center; border: 1px solid rgba(16,185,129,0.15); margin-top: 0.5rem; }
+        .countdown-numbers { display: flex; gap: 0.4rem; justify-content: center; margin-top: 0.3rem; flex-wrap: wrap; }
+        .countdown-block { text-align: center; background: rgba(0,0,0,0.3); border-radius: 10px; padding: 0.3rem 0.3rem; min-width: 45px; }
+        .countdown-number { font-size: 1rem; font-weight: 700; background: linear-gradient(135deg, #FBBF24, #F59E0B); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .countdown-label { font-size: 0.45rem; color: #94a3b8; }
     </style>
 </head>
 <body>
-    <!-- LOADING OVERLAY (same as before) -->
+    <!-- LOADING OVERLAY -->
     <div id="loadingOverlay" class="loading-overlay">
         <canvas id="matrixCanvas"></canvas>
         <div class="loading-container">
@@ -328,14 +311,13 @@
             <!-- HEADER -->
             <div class="header-card"><div class="flex items-center justify-between flex-wrap gap-2"><div class="flex items-center gap-2"><div class="logo-3d"><div class="logo-inner"><div class="logo-face"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh9YQmaIHSrk0AT8IpfU-nDQ2NmGo700YpMQSj3Lvo-_7kX4G6xyX_pd5KyxCznX6r0Tl2vYvZkZf797uCgHXQflFsDW5-HThG2rIg3PCR1LXrhuU3GDndJkLyyfdhC5LfsQuw2TFnwTAePABrvRF-PVrOF3ZTqBqMNYZ-ErDcXvCW5sCzLGcIkWzO_6YwN/s1024/1000832791.png" style="width:100%; height:100%; object-fit:cover; border-radius:50%;"></div></div></div><div><h1 class="text-sm font-bold text-white">AI CUANHUNTERS PRO</h1><p class="text-[0.55rem] text-slate-400">Smart Money Concepts • Bias • PSAR (FIX WAIT)</p></div></div><div class="flex items-center gap-2"><div class="globe-wrapper"><div class="globe"><div class="globe-inner"></div><div class="continent continent-1"></div><div class="continent continent-2"></div></div><span class="globe-text">Global Market</span></div><div class="flex items-center gap-1"><div class="pulse-dot"></div><span class="text-[0.6rem] text-emerald-400">LIVE</span></div></div></div></div>
 
-            <!-- USAGE CARD with TOTAL ANALISA + TOMBOL TAMBAH LIMIT (Free Daily card removed) -->
+            <!-- USAGE CARD -->
             <div class="usage-card">
                 <div class="flex justify-between items-center mb-3 flex-wrap gap-2">
                     <div class="flex items-center gap-2"><i class="fas fa-chart-line text-emerald-400 text-sm"></i><div><h3 class="text-sm font-semibold text-white">SISTEM LIMIT ANALISA</h3><p class="text-[0.55rem] text-slate-400">Rp 10.000 per limit • Maksimal 10 limit per transaksi</p></div></div>
                 </div>
                 <div class="info-banner-free"><i class="fas fa-info-circle"></i><span><strong class="text-blue-400">📋 SISTEM BARU</strong> Beli limit analisa seharga Rp 10.000 per analisa. Tidak ada batas waktu, limit bertahan selamanya.</span></div>
                 
-                <!-- SINGLE MODERN CARD: TOTAL ANALISA TERSEDIA + TOMBOL TAMBAH LIMIT -->
                 <div class="total-analisa-card">
                     <div class="total-analisa-icon"><i class="fas fa-chart-pie"></i></div>
                     <div class="total-analisa-label">TOTAL ANALISA TERSEDIA</div>
@@ -349,7 +331,7 @@
                     <div class="mt-2 text-[0.5rem] text-slate-500">Setiap analisa menghabiskan 1 limit. Limit berbayar & bonus tidak pernah kadaluarsa.</div>
                 </div>
 
-                <!-- Bonus Claim Card (if not claimed) -->
+                <!-- Bonus Claim Card -->
                 <div id="bonusClaimCard" class="bonus-card">
                     <div class="flex items-center justify-between flex-wrap gap-3">
                         <div class="flex items-center gap-2">
@@ -372,13 +354,20 @@
                     </div>
                 </div>
 
-                <!-- Countdown Timer (tetap ada) -->
-                <div class="countdown-timer mt-2"><div class="flex items-center justify-center gap-1"><i class="fas fa-clock text-amber-400 text-[0.6rem]"></i><span class="text-[0.6rem] text-slate-400">Reset Harian Free Daily dalam</span></div><div class="countdown-numbers"><div class="countdown-block"><div class="countdown-number" id="countdownHours">0</div><div class="countdown-label">Jam</div></div><div class="countdown-block"><div class="countdown-number" id="countdownMinutes">0</div><div class="countdown-label">Menit</div></div><div class="countdown-block"><div class="countdown-number" id="countdownSeconds">00</div><div class="countdown-label">Detik</div></div></div></div>
+                <!-- COUNTDOWN TIMER (RESET HARIAN) -->
+                <div class="countdown-timer mt-2">
+                    <div class="flex items-center justify-center gap-1"><i class="fas fa-clock text-amber-400 text-[0.6rem]"></i><span class="text-[0.6rem] text-slate-400">Reset Harian Free Daily dalam</span></div>
+                    <div class="countdown-numbers">
+                        <div class="countdown-block"><div class="countdown-number" id="countdownHours">0</div><div class="countdown-label">Jam</div></div>
+                        <div class="countdown-block"><div class="countdown-number" id="countdownMinutes">0</div><div class="countdown-label">Menit</div></div>
+                        <div class="countdown-block"><div class="countdown-number" id="countdownSeconds">00</div><div class="countdown-label">Detik</div></div>
+                    </div>
+                </div>
                 
                 <div id="quotaExhaustedWarning" class="subscription-warning hidden"><div class="flex items-center gap-2"><i class="fas fa-exclamation-triangle text-red-400"></i><div><div class="font-bold text-red-400 text-[0.6rem]">⚠️ KUOTA HABIS! ⚠️</div><div class="text-[0.55rem] text-red-300">Anda tidak memiliki limit. Silakan <strong>klaim bonus new user</strong> (jika belum) atau <strong>tambah limit</strong>.</div></div></div><button id="buyProBtn" class="subscription-btn text-[0.55rem] mt-2 w-full"><i class="fas fa-plus-circle"></i> TAMBAH LIMIT</button></div>
             </div>
 
-            <!-- DASHBOARD GRID (unchanged) -->
+            <!-- DASHBOARD GRID -->
             <div class="dashboard-grid">
                 <div class="left-column">
                     <div class="premium-card"><div class="flex items-center gap-2 mb-2"><i class="fas fa-sliders-h text-emerald-400 text-sm"></i><div><div class="font-semibold text-white text-xs">Strategy Configuration</div><div class="text-[0.55rem] text-slate-400">Customize your trading parameters</div></div></div>
@@ -402,7 +391,7 @@
         </div>
     </div>
 
-    <!-- MODAL TAMBAH LIMIT (Pilih jumlah limit) - WITH PLUS/MINUS BUTTONS -->
+    <!-- MODALS (Add Limit, Payment, Lightbox) -->
     <div id="addLimitModal" class="hidden modal-overlay">
         <div class="modal-content">
             <i class="fas fa-coins text-emerald-400 text-3xl mb-2"></i>
@@ -421,7 +410,6 @@
         </div>
     </div>
 
-    <!-- MODAL PEMBAYARAN QRIS (Two Step) - same as before -->
     <div id="paymentModal" class="hidden fixed inset-0 bg-black/95 z-50 flex items-center justify-center backdrop-blur-sm">
         <div class="payment-modal-content p-4">
             <div class="text-center border-b border-emerald-500/20 pb-2 mb-3">
@@ -457,7 +445,7 @@
 
     <script>
         (function(){
-            // ========== CANDLESTICK, MATRIX, LOADING (same as before, shortened) ==========
+            // ========== CANDLESTICK, MATRIX, LOADING ==========
             const candleCanvas = document.getElementById('candlestickCanvas');
             if (candleCanvas) {
                 const ctx = candleCanvas.getContext('2d');
@@ -478,8 +466,8 @@
             function updateLoadingProgress(){const elapsed=(Date.now()-loadingStartTime)/1000;const targetPercentage=Math.min(100,(elapsed/5)*100);currentPercentage=Math.min(100,currentPercentage+Math.random()*3);if(currentPercentage>targetPercentage)currentPercentage=targetPercentage;const vwapFill=document.getElementById('vwapFill');const percSpan=document.getElementById('loadingPercentage');const bigP=document.getElementById('bigPercentage');if(vwapFill)vwapFill.style.width=currentPercentage+'%';if(percSpan)percSpan.textContent=Math.floor(currentPercentage)+'%';if(bigP)bigP.textContent=Math.floor(currentPercentage)+'%';const s1=document.getElementById('status1'),s2=document.getElementById('status2'),s3=document.getElementById('status3'),s4=document.getElementById('status4');if(currentPercentage>=20){s1.classList.add('completed');s1.classList.remove('active');}else s1.classList.add('active');if(currentPercentage>=40){s2.classList.add('completed');s2.classList.remove('active');}else if(currentPercentage>=20)s2.classList.add('active');if(currentPercentage>=70){s3.classList.add('completed');s3.classList.remove('active');}else if(currentPercentage>=40)s3.classList.add('active');if(currentPercentage>=90){s4.classList.add('completed');s4.classList.remove('active');}else if(currentPercentage>=70)s4.classList.add('active');updateSentimentGauge();return elapsed>=5||currentPercentage>=100;}
             function startProfessionalLoading(){initMatrix();populateProTicker();const loadingInterval=setInterval(()=>{if(updateLoadingProgress()){clearInterval(loadingInterval);setTimeout(()=>{const overlay=document.getElementById('loadingOverlay');const main=document.getElementById('mainContent');if(overlay){overlay.classList.add('fade-out');setTimeout(()=>overlay.style.display='none',800);}if(main){main.classList.add('visible');main.style.opacity='1';}if(window.cleanupCandles)window.cleanupCandles();startMainApplication();},500);}},60);}
             
-            // ========== STORAGE (same as before) ==========
-            const STORAGE_KEY='CuanHuntersLimitDataV12';
+            // ========== STORAGE (LIMIT SYSTEM) ==========
+            const STORAGE_KEY='CuanHuntersLimitDataV13';
             const defaultData={paidLimit:0,freeDailyUsage:{date:new Date().toDateString(),used:0},lastTotalUpdate:null,savedTotalUsers:535,bonusClaimed:false,bonusLimit:0};
             var memoryData={...defaultData};
             function persistData(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify({paidLimit:memoryData.paidLimit,freeDailyUsage:memoryData.freeDailyUsage,lastTotalUpdate:memoryData.lastTotalUpdate,savedTotalUsers:memoryData.savedTotalUsers,bonusClaimed:memoryData.bonusClaimed,bonusLimit:memoryData.bonusLimit}));}catch(e){}}
@@ -493,17 +481,29 @@
             function getBonusLimit(){return memoryData.bonusLimit||0;}
             function claimBonus(){if(memoryData.bonusClaimed) return false; memoryData.bonusClaimed=true; memoryData.bonusLimit=15; persistData(); updateUsageDisplay(); showToast('🎉 Selamat! Anda mendapat 15 limit GRATIS!'); return true; }
             function useBonusLimit(){if(getBonusLimit()>0){memoryData.bonusLimit--;persistData();return true;}return false;}
-            function canPerformAnalysis(){return getBonusLimit()>0 || getPaidLimit()>0 || getFreeDailyRemaining()>0;}
-            function incrementUsage(){if(getBonusLimit()>0){useBonusLimit();return true;}else if(getPaidLimit()>0){usePaidLimit();return true;}else if(getFreeDailyRemaining()>0){useFreeDailyQuota();return true;}return false;}
+            function canPerformAnalysis(){return getPaidLimit()>0 || getBonusLimit()>0 || getFreeDailyRemaining()>0;}
+            // PRIORITY: PAID -> BONUS -> FREE DAILY
+            function incrementUsage(){
+                if(getPaidLimit()>0){
+                    usePaidLimit();
+                    return true;
+                } else if(getBonusLimit()>0){
+                    useBonusLimit();
+                    return true;
+                } else if(getFreeDailyRemaining()>0){
+                    useFreeDailyQuota();
+                    return true;
+                }
+                return false;
+            }
             function updateUsageDisplay(){
                 resetFreeDailyIfNeeded();
-                let paid=getPaidLimit(); let freeRem=getFreeDailyRemaining(); let freeUsed=memoryData.freeDailyUsage.used; let bonus=getBonusLimit();
+                let paid=getPaidLimit(); let freeRem=getFreeDailyRemaining(); let bonus=getBonusLimit();
                 let totalAvail=paid+freeRem+bonus;
                 document.getElementById('totalAvailableDisplay').textContent=totalAvail;
                 document.getElementById('totalPaidSpan').textContent=paid;
                 document.getElementById('totalFreeSpan').textContent=freeRem;
                 document.getElementById('totalBonusSpan').textContent=bonus;
-                // Tidak ada lagi update untuk free daily card
                 if(memoryData.bonusClaimed){
                     document.getElementById('bonusClaimCard').classList.add('hidden');
                     document.getElementById('bonusClaimedInfo').classList.remove('hidden');
@@ -517,7 +517,7 @@
             }
             function updateCountdownDisplay(){let now=new Date(),tomorrow=new Date(now);tomorrow.setDate(now.getDate()+1);tomorrow.setHours(0,0,0,0);let diff=tomorrow-now;document.getElementById('countdownHours').textContent=Math.floor(diff/36e5);document.getElementById('countdownMinutes').textContent=Math.floor((diff%36e5)/6e4);document.getElementById('countdownSeconds').textContent=Math.floor((diff%6e4)/1e3).toString().padStart(2,'0');}
             
-            // ========== CHART & ANALYSIS FUNCTIONS (FIXED WAIT) - same as before but simplified ==========
+            // ========== CHART & ANALYSIS FUNCTIONS ==========
             let chartCtx, chartPointsArray=[], currentSignalState='wait', chartAnimationId=null;
             let curTotal=535, actUsers=187, proUs=124, freeUs=curTotal-proUs;
             function showToast(m){let t=document.createElement('div');t.className='toast-notification';t.innerHTML='<i class="fas fa-check-circle"></i><span>'+m+'</span>';document.body.appendChild(t);setTimeout(()=>t.remove(),3000);}
@@ -538,12 +538,9 @@
             function setText(id,val){let e=document.getElementById(id);if(e)e.textContent=val||'-';}
             function quickSelectStrategy(strategy){let p={scalp:{pair:'EUR/USD',tf:'1min',rr:'2'},intraday:{pair:'EUR/USD',tf:'15min',rr:'2'},swing:{pair:'EUR/USD',tf:'4h',rr:'3'}}[strategy];if(p){document.getElementById('pairSelect').value=p.pair;document.getElementById('timeframeSelect').value=p.tf;document.getElementById('riskRewardSelect').value=p.rr;}}
             function resetAnalysis(){document.getElementById('resultPanel').classList.add('hidden');document.getElementById('emptyState').classList.remove('hidden');resetChartToWait();renderOrderBook('neutral',1.09234);setText('currentPrice','-');setText('pairDisplay','EUR/USD');setText('biasDisplay','-');setText('biasValue','-');setText('psarValue','-');setText('smcValue','-');setText('orderBlockValue','-');setText('entrySignal','-');setText('entryDesc','-');setText('slValue','-');setText('tpValue','-');setText('slDistance','- pips');setText('tpDistance','- pips');document.getElementById('entryContainer').className='entry-card wait';}
-            function calculateATR(highs,lows,closes){let sum=0,period=Math.min(20,highs.length-1);for(let i=1;i<=period;i++){let tr=Math.max(highs[i]-lows[i],Math.abs(highs[i]-closes[i-1]),Math.abs(lows[i]-closes[i-1]));sum+=tr;}return sum/period;}
             const API_KEY='2bedbb1110384c058a570b0d7d1c4e40',BASE_URL='https://api.twelvedata.com';
             const timeframeMap={'1min':'1min','5min':'5min','15min':'15min','30min':'30min','1h':'1h','2h':'2h','4h':'4h','1d':'1day','1w':'1week','1M':'1month'};
             const BASE_RISK_PERCENT=0.005;
-            
-            // *** ANALISA YANG TIDAK SERING WAIT (sama seperti perbaikan sebelumnya) ***
             async function analyze(){
                 if(!canPerformAnalysis()){showToast('⚠️ Tidak ada limit tersedia. Klaim bonus atau tambah limit.');return;}
                 let sym=document.getElementById('pairSelect').value, iv=document.getElementById('timeframeSelect').value, rrVal=parseFloat(document.getElementById('riskRewardSelect').value);
@@ -557,7 +554,6 @@
                     if(!ts.values||ts.values.length<30)throw new Error('Data historis kurang');
                     let vals=ts.values, closes=vals.map(v=>parseFloat(v.close)), highs=vals.map(v=>parseFloat(v.high)), lows=vals.map(v=>parseFloat(v.low));
                     let riskDist=cp*riskPercent, rewardDist=cp*rewardPercent;
-                    
                     // BIAS
                     let ema20=0,ema50=0,ema100=0;for(let i=0;i<20;i++)ema20+=closes[i];ema20/=20;
                     for(i=0;i<50;i++)ema50+=closes[i];ema50/=50;
@@ -568,7 +564,6 @@
                         let diffToEma20 = Math.abs(cp - ema20) / cp;
                         if(diffToEma20 > 0.003) biasText = (cp > ema20) ? 'BULLISH' : 'BEARISH';
                     }
-                    
                     // PSAR
                     let up=0,down=0;
                     for(i=1;i<Math.min(20,highs.length);i++){
@@ -578,7 +573,6 @@
                     let psarLong = up >= 8;
                     let psarShort = down >= 8;
                     let psar = psarLong ? 'BULLISH' : (psarShort ? 'BEARISH' : 'NEUTRAL');
-                    
                     // SMC
                     let hh=0,hl=0,lh=0,ll=0;
                     for(i=0;i<Math.min(15,highs.length-2);i++){
@@ -592,7 +586,6 @@
                     if(ll>=2||lh>=2) structure={type:'Downtrend',strength:'Moderate',bias:'bearish'};
                     if((hh>=3&&hl>=2)||(hh>=4)) structure={type:'Strong Uptrend',strength:'Strong',bias:'bullish'};
                     if((ll>=3&&lh>=2)||(ll>=4)) structure={type:'Strong Downtrend',strength:'Strong',bias:'bearish'};
-                    
                     let bullishScore=0,bearishScore=0;
                     if(biasText==='BULLISH') bullishScore+=2; else if(biasText==='BEARISH') bearishScore+=2;
                     if(psarLong) bullishScore+=2; else if(psarShort) bearishScore+=2;
@@ -601,7 +594,6 @@
                         if(bullishScore > 0) bullishScore += 1;
                         if(bearishScore > 0) bearishScore += 1;
                     }
-                    
                     let signal,sl,tp,dom='neutral';
                     if(bullishScore >= 3 && bullishScore > bearishScore){
                         signal='🟢 BUY'; sl=cp-riskDist; tp=cp+rewardDist; updateChartSignal('buy'); dom='bid';
@@ -616,7 +608,6 @@
                             signal='⏳ WAIT'; sl=cp-riskDist; tp=cp+rewardDist; updateChartSignal('wait');
                         }
                     }
-                    
                     setText('currentPrice',formatPrice(cp,sym)); setText('pairDisplay',sym); setText('biasDisplay',biasText);
                     setText('biasValue',biasText); setText('psarValue',psar); setText('smcValue',structure.bias.toUpperCase());
                     setText('orderBlockValue',formatPrice(cp-(cp*0.01),sym)); setText('entrySignal',signal);
@@ -627,58 +618,20 @@
                     renderOrderBook(dom,cp);
                     document.getElementById('resultPanel').classList.remove('hidden'); document.getElementById('emptyState').classList.add('hidden');
                     incrementUsage(); updateUsageDisplay();
-                    showToast(`✅ Analisa berhasil! Sisa limit: ${getBonusLimit()+getPaidLimit()} | Free daily: ${getFreeDailyRemaining()}`);
+                    showToast(`✅ Analisa berhasil! Sisa limit: ${getPaidLimit()+getBonusLimit()} | Free daily: ${getFreeDailyRemaining()}`);
                 } catch(e){console.error(e); document.getElementById('errorText').innerHTML='Gagal mendapatkan harga. Cek koneksi/API Key.'; document.getElementById('errorMessage').classList.remove('hidden'); setTimeout(()=>document.getElementById('errorMessage').classList.add('hidden'),5000);}
                 finally{document.getElementById('loadingSpinner').classList.add('hidden'); document.getElementById('btnText').classList.remove('hidden');}
             }
             
-            // ========== FLOW TAMBAH LIMIT WITH PLUS/MINUS ==========
+            // ========== FLOW TAMBAH LIMIT ==========
             let currentModalLimit = 1;
-            function updateModalDisplay(){
-                document.getElementById('modalLimitValue').textContent = currentModalLimit;
-                let total = currentModalLimit * LIMIT_PRICE;
-                document.getElementById('modalTotalPrice').innerHTML = 'Rp ' + total.toLocaleString('id-ID');
-            }
-            function openAddLimitModal(){
-                currentModalLimit = 1;
-                updateModalDisplay();
-                document.getElementById('addLimitModal').classList.remove('hidden');
-            }
+            function updateModalDisplay(){ document.getElementById('modalLimitValue').textContent = currentModalLimit; let total = currentModalLimit * LIMIT_PRICE; document.getElementById('modalTotalPrice').innerHTML = 'Rp ' + total.toLocaleString('id-ID'); }
+            function openAddLimitModal(){ currentModalLimit = 1; updateModalDisplay(); document.getElementById('addLimitModal').classList.remove('hidden'); }
             function closeAddLimitModal(){ document.getElementById('addLimitModal').classList.add('hidden'); }
             function incrementLimit(){ if(currentModalLimit < 10) { currentModalLimit++; updateModalDisplay(); } }
             function decrementLimit(){ if(currentModalLimit > 1) { currentModalLimit--; updateModalDisplay(); } }
-            function proceedToPayment(){
-                pendingLimitAmount = currentModalLimit;
-                currentUniqueCode = generateUniqueCode();
-                updatePaymentAmount();
-                document.getElementById('step1Panel').classList.remove('hidden');
-                document.getElementById('step2Panel').classList.add('hidden');
-                document.getElementById('paymentModal').classList.remove('hidden');
-                closeAddLimitModal();
-            }
-            function confirmTopUp(){
-                let tid=document.getElementById('transactionId').value, ps=document.getElementById('paymentSource').value, ah=document.getElementById('accountHolder').value, td=document.getElementById('transactionDate').value, em=document.getElementById('userEmail').value, fn=document.getElementById('userFullName').value, uc=document.getElementById('uniqueCodeValue').value;
-                if(!tid){showToast('Isi nomor transaksi!');return;}
-                if(!ps){showToast('Pilih sumber dana!');return;}
-                if(!ah){showToast('Isi nama pemilik!');return;}
-                if(!td){showToast('Pilih tanggal!');return;}
-                if(!em){showToast('Isi email!');return;}
-                if(!fn){showToast('Isi nama lengkap!');return;}
-                if(!em.includes('@')){showToast('Email tidak valid!');return;}
-                showToast('✅ Data tersimpan. Konfirmasi via DM @cuanhunters kode unik: '+uc);
-                setTimeout(()=>{
-                    if(confirm('KONFIRMASI PEMBAYARAN\n\nApakah Anda sudah transfer dan ingin menambah '+pendingLimitAmount+' limit?')){
-                        addPaidLimit(pendingLimitAmount);
-                        closePaymentModal();
-                        showToast('✅ Top up berhasil!');
-                        updateUsageDisplay();
-                        resetAnalysis();
-                    } else {
-                        showToast('⏳ Menunggu konfirmasi.');
-                        closePaymentModal();
-                    }
-                },2000);
-            }
+            function proceedToPayment(){ pendingLimitAmount = currentModalLimit; currentUniqueCode = generateUniqueCode(); updatePaymentAmount(); document.getElementById('step1Panel').classList.remove('hidden'); document.getElementById('step2Panel').classList.add('hidden'); document.getElementById('paymentModal').classList.remove('hidden'); closeAddLimitModal(); }
+            function confirmTopUp(){ let tid=document.getElementById('transactionId').value, ps=document.getElementById('paymentSource').value, ah=document.getElementById('accountHolder').value, td=document.getElementById('transactionDate').value, em=document.getElementById('userEmail').value, fn=document.getElementById('userFullName').value, uc=document.getElementById('uniqueCodeValue').value; if(!tid){showToast('Isi nomor transaksi!');return;} if(!ps){showToast('Pilih sumber dana!');return;} if(!ah){showToast('Isi nama pemilik!');return;} if(!td){showToast('Pilih tanggal!');return;} if(!em){showToast('Isi email!');return;} if(!fn){showToast('Isi nama lengkap!');return;} if(!em.includes('@')){showToast('Email tidak valid!');return;} showToast('✅ Data tersimpan. Konfirmasi via DM @cuanhunters kode unik: '+uc); setTimeout(()=>{ if(confirm('KONFIRMASI PEMBAYARAN\n\nApakah Anda sudah transfer dan ingin menambah '+pendingLimitAmount+' limit?')){ addPaidLimit(pendingLimitAmount); closePaymentModal(); showToast('✅ Top up berhasil!'); updateUsageDisplay(); resetAnalysis(); } else { showToast('⏳ Menunggu konfirmasi.'); closePaymentModal(); } },2000); }
             function closePaymentModal(){ document.getElementById('paymentModal').classList.add('hidden'); }
             
             function updateTotalUsers(){let n=new Date(),lu=memoryData.lastTotalUpdate,st=memoryData.savedTotalUsers;if(lu&&st){let ld=new Date(parseInt(lu)),dd=Math.floor((n-ld)/864e5),inc=Math.floor(dd/2)*2;if(inc>0){curTotal=parseInt(st)+inc;memoryData.savedTotalUsers=curTotal;memoryData.lastTotalUpdate=n.getTime();persistData();}else curTotal=parseInt(st);}return curTotal;}
@@ -709,4 +662,4 @@
         })();
     </script>
 </body>
-    </html>
+</html>
