@@ -236,32 +236,122 @@
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 20000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
         .modal-content { width: 90%; max-width: 450px; background: linear-gradient(145deg, #121b2b, #0b111e); border-radius: 1.5rem; border: 1px solid rgba(16,185,129,0.3); padding: 1.2rem; text-align: center; }
         .limit-amount-selector { display: flex; align-items: center; justify-content: center; gap: 0.8rem; margin: 0.8rem auto; }
-        .limit-stepper-btn { background: rgba(16,185,129,0.2); border: 1px solid rgba(16,185,129,0.4); color: white; width: 38px; height: 38px; border-radius: 10px; font-size: 1rem; font-weight: bold; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; }
+        .limit-stepper-btn { background: rgba(16,185,129,0.2); border: 1px solid rgba(16,185,129,0.4); color: white; width: 48px; height: 48px; border-radius: 12px; font-size: 1.2rem; font-weight: bold; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; }
         .limit-stepper-btn:hover { background: rgba(16,185,129,0.4); transform: scale(1.03); }
-        .limit-number-display { font-size: 1.8rem; font-weight: 800; font-family: 'Space Grotesk', monospace; background: linear-gradient(135deg, #10B981, #00D4FF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; min-width: 70px; text-align: center; }
-        .confirm-payment-btn { background: linear-gradient(135deg, #10B981, #059669); border: none; border-radius: 10px; padding: 0.5rem; color: white; font-weight: 600; font-size: 0.65rem; cursor: pointer; width: 100%; }
+        .limit-number-display { font-size: 2rem; font-weight: 800; font-family: 'Space Grotesk', monospace; background: linear-gradient(135deg, #10B981, #00D4FF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; min-width: 80px; text-align: center; }
+        .confirm-payment-btn { background: linear-gradient(135deg, #10B981, #059669); border: none; border-radius: 12px; padding: 0.75rem; color: white; font-weight: 600; font-size: 0.7rem; cursor: pointer; width: 100%; transition: all 0.2s ease; }
+        .confirm-payment-btn:hover { transform: translateY(-1px); box-shadow: 0 5px 15px rgba(16,185,129,0.4); }
         .payment-modal-content { max-width: 500px; width: 95%; max-height: 85vh; overflow-y: auto; background: linear-gradient(145deg, #121b2b, #0b111e); border-radius: 1.5rem; border: 1px solid rgba(16,185,129,0.3); backdrop-filter: blur(20px); padding: 1rem; }
-        .confirmation-input { background: #0f1728; border: 1px solid rgba(16,185,129,0.2); border-radius: 8px; padding: 0.4rem 0.7rem; color: #e2e8f0; width: 100%; font-size: 0.65rem; }
-        .step-number { width: 24px; height: 24px; background: linear-gradient(135deg, #10B981, #00D4FF); border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; color: white; font-size: 0.6rem; }
-        .qr-code-container { background: white; border-radius: 12px; padding: 0.8rem; text-align: center; margin-bottom: 0.8rem; }
-        .qr-code-container img { max-width: 180px; width: 100%; height: auto; margin: 0 auto; border-radius: 10px; }
-        .unique-code { font-family: monospace; font-size: 1rem; font-weight: bold; color: #F59E0B; background: rgba(0,0,0,0.3); padding: 0.2rem 0.5rem; border-radius: 6px; letter-spacing: 2px; }
-        .amount-highlight { font-size: 1.3rem; font-weight: 800; color: #10B981; }
-        .social-links { display: flex; justify-content: center; gap: 1rem; margin-top: 0.5rem; }
-        .social-icon { display: inline-flex; align-items: center; justify-content: center; width: 35px; height: 35px; background: rgba(255,255,255,0.05); border-radius: 50%; transition: all 0.3s ease; color: #94a3b8; font-size: 1rem; }
-        .social-icon:hover { transform: translateY(-2px); background: rgba(16,185,129,0.2); }
-        .form-group { margin-bottom: 0.6rem; }
-        .form-label { font-size: 0.55rem; color: #94a3b8; margin-bottom: 0.2rem; display: block; font-weight: 500; }
-        .fixed-nominal { background: linear-gradient(135deg, #10B981, #059669); padding: 0.2rem 0.6rem; border-radius: 20px; display: inline-block; font-weight: 700; color: white; font-size: 0.65rem; }
-        .instruction-image { margin-top: 0.4rem; text-align: center; cursor: pointer; transition: transform 0.2s ease; }
-        .instruction-image img { max-width: 150px; width: 100%; border-radius: 10px; border: 1px solid rgba(16,185,129,0.3); background: #fff; padding: 3px; }
-        .instruction-image img:hover { transform: scale(1.01); border-color: #10B981; }
-        .instruction-caption { font-size: 0.45rem; color: #64748b; margin-top: 0.2rem; }
-        .lightbox { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 20001; display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
-        .lightbox.active { opacity: 1; visibility: visible; }
-        .lightbox img { max-width: 90%; max-height: 90%; border-radius: 12px; border: 2px solid #10B981; }
-        .price-info { background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(16,185,129,0.05)); border-radius: 10px; padding: 0.4rem; text-align: center; margin-bottom: 0.6rem; }
+        .confirmation-input { background: #0f1728; border: 1px solid rgba(16,185,129,0.2); border-radius: 8px; padding: 0.5rem 0.7rem; color: #e2e8f0; width: 100%; font-size: 0.7rem; margin-bottom: 0.5rem; }
+        .step-number { width: 28px; height: 28px; background: linear-gradient(135deg, #10B981, #00D4FF); border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; color: white; font-size: 0.7rem; margin-right: 0.5rem; }
+        .qr-code-container { background: white; border-radius: 12px; padding: 1rem; text-align: center; margin-bottom: 1rem; }
+        .qr-code-container img { max-width: 200px; width: 100%; height: auto; margin: 0 auto; border-radius: 10px; }
+        .unique-code { font-family: monospace; font-size: 1.2rem; font-weight: bold; color: #F59E0B; background: rgba(0,0,0,0.3); padding: 0.3rem 0.7rem; border-radius: 8px; letter-spacing: 2px; }
+        .amount-highlight { font-size: 1.5rem; font-weight: 800; color: #10B981; }
+        .form-group { margin-bottom: 0.8rem; }
+        .price-info { background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(16,185,129,0.05)); border-radius: 10px; padding: 0.6rem; text-align: center; margin-bottom: 0.8rem; }
         .signal-detail-text { font-size: 0.55rem; color: #cbd5e1; margin-top: 0.3rem; padding: 0.3rem; background: rgba(0,0,0,0.2); border-radius: 8px; }
+        
+        /* Panduan Image Styles */
+        .panduan-container {
+            background: linear-gradient(135deg, rgba(16,185,129,0.05), rgba(16,185,129,0.01));
+            border-radius: 12px;
+            padding: 0.8rem;
+            margin-top: 0.5rem;
+            border: 1px solid rgba(16,185,129,0.15);
+        }
+        .panduan-title {
+            font-size: 0.6rem;
+            font-weight: 700;
+            color: #10B981;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .panduan-image {
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+            padding: 0.5rem;
+        }
+        .panduan-image:hover {
+            transform: scale(1.01);
+            background: rgba(16,185,129,0.1);
+        }
+        .panduan-image img {
+            max-width: 120px;
+            width: 100%;
+            border-radius: 8px;
+            border: 1px solid rgba(16,185,129,0.3);
+            background: #fff;
+            padding: 4px;
+        }
+        .panduan-caption {
+            font-size: 0.45rem;
+            color: #94a3b8;
+            margin-top: 0.3rem;
+        }
+        .lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 20001;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        .lightbox.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .lightbox img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 12px;
+            border: 2px solid #10B981;
+            box-shadow: 0 0 30px rgba(16,185,129,0.3);
+        }
+        .close-lightbox {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            background: rgba(0,0,0,0.5);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+        .close-lightbox:hover {
+            background: rgba(16,185,129,0.3);
+            transform: scale(1.1);
+        }
+        
+        .cyber-select select option {
+            background: #0b111e;
+            color: #e2e8f0;
+            padding: 8px;
+        }
+        .cyber-select select optgroup {
+            background: #0a0e17;
+            color: #10B981;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -289,7 +379,7 @@
                 <div class="flex items-center justify-between flex-wrap gap-2">
                     <div class="flex items-center gap-2">
                         <div class="logo-3d"><div class="logo-inner"><div class="logo-face"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh9YQmaIHSrk0AT8IpfU-nDQ2NmGo700YpMQSj3Lvo-_7kX4G6xyX_pd5KyxCznX6r0Tl2vYvZkZf797uCgHXQflFsDW5-HThG2rIg3PCR1LXrhuU3GDndJkLyyfdhC5LfsQuw2TFnwTAePABrvRF-PVrOF3ZTqBqMNYZ-ErDcXvCW5sCzLGcIkWzO_6YwN/s1024/1000832791.png" style="width:100%; height:100%; object-fit:cover; border-radius:50%;"></div></div></div>
-                        <div><h1 class="text-sm font-bold text-white">AI TRADING PRO</h1><p class="text-[0.5rem] text-slate-400">20+ Indikator • Akurasi 84%</p></div>
+                        <div><h1 class="text-sm font-bold text-white">AI TRADING PRO</h1><p class="text-[0.5rem] text-slate-400">30+ Pair • 20+ Indikator • Akurasi 84%</p></div>
                     </div>
                     <div class="flex items-center gap-2">
                         <div class="globe-wrapper"><div class="globe"><div class="globe-inner"></div><div class="continent continent-1"></div><div class="continent continent-2"></div></div><span class="globe-text">Global Market</span></div>
@@ -308,9 +398,7 @@
                     <div class="flex items-center gap-3">
                         <div class="banner-icon"><i class="fas fa-microchip text-emerald-400 text-sm"></i></div>
                         <div class="flex-1">
-                            <div class="text-[0.6rem] font-semibold"><span class="banner-text-gradient">📋 20+ INDIKATOR ANALISIS</span></div>
-                            
-                            </div>
+                            <div class="text-[0.6rem] font-semibold"><span class="banner-text-gradient">📋 30+ FOREX PAIRS • 20+ INDIKATOR ANALISIS</span></div>
                         </div>
                     </div>
                 </div>
@@ -365,7 +453,57 @@
                     <div class="strategy-config-modern">
                         <div class="flex items-center gap-2 mb-2"><i class="fas fa-sliders-h text-emerald-400 text-sm"></i><div><div class="font-semibold text-white text-xs">Strategy Config</div></div></div>
                         <div class="quick-grid"><div class="quick-item" data-strategy="scalp"><i class="fas fa-bolt"></i><span>SCALP</span></div><div class="quick-item active" data-strategy="intraday"><i class="fas fa-clock"></i><span>INTRADAY</span></div><div class="quick-item" data-strategy="swing"><i class="fas fa-calendar-alt"></i><span>SWING</span></div></div>
-                        <div class="mb-2"><div class="input-label"><i class="fas fa-coins"></i><span>PAIR</span></div><div class="cyber-select"><select id="pairSelect"><optgroup label="🇺🇸 MAJOR"><option value="EUR/USD" selected>🇪🇺 EUR/USD</option><option value="GBP/USD">🇬🇧 GBP/USD</option><option value="USD/JPY">🇯🇵 USD/JPY</option><option value="AUD/USD">🇦🇺 AUD/USD</option><option value="USD/CAD">🇨🇦 USD/CAD</option></optgroup><optgroup label="🏆 COMMODITIES"><option value="XAU/USD">🥇 XAU/USD - Gold</option><option value="BTC/USD">₿ BTC/USD</option><option value="ETH/USD">⟠ ETH/USD</option></optgroup></select><i class="fas fa-chevron-down"></i></div></div>
+                        <div class="mb-2"><div class="input-label"><i class="fas fa-coins"></i><span>PAIR (30+ Pairs)</span></div><div class="cyber-select"><select id="pairSelect">
+                            <!-- MAJOR PAIRS -->
+                            <optgroup label="⭐ MAJOR PAIRS">
+                                <option value="EUR/USD" selected>🇪🇺 EUR/USD - Euro US Dollar</option>
+                                <option value="GBP/USD">🇬🇧 GBP/USD - British Pound</option>
+                                <option value="USD/JPY">🇯🇵 USD/JPY - US Dollar Yen</option>
+                                <option value="AUD/USD">🇦🇺 AUD/USD - Australian Dollar</option>
+                                <option value="USD/CAD">🇨🇦 USD/CAD - US Dollar Canadian</option>
+                                <option value="USD/CHF">🇨🇭 USD/CHF - US Dollar Swiss Franc</option>
+                                <option value="NZD/USD">🇳🇿 NZD/USD - New Zealand Dollar</option>
+                            </optgroup>
+                            
+                            <!-- MINOR PAIRS / CROSSES -->
+                            <optgroup label="🔄 MINOR PAIRS (Crosses)">
+                                <option value="EUR/GBP">🇪🇺🇬🇧 EUR/GBP - Euro British Pound</option>
+                                <option value="EUR/JPY">🇪🇺🇯🇵 EUR/JPY - Euro Yen</option>
+                                <option value="EUR/AUD">🇪🇺🇦🇺 EUR/AUD - Euro Australian</option>
+                                <option value="EUR/CAD">🇪🇺🇨🇦 EUR/CAD - Euro Canadian</option>
+                                <option value="EUR/CHF">🇪🇺🇨🇭 EUR/CHF - Euro Swiss Franc</option>
+                                <option value="GBP/JPY">🇬🇧🇯🇵 GBP/JPY - British Pound Yen</option>
+                                <option value="GBP/AUD">🇬🇧🇦🇺 GBP/AUD - British Pound Australian</option>
+                                <option value="GBP/CAD">🇬🇧🇨🇦 GBP/CAD - British Pound Canadian</option>
+                                <option value="GBP/CHF">🇬🇧🇨🇭 GBP/CHF - British Pound Swiss</option>
+                                <option value="AUD/JPY">🇦🇺🇯🇵 AUD/JPY - Australian Yen</option>
+                                <option value="AUD/CAD">🇦🇺🇨🇦 AUD/CAD - Australian Canadian</option>
+                                <option value="AUD/CHF">🇦🇺🇨🇭 AUD/CHF - Australian Swiss</option>
+                                <option value="CAD/JPY">🇨🇦🇯🇵 CAD/JPY - Canadian Yen</option>
+                                <option value="CHF/JPY">🇨🇭🇯🇵 CHF/JPY - Swiss Franc Yen</option>
+                                <option value="NZD/JPY">🇳🇿🇯🇵 NZD/JPY - NZ Dollar Yen</option>
+                                <option value="NZD/CAD">🇳🇿🇨🇦 NZD/CAD - NZ Dollar Canadian</option>
+                            </optgroup>
+                            
+                            <!-- COMMODITIES -->
+                            <optgroup label="🥇 COMMODITIES">
+                                <option value="XAU/USD">🥇 XAU/USD - Gold (Emas)</option>
+                            </optgroup>
+                            
+                            <!-- CRYPTOCURRENCIES -->
+                            <optgroup label="₿ CRYPTOCURRENCIES">
+                                <option value="BTC/USD">₿ BTC/USD - Bitcoin</option>
+                                <option value="ETH/USD">⟠ ETH/USD - Ethereum</option>
+                                <option value="BNB/USD">🔶 BNB/USD - Binance Coin</option>
+                                <option value="XRP/USD">💧 XRP/USD - Ripple</option>
+                                <option value="ADA/USD">📊 ADA/USD - Cardano</option>
+                                <option value="SOL/USD">⚡ SOL/USD - Solana</option>
+                                <option value="DOT/USD">🔗 DOT/USD - Polkadot</option>
+                                <option value="DOGE/USD">🐕 DOGE/USD - Dogecoin</option>
+                                <option value="MATIC/USD">🟣 MATIC/USD - Polygon</option>
+                                <option value="LINK/USD">🔗 LINK/USD - Chainlink</option>
+                            </optgroup>
+                        </select><i class="fas fa-chevron-down"></i></div></div>
                         <div class="mb-2"><div class="input-label"><i class="far fa-clock"></i><span>TIMEFRAME</span></div><div class="cyber-select"><select id="timeframeSelect"><option value="1min">⚡ M1 - 1 Menit</option><option value="5min">⚡ M5 - 5 Menit</option><option value="15min" selected>📊 M15 - 15 Menit</option><option value="30min">📊 M30 - 30 Menit</option><option value="1h">⏰ H1 - 1 Jam</option><option value="4h">📈 H4 - 4 Jam</option><option value="1d">📅 D1 - Harian</option></select><i class="fas fa-chevron-down"></i></div></div>
                         <div class="mb-2"><div class="input-label"><i class="fas fa-bullseye"></i><span>RISK : REWARD</span></div><div class="cyber-select"><select id="riskRewardSelect">
                             <option value="0.5">🛡️ 1:0.5 - Ultra Konservatif</option>
@@ -501,41 +639,98 @@
             </div>
             <div class="text-base font-bold text-white my-2">Total: <span id="modalTotalPrice" class="text-emerald-400">Rp 10.000</span></div>
             <div class="flex gap-2 mt-3">
-                <button id="confirmAddLimitBtn" class="confirm-payment-btn flex-1"><i class="fas fa-arrow-right"></i> LANJUT</button>
+                <button id="confirmAddLimitBtn" class="confirm-payment-btn flex-1"><i class="fas fa-arrow-right"></i> LANJUTKAN</button>
                 <button id="closeAddLimitModalBtn" class="bg-red-500/20 border border-red-500/30 rounded-xl py-2 px-3 text-red-400 text-sm">BATAL</button>
             </div>
         </div>
     </div>
 
     <div id="paymentModal" class="hidden fixed inset-0 bg-black/95 z-50 flex items-center justify-center backdrop-blur-sm">
-        <div class="payment-modal-content p-3">
-            <div class="text-center border-b border-emerald-500/20 pb-2 mb-3">
-                <i class="fas fa-qrcode text-emerald-400 text-xl"></i>
-                <h2 class="text-base font-bold text-white">Top Up Limit</h2>
+        <div class="payment-modal-content p-4">
+            <div class="text-center border-b border-emerald-500/20 pb-3 mb-3">
+                <i class="fas fa-qrcode text-emerald-400 text-2xl"></i>
+                <h2 class="text-lg font-bold text-white mt-1">Top Up Limit</h2>
             </div>
             <div id="step1Panel" class="payment-step">
-                <div class="flex items-center gap-2 mb-2"><div class="step-number">1</div><span class="text-[0.65rem] font-semibold text-white">Scan QRIS & Bayar</span></div>
-                <div class="qr-code-container"><img src="https://blogger.googleusercontent.com/img/a/AVvXsEhH0Z6ewE2H7V-Maa0448YScMvF2qjha4Xt6uKlioFSJeUXHSzYesEbB2CsWE1LRdJSN7QxwYW1yGRDN2uyYVY6DtaTfKn_727s9cC2dWr3mNoezeKIFci6rRK6HzbQzCE1DYg8q1F5DWOm9RbypUNB5ipKcIDbXL0GW9d9SRIQ3QePOqw_lcEL4t1Wh_DK" alt="QRIS" style="max-width:180px;width:100%;margin:0 auto;display:block;"></div>
-                <div class="price-info"><div class="amount-highlight" id="dynamicAmount">Rp 10.000</div><div class="text-[0.45rem] text-amber-400 mt-1">Kode Unik: <strong id="uniqueCodeDisplay" class="unique-code">000</strong></div></div>
-                <button id="gotoStep2Btn" class="confirm-payment-btn"><i class="fas fa-check-circle"></i> SUDAH BAYAR</button>
+                <div class="flex items-center gap-2 mb-3"><div class="step-number">1</div><span class="text-sm font-semibold text-white">Scan QRIS & Bayar</span></div>
+                <div class="qr-code-container"><img src="https://blogger.googleusercontent.com/img/a/AVvXsEhH0Z6ewE2H7V-Maa0448YScMvF2qjha4Xt6uKlioFSJeUXHSzYesEbB2CsWE1LRdJSN7QxwYW1yGRDN2uyYVY6DtaTfKn_727s9cC2dWr3mNoezeKIFci6rRK6HzbQzCE1DYg8q1F5DWOm9RbypUNB5ipKcIDbXL0GW9d9SRIQ3QePOqw_lcEL4t1Wh_DK" alt="QRIS" style="max-width:200px;width:100%;margin:0 auto;display:block;"></div>
+                <div class="price-info mt-2"><div class="amount-highlight" id="dynamicAmount">Rp 10.000</div><div class="text-xs text-amber-400 mt-2">Kode Unik: <strong id="uniqueCodeDisplay" class="unique-code">000</strong></div></div>
+                <button id="gotoStep2Btn" class="confirm-payment-btn mt-3"><i class="fas fa-check-circle"></i> SUDAH BAYAR</button>
             </div>
             <div id="step2Panel" class="payment-step hidden">
-                <div class="flex items-center gap-2 mb-2"><div class="step-number">2</div><span class="text-[0.65rem] font-semibold text-white">Konfirmasi</span></div>
-                <div class="form-group"><input type="text" id="transactionId" placeholder="No Transaksi" class="confirmation-input"></div>
-                <div class="form-group"><select id="paymentSource" class="confirmation-input"><option value="">Sumber Dana</option><option value="BCA">BCA</option><option value="QRIS">QRIS</option><option value="OVO">OVO</option></select></div>
-                <div class="form-group"><input type="text" id="accountHolder" placeholder="Nama Pemilik" class="confirmation-input"></div>
-                <div class="form-group"><input type="email" id="userEmail" placeholder="Email" class="confirmation-input"></div>
-                <button id="confirmPaymentBtn" class="confirm-payment-btn mt-2">KONFIRMASI</button>
-                <button id="backToStep1Btn" class="w-full mt-2 bg-slate-700/50 rounded-xl py-2 text-slate-300 text-[0.55rem]">KEMBALI</button>
+                <div class="flex items-center gap-2 mb-3"><div class="step-number">2</div><span class="text-sm font-semibold text-white">Konfirmasi Pembayaran</span></div>
+                
+                <!-- PANDUAN CARI NO TRANSAKSI -->
+                <div class="panduan-container">
+                    <div class="panduan-title">
+                        <i class="fas fa-info-circle text-emerald-400"></i>
+                        <span>PANDUAN MENDAPATKAN NO TRANSAKSI</span>
+                    </div>
+                    <div class="panduan-image" onclick="openLightbox('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiCKtWd3W2whyxbomxiajeZpHzatXj-gWdTclEhmTJvKXTlrmdXlwFsIrncxfP6miDfZaGbqmjvETaw9JOQyUXjFazkNaggnaWbz_9uu9hOAgGGvOvw02QE34i1fPiMXuztCe6pU2mB6oEh6QtIFscRji68s93WJJAfhKpQUZ2MOD68yRYUmrDrSSQlGoqx/s320/IMG-20260404-WA0007.jpg')">
+                        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiCKtWd3W2whyxbomxiajeZpHzatXj-gWdTclEhmTJvKXTlrmdXlwFsIrncxfP6miDfZaGbqmjvETaw9JOQyUXjFazkNaggnaWbz_9uu9hOAgGGvOvw02QE34i1fPiMXuztCe6pU2mB6oEh6QtIFscRji68s93WJJAfhKpQUZ2MOD68yRYUmrDrSSQlGoqx/s320/IMG-20260404-WA0007.jpg" alt="Panduan No Transaksi">
+                        <div class="panduan-caption">
+                            <i class="fas fa-search-plus"></i> Klik gambar untuk memperbesar
+                        </div>
+                    </div>
+                    <div class="panduan-caption text-center mt-2">
+                        <i class="fas fa-arrow-right text-emerald-400"></i> Lihat contoh di atas untuk menemukan No Transaksi pada bukti bayar Anda
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <input type="text" id="transactionId" placeholder="Masukkan No Transaksi / ID Pembayaran" class="confirmation-input">
+                </div>
+                <div class="form-group">
+                    <select id="paymentSource" class="confirmation-input">
+                        <option value="">Pilih Sumber Dana</option>
+                        <option value="BCA">BCA</option>
+                        <option value="QRIS">QRIS</option>
+                        <option value="OVO">OVO</option>
+                        <option value="DANA">DANA</option>
+                        <option value="GoPay">GoPay</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <input type="text" id="accountHolder" placeholder="Nama Pemilik Rekening" class="confirmation-input">
+                </div>
+                <div class="form-group">
+                    <input type="email" id="userEmail" placeholder="Email untuk Konfirmasi" class="confirmation-input">
+                </div>
+                <button id="confirmPaymentBtn" class="confirm-payment-btn mt-2"><i class="fas fa-check-double"></i> KONFIRMASI PEMBAYARAN</button>
+                <button id="backToStep1Btn" class="w-full mt-2 bg-slate-700/50 rounded-xl py-2 text-slate-300 text-xs font-semibold">← KEMBALI KE SCAN QRIS</button>
             </div>
-            <button id="closePaymentModalBtn" class="w-full mt-2 bg-red-500/10 rounded-xl py-2 text-red-400 text-[0.55rem]">BATAL</button>
+            <button id="closePaymentModalBtn" class="w-full mt-3 bg-red-500/10 rounded-xl py-2 text-red-400 text-xs font-semibold">TUTUP</button>
         </div>
     </div>
-    <div id="lightbox" class="lightbox" onclick="closeLightbox()"><img id="lightboxImg" src=""></div>
+    
+    <!-- LIGHTBOX FOR IMAGE -->
+    <div id="lightbox" class="lightbox" onclick="closeLightbox()">
+        <div class="close-lightbox" onclick="closeLightbox()">✕</div>
+        <img id="lightboxImg" src="">
+    </div>
 
     <script>
+        // Lightbox functions
+        function openLightbox(imageUrl) {
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightboxImg');
+            lightboxImg.src = imageUrl;
+            lightbox.classList.add('active');
+        }
+        
+        function closeLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            lightbox.classList.remove('active');
+        }
+        
+        // Close lightbox with ESC key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeLightbox();
+            }
+        });
+        
         (function(){
-            // ========== LOADING SCREEN FUNCTIONS ==========
             console.log("Initializing loading screen...");
             
             // Candlestick Canvas
@@ -643,8 +838,12 @@
                 { symbol: "EUR/USD", price: 1.09234, change: 0.23 },
                 { symbol: "GBP/USD", price: 1.28567, change: -0.12 },
                 { symbol: "USD/JPY", price: 147.82, change: 0.45 },
+                { symbol: "AUD/USD", price: 0.6654, change: 0.18 },
+                { symbol: "USD/CAD", price: 1.3542, change: -0.08 },
                 { symbol: "XAU/USD", price: 2350.75, change: 0.67 },
-                { symbol: "BTC/USD", price: 68750, change: 2.34 }
+                { symbol: "BTC/USD", price: 68750, change: 2.34 },
+                { symbol: "EUR/GBP", price: 0.8512, change: 0.05 },
+                { symbol: "GBP/JPY", price: 186.45, change: 0.32 }
             ];
             
             function populateProTicker() {
@@ -773,9 +972,9 @@
             function showToast(m) { let t = document.createElement('div'); t.className = 'toast-notification'; t.innerHTML = '<i class="fas fa-check-circle"></i><span>' + m + '</span>'; document.body.appendChild(t); setTimeout(() => t.remove(), 3000); }
             function generateUniqueCode() { return Math.floor(Math.random() * 999) + 1; }
             let pendingLimitAmount = 1; const LIMIT_PRICE = 10000; let currentUniqueCode = 0;
-            function updatePaymentAmount() { let total = LIMIT_PRICE * pendingLimitAmount + currentUniqueCode; document.getElementById('dynamicAmount').innerHTML = 'Rp ' + total.toLocaleString('id-ID'); document.getElementById('uniqueCodeDisplay').innerHTML = currentUniqueCode.toString().padStart(3, '0'); document.getElementById('nominalDisplay').innerHTML = 'Rp ' + total.toLocaleString('id-ID'); document.getElementById('paymentNominal').value = total; document.getElementById('uniqueCodeValue').value = currentUniqueCode; }
-            function formatPrice(p, s) { if (!p) return '-'; if (s.includes('BTC')) return p.toFixed(2); if (s.includes('JPY')) return p.toFixed(3); if (s.includes('XAU')) return p.toFixed(2); return p.toFixed(5); }
-            function calculatePips(p1, p2, s) { let d = Math.abs(p1 - p2); if (s.includes('BTC')) return (d * 100).toFixed(0); if (s.includes('JPY')) return (d * 100).toFixed(1); if (s.includes('XAU')) return (d * 10).toFixed(1); return (d * 10000).toFixed(0); }
+            function updatePaymentAmount() { let total = LIMIT_PRICE * pendingLimitAmount + currentUniqueCode; document.getElementById('dynamicAmount').innerHTML = 'Rp ' + total.toLocaleString('id-ID'); document.getElementById('uniqueCodeDisplay').innerHTML = currentUniqueCode.toString().padStart(3, '0'); }
+            function formatPrice(p, s) { if (!p) return '-'; if (s.includes('BTC') || s.includes('ETH') || s.includes('BNB') || s.includes('XRP')) return p.toFixed(2); if (s.includes('JPY')) return p.toFixed(3); if (s.includes('XAU')) return p.toFixed(2); return p.toFixed(5); }
+            function calculatePips(p1, p2, s) { let d = Math.abs(p1 - p2); if (s.includes('BTC') || s.includes('ETH')) return (d * 100).toFixed(0); if (s.includes('JPY')) return (d * 100).toFixed(1); if (s.includes('XAU')) return (d * 10).toFixed(1); return (d * 10000).toFixed(0); }
             function setText(id, val) { let e = document.getElementById(id); if (e) e.textContent = val || '-'; }
             function quickSelectStrategy(strategy) { let p = { scalp: { pair: 'EUR/USD', tf: '1min', rr: '2' }, intraday: { pair: 'EUR/USD', tf: '15min', rr: '2' }, swing: { pair: 'EUR/USD', tf: '4h', rr: '3' } }[strategy]; if (p) { document.getElementById('pairSelect').value = p.pair; document.getElementById('timeframeSelect').value = p.tf; document.getElementById('riskRewardSelect').value = p.rr; updateOrderbookPairName(); } }
             function resetAnalysis() {
@@ -804,7 +1003,7 @@
             const BASE_URL = 'https://api.twelvedata.com';
             const timeframeMap = { '1min': '1min', '5min': '5min', '15min': '15min', '30min': '30min', '1h': '1h', '4h': '4h', '1d': '1day' };
             
-            // ========== ENHANCED TRADING SYSTEM - WITH FIBONACCI (REPLACED BOLLINGER) ==========
+            // ========== ENHANCED TRADING SYSTEM ==========
             class EnhancedTradingSystem {
                 constructor() { this.marketRegime = 'NORMAL'; }
                 
@@ -861,18 +1060,15 @@
                     return { macd, signal: sig, histogram: hist, cross: (macd > sig && prev <= sig) ? 'BULLISH' : (macd < sig && prev >= sig) ? 'BEARISH' : 'NONE' };
                 }
                 
-                // FIBONACCI RETRACEMENT - PENGGANTI BOLLINGER BANDS
                 calculateFibonacci(priceData) {
                     let highs = priceData.map(d => d.high);
                     let lows = priceData.map(d => d.low);
                     let closes = priceData.map(d => d.close);
                     
-                    // Cari high dan low tertinggi dalam 50 periode
                     let recentHigh = Math.max(...highs.slice(-50));
                     let recentLow = Math.min(...lows.slice(-50));
                     let range = recentHigh - recentLow;
                     
-                    // Level Fibonacci retracement
                     let fibLevels = {
                         level0: recentLow,
                         level236: recentLow + range * 0.236,
@@ -885,13 +1081,10 @@
                     
                     let currentPrice = closes[closes.length - 1];
                     let fibPosition = (currentPrice - recentLow) / (range + 0.0001);
-                    let nearestFib = 0;
                     let fibSignal = '';
                     let score = 0;
                     
-                    // Tentukan posisi harga terhadap level Fibonacci
                     if (currentPrice <= fibLevels.level236) {
-                        nearestFib = 23.6;
                         if (currentPrice > fibLevels.level0 * 1.001) {
                             fibSignal = 'NEAR FIB 23.6% SUPPORT';
                             score = 2;
@@ -900,28 +1093,22 @@
                             score = 2.5;
                         }
                     } else if (currentPrice <= fibLevels.level382) {
-                        nearestFib = 38.2;
                         fibSignal = 'NEAR FIB 38.2%';
                         score = 1.5;
                     } else if (currentPrice <= fibLevels.level500) {
-                        nearestFib = 50;
                         fibSignal = 'NEAR FIB 50%';
                         score = 1;
                     } else if (currentPrice <= fibLevels.level618) {
-                        nearestFib = 61.8;
                         fibSignal = 'NEAR FIB 61.8%';
                         score = 1;
                     } else if (currentPrice <= fibLevels.level786) {
-                        nearestFib = 78.6;
                         fibSignal = 'NEAR FIB 78.6% RESISTANCE';
                         score = -1.5;
                     } else {
-                        nearestFib = 100;
                         fibSignal = 'NEAR FIB 100% RESISTANCE';
                         score = -2;
                     }
                     
-                    // Golden zone (38.2% - 61.8%) adalah area support/resistance kuat
                     if (fibPosition > 0.382 && fibPosition < 0.618) {
                         score += 1;
                         fibSignal += ' (GOLDEN ZONE)';
@@ -930,7 +1117,7 @@
                     return {
                         signal: fibSignal,
                         score: score,
-                        nearestLevel: nearestFib,
+                        nearestLevel: Math.round(fibPosition * 100),
                         position: fibPosition,
                         levels: fibLevels
                     };
@@ -1093,7 +1280,7 @@
                     let rsi = this.calculateRSI(closes, 14);
                     let stochRsi = this.calculateStochRSI(closes, 14);
                     let macd = this.calculateMACD(closes);
-                    let fibonacci = this.calculateFibonacci(priceData); // FIBONACCI sebagai pengganti Bollinger
+                    let fibonacci = this.calculateFibonacci(priceData);
                     let adx = this.calculateADX(priceData);
                     let ichimoku = this.calculateIchimoku(priceData);
                     let volume = this.calculateVolumeAnalysis(priceData);
@@ -1111,64 +1298,50 @@
                     let bullishScore = 0, bearishScore = 0;
                     let signals = [];
                     
-                    // 1. RSI
+                    // 14 indikator scoring
                     if (rsi < 30) { bullishScore += 4; signals.push('RSI OVERSOLD'); }
                     else if (rsi < 40) { bullishScore += 2; signals.push('RSI LOW'); }
                     else if (rsi > 70) { bearishScore += 4; signals.push('RSI OVERBOUGHT'); }
                     else if (rsi > 60) { bearishScore += 2; signals.push('RSI HIGH'); }
                     
-                    // 2. Stochastic RSI
                     if (stochRsi.k < 20) { bullishScore += 3; signals.push('STOCH OVERSOLD'); }
                     else if (stochRsi.k > 80) { bearishScore += 3; signals.push('STOCH OVERBOUGHT'); }
                     
-                    // 3. MACD
                     if (macd.cross === 'BULLISH') { bullishScore += 4; signals.push('MACD BULLISH'); }
                     else if (macd.cross === 'BEARISH') { bearishScore += 4; signals.push('MACD BEARISH'); }
                     else if (macd.histogram > 0) { bullishScore += 1.5; signals.push('MACD POSITIVE'); }
                     else if (macd.histogram < 0) { bearishScore += 1.5; signals.push('MACD NEGATIVE'); }
                     
-                    // 4. FIBONACCI (PENGGANTI BOLLINGER)
                     if (fibonacci.score > 0) { bullishScore += fibonacci.score; signals.push(fibonacci.signal); }
                     else if (fibonacci.score < 0) { bearishScore += Math.abs(fibonacci.score); signals.push(fibonacci.signal); }
-                    else { signals.push('FIB NEUTRAL'); }
                     
-                    // 5. ADX
                     if (adx.trend === 'BULLISH') { bullishScore += 3; signals.push(`ADX ${adx.strength} UP`); }
                     else if (adx.trend === 'BEARISH') { bearishScore += 3; signals.push(`ADX ${adx.strength} DOWN`); }
                     
-                    // 6. Ichimoku
                     if (ichimoku.signal === 'BULLISH') { bullishScore += 4; signals.push('ICHIMOKU BULLISH'); }
                     else if (ichimoku.signal === 'BEARISH') { bearishScore += 4; signals.push('ICHIMOKU BEARISH'); }
                     
-                    // 7. Volume
                     if (volume.delta > 0) { bullishScore += 2; signals.push('VOLUME POSITIVE'); }
                     else if (volume.delta < 0) { bearishScore += 2; signals.push('VOLUME NEGATIVE'); }
                     
-                    // 8. Parabolic SAR
                     if (sar.signal === 'BULLISH') { bullishScore += 2; signals.push('SAR BULLISH'); }
                     else if (sar.signal === 'BEARISH') { bearishScore += 2; signals.push('SAR BEARISH'); }
                     
-                    // 9. CCI
                     if (cci.signal === 'OVERSOLD') { bullishScore += 2; signals.push('CCI OVERSOLD'); }
                     else if (cci.signal === 'OVERBOUGHT') { bearishScore += 2; signals.push('CCI OVERBOUGHT'); }
                     
-                    // 10. Williams %R
                     if (williams.signal === 'OVERSOLD') { bullishScore += 2; signals.push('WILLIAMS OVERSOLD'); }
                     else if (williams.signal === 'OVERBOUGHT') { bearishScore += 2; signals.push('WILLIAMS OVERBOUGHT'); }
                     
-                    // 11. MFI
                     if (mfi.signal === 'OVERSOLD') { bullishScore += 2; signals.push('MFI OVERSOLD'); }
                     else if (mfi.signal === 'OVERBOUGHT') { bearishScore += 2; signals.push('MFI OVERBOUGHT'); }
                     
-                    // 12. Support/Resistance
                     if (sr.nearSupport) { bullishScore += 2; signals.push('NEAR SUPPORT'); }
                     if (sr.nearResistance) { bearishScore += 2; signals.push('NEAR RESISTANCE'); }
                     
-                    // 13. Candlestick Patterns
                     if (patterns.score > 0) { bullishScore += patterns.score; if (patterns.patterns[0]) signals.push(patterns.patterns[0]); }
                     else if (patterns.score < 0) { bearishScore += Math.abs(patterns.score); if (patterns.patterns[0]) signals.push(patterns.patterns[0]); }
                     
-                    // 14. Divergence
                     if (divergence.bullish) { bullishScore += 4; signals.push('BULLISH DIVERGENCE'); }
                     if (divergence.bearish) { bearishScore += 4; signals.push('BEARISH DIVERGENCE'); }
                     
@@ -1318,18 +1491,123 @@
             
             // ========== MODAL FLOW ==========
             let currentModalLimit = 1;
-            function updateModalDisplay() { document.getElementById('modalLimitValue').textContent = currentModalLimit; let total = currentModalLimit * LIMIT_PRICE; document.getElementById('modalTotalPrice').innerHTML = 'Rp ' + total.toLocaleString('id-ID'); }
-            function openAddLimitModal() { currentModalLimit = 1; updateModalDisplay(); document.getElementById('addLimitModal').classList.remove('hidden'); }
-            function closeAddLimitModal() { document.getElementById('addLimitModal').classList.add('hidden'); }
-            function incrementLimit() { if (currentModalLimit < 10) { currentModalLimit++; updateModalDisplay(); } }
-            function decrementLimit() { if (currentModalLimit > 1) { currentModalLimit--; updateModalDisplay(); } }
-            function proceedToPayment() { pendingLimitAmount = currentModalLimit; currentUniqueCode = generateUniqueCode(); updatePaymentAmount(); document.getElementById('step1Panel').classList.remove('hidden'); document.getElementById('step2Panel').classList.add('hidden'); document.getElementById('paymentModal').classList.remove('hidden'); closeAddLimitModal(); }
-            function confirmTopUp() { let tid = document.getElementById('transactionId').value, ps = document.getElementById('paymentSource').value, ah = document.getElementById('accountHolder').value, em = document.getElementById('userEmail').value; if (!tid || !ps || !ah || !em) { showToast('Isi semua data!'); return; } showToast('✅ Data tersimpan. Konfirmasi via DM @cuanhunters'); setTimeout(() => { if (confirm('Konfirmasi tambah ' + pendingLimitAmount + ' limit?')) { addPaidLimit(pendingLimitAmount); closePaymentModal(); showToast('✅ Top up berhasil!'); updateUsageDisplay(); resetAnalysis(); } else { closePaymentModal(); } }, 1500); }
-            function closePaymentModal() { document.getElementById('paymentModal').classList.add('hidden'); }
+            function updateModalDisplay() { 
+                document.getElementById('modalLimitValue').textContent = currentModalLimit; 
+                let total = currentModalLimit * LIMIT_PRICE; 
+                document.getElementById('modalTotalPrice').innerHTML = 'Rp ' + total.toLocaleString('id-ID'); 
+            }
             
-            function updateTotalUsers() { let n = new Date(), lu = memoryData.lastTotalUpdate, st = memoryData.savedTotalUsers; if (lu && st) { let ld = new Date(parseInt(lu)), dd = Math.floor((n - ld) / 864e5), inc = Math.floor(dd / 2) * 2; if (inc > 0) { curTotal = parseInt(st) + inc; memoryData.savedTotalUsers = curTotal; memoryData.lastTotalUpdate = n.getTime(); persistData(); } else curTotal = parseInt(st); } return curTotal; }
+            function openAddLimitModal() { 
+                currentModalLimit = 1; 
+                updateModalDisplay(); 
+                document.getElementById('addLimitModal').classList.remove('hidden'); 
+            }
+            
+            function closeAddLimitModal() { 
+                document.getElementById('addLimitModal').classList.add('hidden'); 
+            }
+            
+            function incrementLimit() { 
+                if (currentModalLimit < 10) { 
+                    currentModalLimit++; 
+                    updateModalDisplay(); 
+                } 
+            }
+            
+            function decrementLimit() { 
+                if (currentModalLimit > 1) { 
+                    currentModalLimit--; 
+                    updateModalDisplay(); 
+                } 
+            }
+            
+            function proceedToPayment() { 
+                pendingLimitAmount = currentModalLimit; 
+                currentUniqueCode = generateUniqueCode(); 
+                updatePaymentAmount(); 
+                closeAddLimitModal();
+                document.getElementById('step1Panel').classList.remove('hidden'); 
+                document.getElementById('step2Panel').classList.add('hidden'); 
+                document.getElementById('transactionId').value = '';
+                document.getElementById('paymentSource').value = '';
+                document.getElementById('accountHolder').value = '';
+                document.getElementById('userEmail').value = '';
+                document.getElementById('paymentModal').classList.remove('hidden'); 
+            }
+            
+            function confirmTopUp() { 
+                let tid = document.getElementById('transactionId').value; 
+                let ps = document.getElementById('paymentSource').value; 
+                let ah = document.getElementById('accountHolder').value; 
+                let em = document.getElementById('userEmail').value; 
+                if (!tid || !ps || !ah || !em) { 
+                    showToast('⚠️ Isi semua data!'); 
+                    return; 
+                } 
+                showToast('✅ Data tersimpan. Terima kasih!'); 
+                setTimeout(() => { 
+                    if (confirm('Konfirmasi tambah ' + pendingLimitAmount + ' limit? Setelah konfirmasi limit akan ditambahkan.')) { 
+                        addPaidLimit(pendingLimitAmount); 
+                        closePaymentModal(); 
+                        showToast('✅ Top up berhasil! +' + pendingLimitAmount + ' limit'); 
+                        updateUsageDisplay(); 
+                        resetAnalysis(); 
+                    } 
+                }, 500); 
+            }
+            
+            function closePaymentModal() { 
+                document.getElementById('paymentModal').classList.add('hidden'); 
+            }
+            
+            function updateTotalUsers() { 
+                let n = new Date(), lu = memoryData.lastTotalUpdate, st = memoryData.savedTotalUsers; 
+                if (lu && st) { 
+                    let ld = new Date(parseInt(lu)), dd = Math.floor((n - ld) / 864e5), inc = Math.floor(dd / 2) * 2; 
+                    if (inc > 0) { 
+                        curTotal = parseInt(st) + inc; 
+                        memoryData.savedTotalUsers = curTotal; 
+                        memoryData.lastTotalUpdate = n.getTime(); 
+                        persistData(); 
+                    } else curTotal = parseInt(st); 
+                } else curTotal = 535;
+                return curTotal; 
+            }
+            
             let curTotal = 535, actUsers = 187, proUs = 124, freeUs = curTotal - proUs;
-            function updateStatistics() { curTotal = updateTotalUsers(); let proPerc = 0.23 + Math.sin(Date.now() / 36e5) * 0.03, np = Math.floor(curTotal * proPerc); np = Math.max(Math.floor(curTotal * 0.18), Math.min(Math.floor(curTotal * 0.32), np)); let hod = new Date().getHours(), actBase = 0.35 + Math.sin(hod * Math.PI / 12) * 0.1, na = Math.floor(curTotal * actBase); na = Math.max(Math.floor(curTotal * 0.28), Math.min(Math.floor(curTotal * 0.48), na)); na += Math.floor(Math.random() * 11) - 5; na = Math.max(Math.floor(curTotal * 0.25), Math.min(Math.floor(curTotal * 0.5), na)); let pdiff = np - proUs, adiff = na - actUsers; proUs += Math.sign(pdiff) * Math.min(Math.abs(pdiff), 3); actUsers += Math.sign(adiff) * Math.min(Math.abs(adiff), 4); proUs = Math.max(Math.floor(curTotal * 0.18), Math.min(Math.floor(curTotal * 0.32), proUs)); actUsers = Math.max(Math.floor(curTotal * 0.28), Math.min(Math.floor(curTotal * 0.48), actUsers)); freeUs = curTotal - proUs; let anim = (id, target, dur) => { let el = document.getElementById(id); if (!el) return; let start = parseInt(el.textContent.replace(/,/g, '')) || 0; if (start === target) return; let inc = (target - start) / (dur / 16), cur = start; let tmr = setInterval(() => { cur += inc; if (Math.abs(cur - target) < 1) { el.textContent = target.toLocaleString(); clearInterval(tmr); } else el.textContent = Math.floor(cur).toLocaleString(); }, 16); }; anim('totalUsersCount', curTotal, 800); anim('activeUsersCount', actUsers, 600); anim('proUsersCount', proUs, 700); anim('freeUsersCount', freeUs, 750); }
+            function updateStatistics() { 
+                curTotal = updateTotalUsers(); 
+                let proPerc = 0.23 + Math.sin(Date.now() / 36e5) * 0.03, np = Math.floor(curTotal * proPerc); 
+                np = Math.max(Math.floor(curTotal * 0.18), Math.min(Math.floor(curTotal * 0.32), np)); 
+                let hod = new Date().getHours(), actBase = 0.35 + Math.sin(hod * Math.PI / 12) * 0.1, na = Math.floor(curTotal * actBase); 
+                na = Math.max(Math.floor(curTotal * 0.28), Math.min(Math.floor(curTotal * 0.48), na)); 
+                na += Math.floor(Math.random() * 11) - 5; 
+                na = Math.max(Math.floor(curTotal * 0.25), Math.min(Math.floor(curTotal * 0.5), na)); 
+                let pdiff = np - proUs, adiff = na - actUsers; 
+                proUs += Math.sign(pdiff) * Math.min(Math.abs(pdiff), 3); 
+                actUsers += Math.sign(adiff) * Math.min(Math.abs(adiff), 4); 
+                proUs = Math.max(Math.floor(curTotal * 0.18), Math.min(Math.floor(curTotal * 0.32), proUs)); 
+                actUsers = Math.max(Math.floor(curTotal * 0.28), Math.min(Math.floor(curTotal * 0.48), actUsers)); 
+                freeUs = curTotal - proUs; 
+                let anim = (id, target, dur) => { 
+                    let el = document.getElementById(id); 
+                    if (!el) return; 
+                    let start = parseInt(el.textContent.replace(/,/g, '')) || 0; 
+                    if (start === target) return; 
+                    let inc = (target - start) / (dur / 16), cur = start; 
+                    let tmr = setInterval(() => { 
+                        cur += inc; 
+                        if (Math.abs(cur - target) < 1) { 
+                            el.textContent = target.toLocaleString(); 
+                            clearInterval(tmr); 
+                        } else el.textContent = Math.floor(cur).toLocaleString(); 
+                    }, 16); 
+                }; 
+                anim('totalUsersCount', curTotal, 800); 
+                anim('activeUsersCount', actUsers, 600); 
+                anim('proUsersCount', proUs, 700); 
+                anim('freeUsersCount', freeUs, 750); 
+            }
             
             function startMainApplication() {
                 console.log("Starting main application...");
@@ -1344,6 +1622,7 @@
                 document.getElementById('freeUsersCount').textContent = freeUs.toLocaleString();
                 setInterval(updateStatistics, 15000);
                 setInterval(() => { updateCountdownDisplay(); resetFreeDailyIfNeeded(); updateUsageDisplay(); }, 1000);
+                
                 document.getElementById('analyzeBtn').addEventListener('click', analyze);
                 document.getElementById('refreshAnalysisBtn').addEventListener('click', analyze);
                 document.getElementById('resetAnalysisBtn').addEventListener('click', resetAnalysis);
@@ -1355,11 +1634,37 @@
                 document.getElementById('modalMinusBtn').addEventListener('click', decrementLimit);
                 document.getElementById('confirmPaymentBtn').addEventListener('click', confirmTopUp);
                 document.getElementById('closePaymentModalBtn').addEventListener('click', closePaymentModal);
-                document.getElementById('gotoStep2Btn').addEventListener('click', function() { document.getElementById('step1Panel').classList.add('hidden'); document.getElementById('step2Panel').classList.remove('hidden'); });
-                document.getElementById('backToStep1Btn').addEventListener('click', function() { document.getElementById('step2Panel').classList.add('hidden'); document.getElementById('step1Panel').classList.remove('hidden'); });
-                document.getElementById('claimBonusBtn').addEventListener('click', function() { if (claimBonus()) { updateUsageDisplay(); showToast('🎉 +15 limit gratis!'); } else { showToast('Bonus sudah diklaim.'); } });
-                let qItems = document.querySelectorAll('.quick-item'); for (let i = 0; i < qItems.length; i++) qItems[i].addEventListener('click', function() { let s = this.getAttribute('data-strategy'); quickSelectStrategy(s); document.querySelectorAll('.quick-item').forEach(el => el.classList.remove('active')); this.classList.add('active'); updateOrderbookPairName(); });
-                document.getElementById('pairSelect').addEventListener('change', function() { updateOrderbookPairName(); renderOrderBookModern(currentOrderBookBias); });
+                document.getElementById('gotoStep2Btn').addEventListener('click', function() { 
+                    document.getElementById('step1Panel').classList.add('hidden'); 
+                    document.getElementById('step2Panel').classList.remove('hidden'); 
+                });
+                document.getElementById('backToStep1Btn').addEventListener('click', function() { 
+                    document.getElementById('step2Panel').classList.add('hidden'); 
+                    document.getElementById('step1Panel').classList.remove('hidden'); 
+                });
+                document.getElementById('claimBonusBtn').addEventListener('click', function() { 
+                    if (claimBonus()) { 
+                        updateUsageDisplay(); 
+                        showToast('🎉 +15 limit gratis!'); 
+                    } else { 
+                        showToast('Bonus sudah diklaim.'); 
+                    } 
+                });
+                
+                let qItems = document.querySelectorAll('.quick-item'); 
+                for (let i = 0; i < qItems.length; i++) {
+                    qItems[i].addEventListener('click', function() { 
+                        let s = this.getAttribute('data-strategy'); 
+                        quickSelectStrategy(s); 
+                        document.querySelectorAll('.quick-item').forEach(el => el.classList.remove('active')); 
+                        this.classList.add('active'); 
+                        updateOrderbookPairName(); 
+                    });
+                }
+                document.getElementById('pairSelect').addEventListener('change', function() { 
+                    updateOrderbookPairName(); 
+                    renderOrderBookModern(currentOrderBookBias); 
+                });
             }
             
             // START LOADING
