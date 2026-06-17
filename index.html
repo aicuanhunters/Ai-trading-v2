@@ -252,7 +252,6 @@
         .price-info { background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(16,185,129,0.05)); border-radius: 10px; padding: 0.6rem; text-align: center; margin-bottom: 0.8rem; }
         .signal-detail-text { font-size: 0.55rem; color: #cbd5e1; margin-top: 0.3rem; padding: 0.3rem; background: rgba(0,0,0,0.2); border-radius: 8px; }
         
-        /* Panduan Image Styles */
         .panduan-container {
             background: linear-gradient(135deg, rgba(16,185,129,0.05), rgba(16,185,129,0.01));
             border-radius: 12px;
@@ -341,7 +340,6 @@
             background: rgba(16,185,129,0.3);
             transform: scale(1.1);
         }
-        
         .cyber-select select option {
             background: #0b111e;
             color: #e2e8f0;
@@ -454,7 +452,6 @@
                         <div class="flex items-center gap-2 mb-2"><i class="fas fa-sliders-h text-emerald-400 text-sm"></i><div><div class="font-semibold text-white text-xs">Strategy Config</div></div></div>
                         <div class="quick-grid"><div class="quick-item" data-strategy="scalp"><i class="fas fa-bolt"></i><span>SCALP</span></div><div class="quick-item active" data-strategy="intraday"><i class="fas fa-clock"></i><span>INTRADAY</span></div><div class="quick-item" data-strategy="swing"><i class="fas fa-calendar-alt"></i><span>SWING</span></div></div>
                         <div class="mb-2"><div class="input-label"><i class="fas fa-coins"></i><span>PAIR (30+ Pairs)</span></div><div class="cyber-select"><select id="pairSelect">
-                            <!-- MAJOR PAIRS -->
                             <optgroup label="⭐ MAJOR PAIRS">
                                 <option value="EUR/USD" selected>🇪🇺 EUR/USD - Euro US Dollar</option>
                                 <option value="GBP/USD">🇬🇧 GBP/USD - British Pound</option>
@@ -464,8 +461,6 @@
                                 <option value="USD/CHF">🇨🇭 USD/CHF - US Dollar Swiss Franc</option>
                                 <option value="NZD/USD">🇳🇿 NZD/USD - New Zealand Dollar</option>
                             </optgroup>
-                            
-                            <!-- MINOR PAIRS / CROSSES -->
                             <optgroup label="🔄 MINOR PAIRS (Crosses)">
                                 <option value="EUR/GBP">🇪🇺🇬🇧 EUR/GBP - Euro British Pound</option>
                                 <option value="EUR/JPY">🇪🇺🇯🇵 EUR/JPY - Euro Yen</option>
@@ -484,13 +479,9 @@
                                 <option value="NZD/JPY">🇳🇿🇯🇵 NZD/JPY - NZ Dollar Yen</option>
                                 <option value="NZD/CAD">🇳🇿🇨🇦 NZD/CAD - NZ Dollar Canadian</option>
                             </optgroup>
-                            
-                            <!-- COMMODITIES -->
                             <optgroup label="🥇 COMMODITIES">
                                 <option value="XAU/USD">🥇 XAU/USD - Gold (Emas)</option>
                             </optgroup>
-                            
-                            <!-- CRYPTOCURRENCIES -->
                             <optgroup label="₿ CRYPTOCURRENCIES">
                                 <option value="BTC/USD">₿ BTC/USD - Bitcoin</option>
                                 <option value="ETH/USD">⟠ ETH/USD - Ethereum</option>
@@ -659,8 +650,6 @@
             </div>
             <div id="step2Panel" class="payment-step hidden">
                 <div class="flex items-center gap-2 mb-3"><div class="step-number">2</div><span class="text-sm font-semibold text-white">Konfirmasi Pembayaran</span></div>
-                
-                <!-- PANDUAN CARI NO TRANSAKSI -->
                 <div class="panduan-container">
                     <div class="panduan-title">
                         <i class="fas fa-info-circle text-emerald-400"></i>
@@ -676,7 +665,6 @@
                         <i class="fas fa-arrow-right text-emerald-400"></i> Lihat contoh di atas untuk menemukan No Transaksi pada bukti bayar Anda
                     </div>
                 </div>
-                
                 <div class="form-group">
                     <input type="text" id="transactionId" placeholder="Masukkan No Transaksi / ID Pembayaran" class="confirmation-input">
                 </div>
@@ -703,7 +691,6 @@
         </div>
     </div>
     
-    <!-- LIGHTBOX FOR IMAGE -->
     <div id="lightbox" class="lightbox" onclick="closeLightbox()">
         <div class="close-lightbox" onclick="closeLightbox()">✕</div>
         <img id="lightboxImg" src="">
@@ -717,17 +704,12 @@
             lightboxImg.src = imageUrl;
             lightbox.classList.add('active');
         }
-        
         function closeLightbox() {
             const lightbox = document.getElementById('lightbox');
             lightbox.classList.remove('active');
         }
-        
-        // Close lightbox with ESC key
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeLightbox();
-            }
+            if (e.key === 'Escape') { closeLightbox(); }
         });
         
         (function(){
@@ -748,7 +730,6 @@
                     const low = Math.min(open, close) - Math.random() * (basePrice * 0.005);
                     return { open, high, low, close };
                 }
-                
                 function initCandles() {
                     let price = 100;
                     for (let i = 0; i < numCandles; i++) {
@@ -757,7 +738,6 @@
                         price = candle.close;
                     }
                 }
-                
                 function drawCandles() {
                     if (!ctx || !candleCanvas) return;
                     const w = candleCanvas.clientWidth;
@@ -768,7 +748,6 @@
                     
                     const candleWidth = w / numCandles;
                     const barWidth = candleWidth - 2;
-                    
                     let minPrice = Infinity, maxPrice = -Infinity;
                     candleData.forEach(c => {
                         minPrice = Math.min(minPrice, c.low);
@@ -790,7 +769,6 @@
                         ctx.fillRect(x + barWidth / 2 + 1, highY, 1, lowY - highY);
                     }
                 }
-                
                 function updateCandles() {
                     candleData.shift();
                     const lastPrice = candleData[candleData.length - 1].close;
@@ -798,7 +776,6 @@
                     candleData.push(newCandle);
                     drawCandles();
                 }
-                
                 initCandles();
                 drawCandles();
                 candleInterval = setInterval(updateCandles, 800);
@@ -815,7 +792,6 @@
                 matrixCtx = matrixCanvas.getContext('2d');
                 const columns = Math.floor(matrixCanvas.width / 20);
                 const drops = Array(columns).fill(1);
-                
                 function drawMatrix() {
                     if (!matrixCanvas || !matrixCtx) return;
                     matrixCtx.fillStyle = 'rgba(6, 11, 20, 0.05)';
@@ -845,7 +821,6 @@
                 { symbol: "EUR/GBP", price: 0.8512, change: 0.05 },
                 { symbol: "GBP/JPY", price: 186.45, change: 0.32 }
             ];
-            
             function populateProTicker() {
                 const tc = document.getElementById('proTicker');
                 if (!tc) return;
@@ -864,7 +839,6 @@
             let loadingStartTime = Date.now();
             let currentPercentage = 0;
             let sentimentValue = 50;
-            
             function updateSentimentGauge() {
                 const sb = document.getElementById('sentimentBar');
                 if (sb) {
@@ -872,7 +846,6 @@
                     sb.style.width = sentimentValue + '%';
                 }
             }
-            
             function updateLoadingProgress() {
                 const elapsed = (Date.now() - loadingStartTime) / 1000;
                 const targetPercentage = Math.min(100, (elapsed / 4) * 100);
@@ -890,15 +863,10 @@
                 const s2 = document.getElementById('status2');
                 const s3 = document.getElementById('status3');
                 const s4 = document.getElementById('status4');
-                
-                if (currentPercentage >= 20) { s1.classList.add('completed'); s1.classList.remove('active'); }
-                else s1.classList.add('active');
-                if (currentPercentage >= 40) { s2.classList.add('completed'); s2.classList.remove('active'); }
-                else if (currentPercentage >= 20) s2.classList.add('active');
-                if (currentPercentage >= 70) { s3.classList.add('completed'); s3.classList.remove('active'); }
-                else if (currentPercentage >= 40) s3.classList.add('active');
-                if (currentPercentage >= 90) { s4.classList.add('completed'); s4.classList.remove('active'); }
-                else if (currentPercentage >= 70) s4.classList.add('active');
+                if (currentPercentage >= 20) { s1.classList.add('completed'); s1.classList.remove('active'); } else s1.classList.add('active');
+                if (currentPercentage >= 40) { s2.classList.add('completed'); s2.classList.remove('active'); } else if (currentPercentage >= 20) s2.classList.add('active');
+                if (currentPercentage >= 70) { s3.classList.add('completed'); s3.classList.remove('active'); } else if (currentPercentage >= 40) s3.classList.add('active');
+                if (currentPercentage >= 90) { s4.classList.add('completed'); s4.classList.remove('active'); } else if (currentPercentage >= 70) s4.classList.add('active');
                 
                 updateSentimentGauge();
                 return elapsed >= 4 || currentPercentage >= 100;
@@ -939,7 +907,6 @@
                 }
                 return { bids, asks };
             }
-            
             function renderOrderBookModern(bias) {
                 const lots = generateOrderBookLot(bias);
                 const maxLot = Math.max(...lots.bids, ...lots.asks);
@@ -955,7 +922,6 @@
                 isp.textContent = imb;
                 isp.className = 'orderbook-imbalance-value ' + ic;
             }
-            
             function updateOrderbookPairName() { const ps = document.getElementById('pairSelect'); const opt = ps.options[ps.selectedIndex]; document.getElementById('orderbookPairName').textContent = opt.text.split(' - ')[0]; }
             function startOrderBookAnimation() { if (orderbookInterval) clearInterval(orderbookInterval); orderbookInterval = setInterval(() => { if (currentSignalAction === 'BUY') currentOrderBookBias = 'bid'; else if (currentSignalAction === 'SELL') currentOrderBookBias = 'ask'; else { let r = Math.random(); if (r < 0.4) currentOrderBookBias = 'bid'; else if (r < 0.8) currentOrderBookBias = 'ask'; else currentOrderBookBias = 'neutral'; } renderOrderBookModern(currentOrderBookBias); }, 2000); renderOrderBookModern('neutral'); updateOrderbookPairName(); }
             function setOrderBookFromSignal(sig) { currentSignalAction = sig; if (sig === 'BUY') renderOrderBookModern('bid'); else if (sig === 'SELL') renderOrderBookModern('ask'); else renderOrderBookModern('neutral'); }
@@ -1009,7 +975,6 @@
                 
                 calculateSMA(data, p) { if (data.length < p) return data[data.length - 1]; let s = 0; for (let i = data.length - p; i < data.length; i++) s += data[i]; return s / p; }
                 calculateEMA(data, p) { let k = 2 / (p + 1), ema = data[0]; for (let i = 1; i < data.length; i++) ema = data[i] * k + ema * (1 - k); return ema; }
-                
                 calculateATR(priceData, p) {
                     let tr = [];
                     for (let i = 1; i < priceData.length; i++) {
@@ -1020,7 +985,6 @@
                     }
                     return tr.slice(-p).reduce((a, b) => a + b, 0) / p;
                 }
-                
                 calculateRSI(closes, p) {
                     let g = 0, l = 0;
                     for (let i = closes.length - p; i < closes.length; i++) {
@@ -1030,7 +994,6 @@
                     let rs = (g / p) / ((l / p) + 0.0001);
                     return 100 - (100 / (1 + rs));
                 }
-                
                 calculateStochRSI(closes, p) {
                     let rsiV = [];
                     for (let i = p; i <= closes.length; i++) {
@@ -1043,7 +1006,6 @@
                     let srsi = (rsiV[rsiV.length - 1] - l) / (h - l + 0.0001) * 100;
                     return { k: srsi, d: this.calculateSMA(rsiV.slice(-3), 3) };
                 }
-                
                 calculateMACD(closes) {
                     let ema12 = this.calculateEMA(closes, 12);
                     let ema26 = this.calculateEMA(closes, 26);
@@ -1059,16 +1021,13 @@
                     let prev = macdV.length > 1 ? macdV[macdV.length - 2] : macd;
                     return { macd, signal: sig, histogram: hist, cross: (macd > sig && prev <= sig) ? 'BULLISH' : (macd < sig && prev >= sig) ? 'BEARISH' : 'NONE' };
                 }
-                
                 calculateFibonacci(priceData) {
                     let highs = priceData.map(d => d.high);
                     let lows = priceData.map(d => d.low);
                     let closes = priceData.map(d => d.close);
-                    
                     let recentHigh = Math.max(...highs.slice(-50));
                     let recentLow = Math.min(...lows.slice(-50));
                     let range = recentHigh - recentLow;
-                    
                     let fibLevels = {
                         level0: recentLow,
                         level236: recentLow + range * 0.236,
@@ -1078,12 +1037,10 @@
                         level786: recentLow + range * 0.786,
                         level100: recentHigh
                     };
-                    
                     let currentPrice = closes[closes.length - 1];
                     let fibPosition = (currentPrice - recentLow) / (range + 0.0001);
                     let fibSignal = '';
                     let score = 0;
-                    
                     if (currentPrice <= fibLevels.level236) {
                         if (currentPrice > fibLevels.level0 * 1.001) {
                             fibSignal = 'NEAR FIB 23.6% SUPPORT';
@@ -1108,12 +1065,10 @@
                         fibSignal = 'NEAR FIB 100% RESISTANCE';
                         score = -2;
                     }
-                    
                     if (fibPosition > 0.382 && fibPosition < 0.618) {
                         score += 1;
                         fibSignal += ' (GOLDEN ZONE)';
                     }
-                    
                     return {
                         signal: fibSignal,
                         score: score,
@@ -1122,7 +1077,6 @@
                         levels: fibLevels
                     };
                 }
-                
                 calculateADX(priceData, p = 14) {
                     let highs = priceData.map(d => d.high), lows = priceData.map(d => d.low), closes = priceData.map(d => d.close);
                     let plusDM = [], minusDM = [], tr = [];
@@ -1140,7 +1094,6 @@
                     let dx = Math.abs(pDI - mDI) / (pDI + mDI + 0.0001) * 100;
                     return { adx: dx, plusDI: pDI, minusDI: mDI, trend: pDI > mDI ? 'BULLISH' : 'BEARISH', strength: dx > 25 ? 'STRONG' : (dx > 20 ? 'MODERATE' : 'WEAK') };
                 }
-                
                 calculateIchimoku(priceData) {
                     let highs = priceData.map(d => d.high), lows = priceData.map(d => d.low), closes = priceData.map(d => d.close);
                     let tenkan = (Math.max(...highs.slice(-9)) + Math.min(...lows.slice(-9))) / 2;
@@ -1155,7 +1108,6 @@
                     else if (tenkan < kijun) score = -1;
                     return { signal: score > 1 ? 'BULLISH' : (score < -1 ? 'BEARISH' : 'NEUTRAL'), score: score };
                 }
-                
                 calculateVolumeAnalysis(priceData) {
                     let delta = 0, buyVol = 0, sellVol = 0;
                     for (let i = Math.max(0, priceData.length - 50); i < priceData.length; i++) {
@@ -1169,7 +1121,6 @@
                     let ratio = buyVol / (sellVol + 0.0001);
                     return { delta: delta, volumeRatio: ratio, buyingPressure: ratio > 1.2 ? 'HIGH' : (ratio > 0.8 ? 'NORMAL' : 'LOW') };
                 }
-                
                 calculateSAR(priceData) {
                     let highs = priceData.map(d => d.high), lows = priceData.map(d => d.low);
                     let sar = lows[0], ep = highs[0], af = 0.02, trendUp = true;
@@ -1187,7 +1138,6 @@
                     let price = priceData[priceData.length - 1].close;
                     return { signal: trendUp ? 'BULLISH' : 'BEARISH' };
                 }
-                
                 calculateCCI(priceData, p = 20) {
                     let tp = priceData.map(d => (d.high + d.low + d.close) / 3);
                     let sma = this.calculateSMA(tp, p);
@@ -1197,7 +1147,6 @@
                     let cci = (tp[tp.length - 1] - sma) / (0.015 * md + 0.0001);
                     return { cci: cci, signal: cci > 100 ? 'OVERBOUGHT' : (cci < -100 ? 'OVERSOLD' : 'NEUTRAL') };
                 }
-                
                 calculateWilliamsR(priceData, p = 14) {
                     let highs = priceData.map(d => d.high), lows = priceData.map(d => d.low), closes = priceData.map(d => d.close);
                     let h = Math.max(...highs.slice(-p));
@@ -1205,7 +1154,6 @@
                     let wr = ((h - closes[closes.length - 1]) / (h - l + 0.0001)) * -100;
                     return { williamsR: wr, signal: wr < -80 ? 'OVERSOLD' : (wr > -20 ? 'OVERBOUGHT' : 'NEUTRAL') };
                 }
-                
                 calculateMFI(priceData, p = 14) {
                     let closes = priceData.map(d => d.close), volumes = priceData.map(d => d.volume);
                     let tp = priceData.map(d => (d.high + d.low + d.close) / 3);
@@ -1223,7 +1171,6 @@
                     let mfi = 100 - (100 / (1 + mfr));
                     return { mfi: mfi, signal: mfi > 80 ? 'OVERBOUGHT' : (mfi < 20 ? 'OVERSOLD' : 'NEUTRAL') };
                 }
-                
                 calculateSupportResistance(priceData) {
                     let highs = priceData.map(d => d.high), lows = priceData.map(d => d.low), price = priceData[priceData.length - 1].close;
                     let supports = [], resistances = [];
@@ -1236,7 +1183,6 @@
                     let sd = ((price - s) / price) * 100, rd = ((r - price) / price) * 100;
                     return { support: s, resistance: r, nearSupport: sd < 0.3, nearResistance: rd < 0.3 };
                 }
-                
                 detectCandlestick(priceData) {
                     let last = priceData[priceData.length - 1];
                     let prev = priceData[priceData.length - 2];
@@ -1252,7 +1198,6 @@
                     if (prev.close > prev.open && last.close < last.open && last.close < prev.open && last.open > prev.close) { patterns.push('BEARISH_ENGULFING'); score -= 2; }
                     return { patterns, score };
                 }
-                
                 detectDivergence(priceData) {
                     let closes = priceData.map(d => d.close);
                     let rsiV = [];
@@ -1261,7 +1206,6 @@
                     let lastR = rsiV[rsiV.length - 1], prevR = rsiV[rsiV.length - 6];
                     return { bullish: lastP < prevP && lastR > prevR, bearish: lastP > prevP && lastR < prevR };
                 }
-                
                 detectMarketRegime(priceData) {
                     let closes = priceData.map(d => d.close);
                     let returns = [];
@@ -1298,50 +1242,63 @@
                     let bullishScore = 0, bearishScore = 0;
                     let signals = [];
                     
-                    // 14 indikator scoring
+                    // RSI
                     if (rsi < 30) { bullishScore += 4; signals.push('RSI OVERSOLD'); }
                     else if (rsi < 40) { bullishScore += 2; signals.push('RSI LOW'); }
                     else if (rsi > 70) { bearishScore += 4; signals.push('RSI OVERBOUGHT'); }
                     else if (rsi > 60) { bearishScore += 2; signals.push('RSI HIGH'); }
                     
+                    // Stoch RSI
                     if (stochRsi.k < 20) { bullishScore += 3; signals.push('STOCH OVERSOLD'); }
                     else if (stochRsi.k > 80) { bearishScore += 3; signals.push('STOCH OVERBOUGHT'); }
                     
+                    // MACD
                     if (macd.cross === 'BULLISH') { bullishScore += 4; signals.push('MACD BULLISH'); }
                     else if (macd.cross === 'BEARISH') { bearishScore += 4; signals.push('MACD BEARISH'); }
                     else if (macd.histogram > 0) { bullishScore += 1.5; signals.push('MACD POSITIVE'); }
                     else if (macd.histogram < 0) { bearishScore += 1.5; signals.push('MACD NEGATIVE'); }
                     
+                    // Fibonacci
                     if (fibonacci.score > 0) { bullishScore += fibonacci.score; signals.push(fibonacci.signal); }
                     else if (fibonacci.score < 0) { bearishScore += Math.abs(fibonacci.score); signals.push(fibonacci.signal); }
                     
+                    // ADX
                     if (adx.trend === 'BULLISH') { bullishScore += 3; signals.push(`ADX ${adx.strength} UP`); }
                     else if (adx.trend === 'BEARISH') { bearishScore += 3; signals.push(`ADX ${adx.strength} DOWN`); }
                     
+                    // Ichimoku
                     if (ichimoku.signal === 'BULLISH') { bullishScore += 4; signals.push('ICHIMOKU BULLISH'); }
                     else if (ichimoku.signal === 'BEARISH') { bearishScore += 4; signals.push('ICHIMOKU BEARISH'); }
                     
+                    // Volume
                     if (volume.delta > 0) { bullishScore += 2; signals.push('VOLUME POSITIVE'); }
                     else if (volume.delta < 0) { bearishScore += 2; signals.push('VOLUME NEGATIVE'); }
                     
+                    // SAR
                     if (sar.signal === 'BULLISH') { bullishScore += 2; signals.push('SAR BULLISH'); }
                     else if (sar.signal === 'BEARISH') { bearishScore += 2; signals.push('SAR BEARISH'); }
                     
+                    // CCI
                     if (cci.signal === 'OVERSOLD') { bullishScore += 2; signals.push('CCI OVERSOLD'); }
                     else if (cci.signal === 'OVERBOUGHT') { bearishScore += 2; signals.push('CCI OVERBOUGHT'); }
                     
+                    // Williams
                     if (williams.signal === 'OVERSOLD') { bullishScore += 2; signals.push('WILLIAMS OVERSOLD'); }
                     else if (williams.signal === 'OVERBOUGHT') { bearishScore += 2; signals.push('WILLIAMS OVERBOUGHT'); }
                     
+                    // MFI
                     if (mfi.signal === 'OVERSOLD') { bullishScore += 2; signals.push('MFI OVERSOLD'); }
                     else if (mfi.signal === 'OVERBOUGHT') { bearishScore += 2; signals.push('MFI OVERBOUGHT'); }
                     
+                    // Support/Resistance
                     if (sr.nearSupport) { bullishScore += 2; signals.push('NEAR SUPPORT'); }
                     if (sr.nearResistance) { bearishScore += 2; signals.push('NEAR RESISTANCE'); }
                     
+                    // Candlestick
                     if (patterns.score > 0) { bullishScore += patterns.score; if (patterns.patterns[0]) signals.push(patterns.patterns[0]); }
                     else if (patterns.score < 0) { bearishScore += Math.abs(patterns.score); if (patterns.patterns[0]) signals.push(patterns.patterns[0]); }
                     
+                    // Divergence
                     if (divergence.bullish) { bullishScore += 4; signals.push('BULLISH DIVERGENCE'); }
                     if (divergence.bearish) { bearishScore += 4; signals.push('BEARISH DIVERGENCE'); }
                     
@@ -1371,9 +1328,25 @@
                     
                     confidence = Math.min(95, Math.max(20, confidence));
                     
-                    let stopLoss = currentPrice, takeProfit = currentPrice;
-                    if (action === 'BUY') { stopLoss = currentPrice - (atr * 1.5); takeProfit = currentPrice + (atr * 1.5 * rrMulti); }
-                    if (action === 'SELL') { stopLoss = currentPrice + (atr * 1.5); takeProfit = currentPrice - (atr * 1.5 * rrMulti); }
+                    // ============================================================
+                    // PERUBAHAN: SL dan TP menggunakan persentase dasar 0.3% untuk SL (1 bagian)
+                    // dan TP = SL * riskReward (rrMulti)
+                    // ============================================================
+                    let baseSLPercent = 0.003; // 0.3% sebagai 1 bagian
+                    let slPercent = baseSLPercent; // SL = 1 bagian
+                    let tpPercent = baseSLPercent * rrMulti; // TP = SL * riskReward
+                    let stopLoss, takeProfit;
+                    
+                    if (action === 'BUY') {
+                        stopLoss = currentPrice * (1 - slPercent);
+                        takeProfit = currentPrice * (1 + tpPercent);
+                    } else if (action === 'SELL') {
+                        stopLoss = currentPrice * (1 + slPercent);
+                        takeProfit = currentPrice * (1 - tpPercent);
+                    } else {
+                        stopLoss = currentPrice;
+                        takeProfit = currentPrice;
+                    }
                     
                     return {
                         action, confidence, stopLoss, takeProfit,
@@ -1496,31 +1469,10 @@
                 let total = currentModalLimit * LIMIT_PRICE; 
                 document.getElementById('modalTotalPrice').innerHTML = 'Rp ' + total.toLocaleString('id-ID'); 
             }
-            
-            function openAddLimitModal() { 
-                currentModalLimit = 1; 
-                updateModalDisplay(); 
-                document.getElementById('addLimitModal').classList.remove('hidden'); 
-            }
-            
-            function closeAddLimitModal() { 
-                document.getElementById('addLimitModal').classList.add('hidden'); 
-            }
-            
-            function incrementLimit() { 
-                if (currentModalLimit < 10) { 
-                    currentModalLimit++; 
-                    updateModalDisplay(); 
-                } 
-            }
-            
-            function decrementLimit() { 
-                if (currentModalLimit > 1) { 
-                    currentModalLimit--; 
-                    updateModalDisplay(); 
-                } 
-            }
-            
+            function openAddLimitModal() { currentModalLimit = 1; updateModalDisplay(); document.getElementById('addLimitModal').classList.remove('hidden'); }
+            function closeAddLimitModal() { document.getElementById('addLimitModal').classList.add('hidden'); }
+            function incrementLimit() { if (currentModalLimit < 10) { currentModalLimit++; updateModalDisplay(); } }
+            function decrementLimit() { if (currentModalLimit > 1) { currentModalLimit--; updateModalDisplay(); } }
             function proceedToPayment() { 
                 pendingLimitAmount = currentModalLimit; 
                 currentUniqueCode = generateUniqueCode(); 
@@ -1534,16 +1486,12 @@
                 document.getElementById('userEmail').value = '';
                 document.getElementById('paymentModal').classList.remove('hidden'); 
             }
-            
             function confirmTopUp() { 
                 let tid = document.getElementById('transactionId').value; 
                 let ps = document.getElementById('paymentSource').value; 
                 let ah = document.getElementById('accountHolder').value; 
                 let em = document.getElementById('userEmail').value; 
-                if (!tid || !ps || !ah || !em) { 
-                    showToast('⚠️ Isi semua data!'); 
-                    return; 
-                } 
+                if (!tid || !ps || !ah || !em) { showToast('⚠️ Isi semua data!'); return; } 
                 showToast('✅ Data tersimpan. Terima kasih!'); 
                 setTimeout(() => { 
                     if (confirm('Konfirmasi tambah ' + pendingLimitAmount + ' limit? Setelah konfirmasi limit akan ditambahkan.')) { 
@@ -1555,10 +1503,7 @@
                     } 
                 }, 500); 
             }
-            
-            function closePaymentModal() { 
-                document.getElementById('paymentModal').classList.add('hidden'); 
-            }
+            function closePaymentModal() { document.getElementById('paymentModal').classList.add('hidden'); }
             
             function updateTotalUsers() { 
                 let n = new Date(), lu = memoryData.lastTotalUpdate, st = memoryData.savedTotalUsers; 
@@ -1643,12 +1588,7 @@
                     document.getElementById('step1Panel').classList.remove('hidden'); 
                 });
                 document.getElementById('claimBonusBtn').addEventListener('click', function() { 
-                    if (claimBonus()) { 
-                        updateUsageDisplay(); 
-                        showToast('🎉 +15 limit gratis!'); 
-                    } else { 
-                        showToast('Bonus sudah diklaim.'); 
-                    } 
+                    if (claimBonus()) { updateUsageDisplay(); showToast('🎉 +15 limit gratis!'); } else { showToast('Bonus sudah diklaim.'); } 
                 });
                 
                 let qItems = document.querySelectorAll('.quick-item'); 
